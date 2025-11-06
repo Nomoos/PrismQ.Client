@@ -52,6 +52,7 @@ cd Frontend && npm run dev
 - **[Log Streaming Guide](./Backend/_meta/docs/LOG_STREAMING_GUIDE.md)** - Real-time log streaming
 
 ### Operations & Deployment
+- **[Deployment Guide](./DEPLOYMENT.md)** - ⭐ Automatic deployment to hosting platforms
 - **[Windows Setup](./Backend/_meta/docs/WINDOWS_SETUP.md)** - Windows-specific setup instructions
 - **[Data Directory Rationale](./_meta/docs/DATA_DIRECTORY_RATIONALE.md)** - Data storage design decisions
 - **[Security Fixes](./_meta/docs/SECURITY_FIXES.md)** - Security updates and patches

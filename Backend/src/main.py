@@ -5,11 +5,13 @@ import logging
 import sys
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import AsyncGenerator
 
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from .core.config import settings
 from .core.logger import setup_logging
@@ -154,11 +156,19 @@ app.include_router(system.router, prefix="/api", tags=["System"])
 app.include_router(queue.router, prefix="/api", tags=["Queue"])
 
 
-# Root endpoint
-@app.get("/", tags=["Root"])
-async def root():
+# Mount static files for production deployment (if static directory exists)
+static_dir = Path(__file__).parent.parent / "static"
+if static_dir.exists():
+    app.mount("/assets", StaticFiles(directory=str(static_dir / "assets")), name="assets")
+    app.mount("/", StaticFiles(directory=str(static_dir), html=True), name="static")
+    logger.info(f"Serving static files from {static_dir}")
+
+
+# Root endpoint (API info when not serving static files)
+@app.get("/api", tags=["Root"])
+async def api_root():
     """
-    Root endpoint.
+    API root endpoint.
     
     Returns:
         dict: Welcome message and API information
