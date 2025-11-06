@@ -11,27 +11,8 @@ Local web control panel for running PrismQ data collection modules.
 - **Concurrent execution** - Run multiple modules simultaneously
 - **On-demand architecture** - All operations triggered by UI requests (no autonomous background tasks)
 - **296 tests** - Comprehensive test coverage (195 backend + 101 frontend)
-- **🚀 Auto-deployment** - Configured for 6 platforms: Render, Railway, Heroku, Vercel, Linux Server, Docker
 
-## 🌐 Deployment
-
-**NEW:** This project now supports automatic deployment to 6 platforms! 
-
-- **[Quick Deploy Guide](./QUICK_DEPLOY.md)** - 5-minute setup for any platform
-- **[Full Deployment Guide](./DEPLOYMENT.md)** - Complete documentation for all 6 platforms
-- **[Platform Comparison](./PLATFORM_COMPARISON.md)** - Choose the best platform for your needs
-- **Auto-deploy enabled** - Push to `main` branch to automatically deploy
-- **CI/CD configured** - GitHub Actions runs tests on every commit
-
-**Supported Platforms:**
-- ⭐ Render.com (recommended) - Free tier, easiest setup
-- Railway.app - $5/mo credit, great DX
-- Heroku - Classic PaaS, established platform
-- Vercel - Frontend CDN (pair with backend)
-- Linux Server - SSH auto-deploy, full control
-- Docker - Manual deployment, maximum flexibility
-
-## 🚀 Quick Start (Local Development)
+## 🚀 Quick Start
 
 **Windows (One-click launcher):**
 ```cmd
@@ -71,7 +52,6 @@ cd Frontend && npm run dev
 - **[Log Streaming Guide](./Backend/_meta/docs/LOG_STREAMING_GUIDE.md)** - Real-time log streaming
 
 ### Operations & Deployment
-- **[Deployment Guide](./DEPLOYMENT.md)** - ⭐ Automatic deployment to hosting platforms
 - **[Windows Setup](./Backend/_meta/docs/WINDOWS_SETUP.md)** - Windows-specific setup instructions
 - **[Data Directory Rationale](./_meta/docs/DATA_DIRECTORY_RATIONALE.md)** - Data storage design decisions
 - **[Security Fixes](./_meta/docs/SECURITY_FIXES.md)** - Security updates and patches
