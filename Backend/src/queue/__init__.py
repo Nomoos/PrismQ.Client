@@ -129,6 +129,17 @@ from .validation import (
     validate_worker_integration,
 )
 
+# Integration utilities (Worker 10 - Issue #339)
+from .integration import (
+    create_queue_database,
+    get_or_create_queue_database,
+    create_queued_task_manager,
+    migrate_to_queue_system,
+    validate_queue_integration,
+    ensure_queue_ready,
+    QueueIntegrationError,
+)
+
 __all__ = [
     # Core infrastructure
     "QueueDatabase",
@@ -194,6 +205,14 @@ __all__ = [
     "QueueValidator",
     "quick_validate",
     "validate_worker_integration",
+    # Integration utilities (Worker 10 - Issue #339)
+    "create_queue_database",
+    "get_or_create_queue_database",
+    "create_queued_task_manager",
+    "migrate_to_queue_system",
+    "validate_queue_integration",
+    "ensure_queue_ready",
+    "QueueIntegrationError",
 ]
 
 __version__ = '1.1.0'
