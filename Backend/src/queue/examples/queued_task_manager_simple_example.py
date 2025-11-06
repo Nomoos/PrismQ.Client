@@ -4,24 +4,18 @@ Example: Using QueuedTaskManager as BackgroundTaskManager replacement
 This example demonstrates how QueuedTaskManager provides a drop-in
 replacement for BackgroundTaskManager with persistent queue backend.
 
-To run this example:
-    cd Backend
-    python -m src.queue.examples.queued_task_manager_example
+To run this example from the Backend directory:
+    python -c "import sys; sys.path.insert(0, 'src'); import asyncio; from queue.examples.queued_task_manager_simple_example import main; asyncio.run(main())"
 """
 
 import asyncio
 from datetime import datetime, timezone
-import sys
-import os
 
-# Ensure we can import from src
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../..'))
-
-from core.queued_task_manager import QueuedTaskManager
-from core.run_registry import RunRegistry
-from queue import QueueDatabase
-from queue.integration import create_queued_task_manager
-from models.run import Run, RunStatus
+from src.core.queued_task_manager import QueuedTaskManager
+from src.core.run_registry import RunRegistry
+from src.queue import QueueDatabase
+from src.queue.integration import create_queued_task_manager
+from src.models.run import Run, RunStatus
 
 
 async def example_1_basic_usage():
@@ -180,7 +174,7 @@ async def example_4_multiple_tasks():
         status = await manager.get_task_status(task_id)
         print(f"    Task {task_id}: {status['status']}")
     
-    print(f"\n  Total tasks tracked: {manager.get_active_task_count()}")
+    print(f"\n  Total active tasks: {manager.get_active_task_count()}")
     
     return manager
 
