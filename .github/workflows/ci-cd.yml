@@ -10,11 +10,17 @@ on:
       - main
       - develop
 
+# Restrict GITHUB_TOKEN permissions to read-only by default
+permissions:
+  contents: read
+
 jobs:
   # Backend tests
   backend-test:
     name: Backend Tests
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       matrix:
         python-version: ['3.10', '3.11']
@@ -51,6 +57,8 @@ jobs:
   frontend-test:
     name: Frontend Tests
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       matrix:
         node-version: ['18', '20']
@@ -92,6 +100,8 @@ jobs:
   docker-build:
     name: Docker Build Test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [backend-test, frontend-test]
 
     steps:
@@ -115,6 +125,8 @@ jobs:
   deploy-notification:
     name: Deploy Notification
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [backend-test, frontend-test, docker-build]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
