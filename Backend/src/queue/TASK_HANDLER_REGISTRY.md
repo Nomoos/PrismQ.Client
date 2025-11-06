@@ -510,5 +510,5 @@ The demo shows:
 
 - [WorkerEngine Documentation](WORKER_SUPPORT.md)
 - [Queue API Documentation](QUEUE_API.md)
-- [Integration Guide](../../../INTEGRATION_GUIDE.md)
-- [Issue #339: Integration](../../../_meta/issues/queue-system/README.md)
+- [Integration Guide](../../../_meta/docs/INTEGRATION_GUIDE.md)
+- [Issue #339: Integration](../../../_meta/issues/done/queue-system/README.md)
