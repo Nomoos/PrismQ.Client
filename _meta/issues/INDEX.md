@@ -3,10 +3,13 @@
 ## Overview
 This index organizes all issues related to the Client on-demand architecture implementation. Issues are categorized by component (Client, Worker, Integration) and status.
 
+**See Also**: [Queue System Issues](queue-system/) - SQLite-based task queue with 18 issues organized by 10 workers
+
 ## Quick Status Summary
 - **Client Issues**: 4 completed ✅
 - **Worker Issues**: 2 not started 🔴
 - **Integration Issues**: 1 not started 🔴
+- **Queue System**: 14 completed, 2 in-progress, 3 pending (78% complete) ✅
 
 ---
 
@@ -241,16 +244,52 @@ For creating new issues, use this template:
 
 ---
 
+## Queue System Issues (SQLite Task Queue)
+
+### Overview
+The queue system has 18 issues organized across 10 workers with state-based tracking. See the [queue-system directory](queue-system/) for complete details.
+
+**Quick Links**:
+- 📋 [Quick Reference](queue-system/QUICK-REFERENCE.md) - Find by state, worker, or priority
+- 📊 [Organization Summary](queue-system/WORKER-ORGANIZATION-SUMMARY.md) - Status and analysis
+- 👥 [Parallelization Matrix](queue-system/QUEUE-SYSTEM-PARALLELIZATION.md) - Worker allocation
+
+### Status Summary
+- **Total Issues**: 18
+- **Completed**: 14 (78%) ✅
+- **In Progress**: 2 (11%) 🔄
+- **Pending**: 3 (17%) ⏳
+- **Blocked**: 1 (6%) 🚫
+
+### Phase Status
+- **Phase 1 (Week 1)**: ✅ Complete - Core infrastructure
+- **Phase 2 (Week 2-3)**: ✅ Complete - All features implemented
+- **Phase 3 (Week 4)**: ⏳ In Progress - Integration & testing
+
+### Key Achievements
+- 175+ tests with 80-84% coverage
+- 10 major features implemented
+- 6 workers completed all work in parallel
+- Zero blocking issues during Phase 2
+
+### Current Work (Phase 3)
+- Worker 07: Testing & benchmarks (pending)
+- Worker 08: Documentation (60% complete)
+- Worker 10: Integration & migration (pending/blocked)
+
+---
+
 ## Contact & Questions
 For questions about these issues, refer to:
 - Architecture: [ONDEMAND_ARCHITECTURE.md](../../ONDEMAND_ARCHITECTURE.md)
 - Implementation: [IMPLEMENTATION_SUMMARY.md](../../IMPLEMENTATION_SUMMARY.md)
 - Organization: [ISSUE_ORGANIZATION.md](../ISSUE_ORGANIZATION.md)
+- Queue System: [queue-system/README.md](queue-system/README.md)
 
 ---
 
 **Last Updated**: 2025-11-06  
-**Total Issues**: 7 (4 completed, 3 not started)  
+**Total Issues**: 25 (7 on-demand + 18 queue system)  
 **Phase 1 Status**: ✅ Complete  
 **Phase 2 Status**: 🔴 Not Started  
 **Phase 3 Status**: 🔴 Not Started
