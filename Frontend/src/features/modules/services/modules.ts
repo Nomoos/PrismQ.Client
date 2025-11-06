@@ -1,5 +1,5 @@
-import api from './api'
-import type { Module, ModuleListResponse, ModuleDetailResponse, ModuleConfig } from '@/types/module'
+import api from '@/services/api'
+import type { Module, ModuleListResponse, ModuleDetailResponse, ModuleConfig } from '../types'
 import type { Run } from '@/types/run'
 
 /**

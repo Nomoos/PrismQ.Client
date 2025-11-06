@@ -18,8 +18,8 @@ from .core.exceptions import WebClientException
 from .core.resource_pool import initialize_resource_pool, cleanup_resource_pool
 from .api import runs, system, queue
 
-# Import new modular endpoints
-# Add Backend directory to path to import modules (temporary until all modules are in root)
+# Import modular endpoints (new pattern - modules are self-contained at Backend/ level)
+# Add Backend directory to path to import modules
 backend_dir = Path(__file__).parent.parent
 if str(backend_dir) not in sys.path:
     sys.path.insert(0, str(backend_dir))
