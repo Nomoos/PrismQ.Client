@@ -6,7 +6,7 @@ This file provides a TL;DR version of the deployment setup. For full details, se
 
 Your repository is now configured for **automatic deployment** whenever you push to the `main` branch!
 
-## Three Deployment Options
+## Six Deployment Options
 
 ### Option 1: Render.com (Easiest - Recommended) ⭐
 
@@ -37,7 +37,65 @@ Your repository is now configured for **automatic deployment** whenever you push
 
 ---
 
-### Option 3: Docker (Self-Hosted)
+### Option 3: Heroku (Classic PaaS)
+
+1. Go to https://heroku.com and sign up
+2. Install Heroku CLI
+3. Run: `heroku create your-app-name`
+4. Run: `heroku stack:set container`
+5. Run: `git push heroku main` - Done! 🎉
+
+**Or connect via GitHub:**
+- Dashboard → New App → Connect to GitHub → Enable auto-deploy
+
+**Auto-deploy:** ✅ Enabled with GitHub integration
+
+**Cost:** FREE tier (sleeps after 30 mins inactivity)
+
+---
+
+### Option 4: Vercel (Frontend Only)
+
+**Note:** Vercel deploys frontend only. Backend needs separate hosting (Render/Railway).
+
+1. Go to https://vercel.com and sign up
+2. Click "New Project"
+3. Import your GitHub repository
+4. Set environment variable: `VITE_API_URL` = your backend URL
+5. Deploy! 🎉
+
+**Auto-deploy:** ✅ Enabled - Frontend only
+
+**Cost:** FREE tier available
+
+**Recommended:** Frontend on Vercel + Backend on Render
+
+---
+
+### Option 5: Linux Server (Automatic via SSH)
+
+1. **Setup server:**
+```bash
+ssh user@your-server.com
+sudo apt install docker docker-compose git
+cd /opt && git clone https://github.com/Nomoos/PrismQ.Client.git
+```
+
+2. **Configure GitHub secrets:**
+   - `SSH_PRIVATE_KEY` - Your SSH key
+   - `SERVER_HOST` - Server IP/hostname
+   - `SERVER_USER` - SSH username
+   - `DEPLOY_PATH` - `/opt/PrismQ.Client`
+
+3. **Done!** Push to `main` and GitHub Actions deploys automatically 🎉
+
+**Auto-deploy:** ✅ Enabled via GitHub Actions
+
+**Cost:** Your server costs
+
+---
+
+### Option 6: Docker (Manual Self-Hosted)
 
 ```bash
 # Build and run

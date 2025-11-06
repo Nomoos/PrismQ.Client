@@ -1,0 +1,68 @@
+name: Deploy to Linux Server
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# Restrict permissions
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy to Server
+    runs-on: ubuntu-latest
+    # Only run on main branch pushes
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to server
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'ENDSSH'
+            # Navigate to application directory
+            cd ${{ secrets.DEPLOY_PATH || '/opt/prismq-client' }}
+            
+            # Pull latest changes
+            git pull origin main
+            
+            # Stop existing containers
+            docker-compose down
+            
+            # Rebuild and restart
+            docker-compose up -d --build
+            
+            # Wait for health check
+            echo "Waiting for application to be healthy..."
+            sleep 10
+            
+            # Check if application is running
+            if curl -f http://localhost:8000/api/health; then
+              echo "✅ Deployment successful!"
+            else
+              echo "❌ Health check failed"
+              exit 1
+            fi
+          ENDSSH
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f ~/.ssh/deploy_key
+
+      - name: Notify deployment status
+        if: success()
+        run: |
+          echo "🚀 Deployment to Linux server completed successfully!"
+          echo "Server: ${{ secrets.SERVER_HOST }}"

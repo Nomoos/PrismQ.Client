@@ -75,9 +75,204 @@ We've configured the repository to work with multiple hosting platforms. Choose 
 
 ---
 
-### 3. Docker Deployment (Self-Hosted)
+### 3. Heroku (Classic PaaS)
 
-**For your own server or cloud provider (AWS, GCP, Azure, etc.):**
+**Why Heroku?**
+- ✅ Well-established platform
+- ✅ Simple deployment process
+- ✅ Free tier available (with some limitations)
+- ✅ Automatic deployments
+
+**Setup Steps:**
+
+1. **Create a Heroku account** at https://heroku.com
+
+2. **Install Heroku CLI:**
+```bash
+# macOS
+brew tap heroku/brew && brew install heroku
+
+# Ubuntu
+curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
+
+# Windows
+# Download from https://devcenter.heroku.com/articles/heroku-cli
+```
+
+3. **Deploy using Heroku CLI:**
+```bash
+# Login to Heroku
+heroku login
+
+# Create a new Heroku app
+heroku create your-app-name
+
+# Set stack to container (for Docker deployment)
+heroku stack:set container
+
+# Deploy
+git push heroku main
+```
+
+4. **Or connect via GitHub:**
+   - Go to Heroku Dashboard
+   - Create New App
+   - Connect to GitHub repository
+   - Enable automatic deployments from `main` branch
+
+**Auto-deploy Configuration:**
+- ✅ Already configured in `heroku.yml`
+- ✅ Uses Docker for consistent environments
+- ✅ Automatic deploys when connected to GitHub
+
+**Note:** Heroku's free tier has some limitations (sleeps after 30 mins of inactivity). Consider upgrading for production use.
+
+---
+
+### 4. Vercel (Frontend-Only)
+
+**Why Vercel?**
+- ✅ Optimized for frontend deployments
+- ✅ Global CDN
+- ✅ Automatic deployments
+- ✅ Free tier available
+
+**Important:** Vercel is best suited for deploying **only the frontend**. The backend would need to be hosted separately (e.g., Render, Railway, or your own server).
+
+**Setup Steps:**
+
+1. **Create a Vercel account** at https://vercel.com
+
+2. **Connect via Vercel Dashboard:**
+   - Click "New Project"
+   - Import your GitHub repository
+   - Vercel will detect the `vercel.json` configuration
+   - Configure the backend API URL in environment variables
+
+3. **Set environment variable:**
+   - In Vercel dashboard, add environment variable:
+   - `VITE_API_URL` = URL of your backend (e.g., `https://your-backend.onrender.com`)
+
+**Auto-deploy Configuration:**
+- ✅ Already configured in `vercel.json`
+- ✅ Builds frontend only
+- ✅ Automatic deploys on push to `main` branch
+
+**Recommended Setup:**
+- Frontend on Vercel
+- Backend on Render.com or Railway.app
+
+---
+
+### 5. Linux Server (Automatic Deployment via SSH)
+
+**Why Self-Hosted?**
+- ✅ Full control over infrastructure
+- ✅ No vendor lock-in
+- ✅ Can be more cost-effective at scale
+- ✅ Custom configurations possible
+
+**Prerequisites:**
+- A Linux server (Ubuntu/Debian recommended)
+- Docker and Docker Compose installed
+- SSH access to the server
+- Git installed on the server
+
+**Setup Steps:**
+
+1. **Prepare your server:**
+```bash
+# SSH into your server
+ssh user@your-server.com
+
+# Install Docker
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+
+# Install Docker Compose
+sudo apt-get update
+sudo apt-get install docker-compose-plugin
+
+# Clone the repository
+cd /opt
+sudo git clone https://github.com/Nomoos/PrismQ.Client.git
+cd PrismQ.Client
+
+# Set proper permissions
+sudo chown -R $USER:$USER /opt/PrismQ.Client
+```
+
+2. **Configure GitHub Secrets for automatic deployment:**
+   - Go to GitHub repository → Settings → Secrets and variables → Actions
+   - Add the following secrets:
+     - `SSH_PRIVATE_KEY` - Your SSH private key for the server
+     - `SERVER_HOST` - Your server's hostname or IP address
+     - `SERVER_USER` - SSH username (e.g., `ubuntu`, `root`)
+     - `DEPLOY_PATH` - Path where app is deployed (e.g., `/opt/PrismQ.Client`)
+
+3. **Generate SSH key for deployment:**
+```bash
+# On your local machine
+ssh-keygen -t ed25519 -C "github-actions-deploy" -f ~/.ssh/github_deploy
+cat ~/.ssh/github_deploy.pub
+
+# Copy the public key and add it to your server's authorized_keys
+ssh user@your-server.com
+echo "your-public-key-here" >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+
+# Use the private key content for SSH_PRIVATE_KEY secret
+cat ~/.ssh/github_deploy
+```
+
+4. **Test the deployment:**
+   - Push to `main` branch
+   - GitHub Actions will automatically:
+     - Connect to your server via SSH
+     - Pull latest code
+     - Rebuild Docker containers
+     - Restart the application
+     - Run health checks
+
+**Auto-deploy Configuration:**
+- ✅ Already configured in `.github/workflows/deploy-linux-server.yml`
+- ✅ Automatic SSH deployment on push to `main` branch
+- ✅ Health check verification after deployment
+
+**Server Configuration:**
+```bash
+# On your server, ensure the app starts on boot
+cd /opt/PrismQ.Client
+docker-compose up -d
+
+# Configure reverse proxy (optional, recommended for production)
+# Example with Nginx:
+sudo apt-get install nginx
+
+# Create Nginx config
+sudo nano /etc/nginx/sites-available/prismq
+
+# Add:
+# server {
+#     listen 80;
+#     server_name your-domain.com;
+#     location / {
+#         proxy_pass http://localhost:8000;
+#         proxy_set_header Host $host;
+#         proxy_set_header X-Real-IP $remote_addr;
+#     }
+# }
+
+sudo ln -s /etc/nginx/sites-available/prismq /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+---
+
+### 6. Docker Deployment (Manual Self-Hosted)
+
+**For your own server or cloud provider (AWS, GCP, Azure, etc.) without automatic deployment:**
 
 **Build and run locally:**
 ```bash
@@ -154,7 +349,11 @@ The following files have been added to enable automatic deployment:
 | `.dockerignore` | Excludes unnecessary files from Docker image |
 | `render.yaml` | Render.com deployment configuration |
 | `railway.json` | Railway.app deployment configuration |
+| `heroku.yml` | Heroku deployment configuration (Docker-based) |
+| `Procfile` | Heroku alternative (non-Docker) configuration |
+| `vercel.json` | Vercel deployment configuration (frontend only) |
 | `.github/workflows/ci-cd.yml` | GitHub Actions CI/CD pipeline |
+| `.github/workflows/deploy-linux-server.yml` | Automatic SSH deployment to Linux server |
 
 ---
 
