@@ -41,7 +41,7 @@ cd Frontend && npm run dev
 ### Architecture & Design
 - **[On-Demand Architecture](./_meta/docs/ONDEMAND_ARCHITECTURE.md)** - Client architecture principles
 - **[System Architecture](./_meta/docs/ARCHITECTURE.md)** - Complete system design
-- **[API Reference](./_meta/docs/API_REFERENCE.md)** - REST API documentation
+- **[API Reference](./Backend/_meta/docs/API_REFERENCE.md)** - REST API documentation
 - **[Integration Guide](./_meta/docs/INTEGRATION_GUIDE.md)** - Integration with PrismQ modules
 
 ### Development
@@ -49,10 +49,10 @@ cd Frontend && npm run dev
 - **[Testing Guide](./_meta/docs/TESTING.md)** - Test coverage and commands
 - **[Configuration](./_meta/docs/CONFIGURATION.md)** - Configuration options
 - **[Modules Guide](./_meta/docs/MODULES.md)** - How to add new modules
-- **[Log Streaming Guide](./_meta/docs/LOG_STREAMING_GUIDE.md)** - Real-time log streaming
+- **[Log Streaming Guide](./Backend/_meta/docs/LOG_STREAMING_GUIDE.md)** - Real-time log streaming
 
 ### Operations & Deployment
-- **[Windows Setup](./_meta/docs/WINDOWS_SETUP.md)** - Windows-specific setup instructions
+- **[Windows Setup](./Backend/_meta/docs/WINDOWS_SETUP.md)** - Windows-specific setup instructions
 - **[Data Directory Rationale](./_meta/docs/DATA_DIRECTORY_RATIONALE.md)** - Data storage design decisions
 - **[Security Fixes](./_meta/docs/SECURITY_FIXES.md)** - Security updates and patches
 
