@@ -5,6 +5,7 @@ import logging
 import sys
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import AsyncGenerator
 
 from fastapi import FastAPI, Request, status
@@ -16,6 +17,13 @@ from .core.logger import setup_logging
 from .core.exceptions import WebClientException
 from .core.resource_pool import initialize_resource_pool, cleanup_resource_pool
 from .api import modules, runs, system, queue
+
+# Import new API module routers
+# Add Backend directory to path to import API module (temporary until API module is in src)
+backend_dir = Path(__file__).parent.parent
+if str(backend_dir) not in sys.path:
+    sys.path.insert(0, str(backend_dir))
+from API.endpoints import task_types_router, task_list_router
 
 # Configure event loop policy for Windows
 # On Windows, the default SelectorEventLoop doesn't support subprocess operations
@@ -152,6 +160,10 @@ app.include_router(modules.router, prefix="/api", tags=["Modules"])
 app.include_router(runs.router, prefix="/api", tags=["Runs"])
 app.include_router(system.router, prefix="/api", tags=["System"])
 app.include_router(queue.router, prefix="/api", tags=["Queue"])
+
+# Include new API module routers
+app.include_router(task_types_router, prefix="/api", tags=["TaskTypes"])
+app.include_router(task_list_router, prefix="/api", tags=["TaskList"])
 
 
 # Root endpoint
