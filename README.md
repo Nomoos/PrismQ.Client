@@ -9,6 +9,7 @@ Local web control panel for running PrismQ data collection modules.
 - **Real-time monitoring** - Live log streaming and status updates
 - **Parameter configuration** - Form-based module configuration with persistence
 - **Concurrent execution** - Run multiple modules simultaneously
+- **On-demand architecture** - All operations triggered by UI requests (no autonomous background tasks)
 - **296 tests** - Comprehensive test coverage (195 backend + 101 frontend)
 
 ## 🚀 Quick Start
@@ -38,6 +39,7 @@ cd Frontend && npm run dev
 - **[Troubleshooting](./_meta/docs/TROUBLESHOOTING.md)** - Common issues and solutions
 
 ### Technical Documentation
+- **[On-Demand Architecture](./ONDEMAND_ARCHITECTURE.md)** - Client architecture principles
 - **[Architecture](./_meta/docs/ARCHITECTURE.md)** - System design and architecture
 - **[API Reference](./_meta/docs/API.md)** - REST API documentation
 - **[Development Guide](./_meta/docs/DEVELOPMENT.md)** - Contributing guide
