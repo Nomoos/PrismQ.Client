@@ -105,6 +105,23 @@ from .worker import (
     WorkerEngine,
 )
 
+# Task handler registry (Worker 10 - Issue #339)
+from .task_handler_registry import (
+    TaskHandlerRegistry,
+    TaskHandlerInfo,
+    TaskHandlerNotRegisteredError,
+    TaskHandlerAlreadyRegisteredError,
+    get_global_registry,
+    reset_global_registry,
+)
+
+# Task handler configuration loader (Worker 10 - Issue #339)
+from .task_handler_config import (
+    TaskHandlerConfigLoader,
+    HandlerConfigError,
+    load_handlers_from_config,
+)
+
 # Validation and support tools (Worker 01 Phase 2)
 from .validation import (
     QueueValidator,
@@ -143,10 +160,6 @@ __all__ = [
     "QueueBackupError",
     "QueueMaintenance",
     "QueueMaintenanceError",
-    # Worker engine
-    "QueueWorker",
-    "create_worker",
-    "TaskHandler",
     # Scheduling strategies
     "TaskClaimer",
     "FIFOTaskClaimer",
@@ -166,6 +179,17 @@ __all__ = [
     "RetryConfig",
     "TaskExecutor",
     "WorkerEngine",
+    # Task handler registry (Worker 10 - Issue #339)
+    "TaskHandlerRegistry",
+    "TaskHandlerInfo",
+    "TaskHandlerNotRegisteredError",
+    "TaskHandlerAlreadyRegisteredError",
+    "get_global_registry",
+    "reset_global_registry",
+    # Task handler configuration (Worker 10 - Issue #339)
+    "TaskHandlerConfigLoader",
+    "HandlerConfigError",
+    "load_handlers_from_config",
     # Validation and support tools
     "QueueValidator",
     "quick_validate",
