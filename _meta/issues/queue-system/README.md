@@ -9,7 +9,12 @@
 
 ## Overview
 
-This directory contains all issues and documentation related to the SQLite-based task queue system for PrismQ.Client. These issues were moved from the top-level `_meta/issues/` directory as they are specific to the Client component.
+This directory contains all issues and documentation related to the SQLite-based task queue system for PrismQ.Client. Issues are organized by worker (worker01-worker10) with state-based tracking (completed, in-progress, pending, blocked).
+
+**Quick Links**:
+- 📋 [**Quick Reference**](QUICK-REFERENCE.md) - Find issues by state, worker, or priority
+- 📊 [**Organization Summary**](WORKER-ORGANIZATION-SUMMARY.md) - Detailed status and blocking analysis
+- 👥 [**Parallelization Matrix**](QUEUE-SYSTEM-PARALLELIZATION.md) - Worker allocation and timeline
 
 ## Future Project Structure
 
@@ -112,15 +117,27 @@ The queue system will be part of the Backend components, specifically used by:
 
 ## File Organization
 
-This directory structure mirrors the Client component organization:
+This directory is organized by worker with state-based issue tracking:
 
 ```
 Client/_meta/issues/queue-system/
 ├── README.md (this file)
+├── QUICK-REFERENCE.md (quick navigation guide)
+├── WORKER-ORGANIZATION-SUMMARY.md (detailed status and analysis)
+├── QUEUE-SYSTEM-PARALLELIZATION.md (worker allocation matrix)
 ├── THE-QUEUE-README.md (master status)
-├── QUEUE-SYSTEM-PARALLELIZATION.md (worker allocation)
-└── [Future: Worker-specific subdirectories if needed]
+├── worker01/ through worker10/ (worker-specific folders)
+│   ├── completed/ (✅ finished issues)
+│   ├── in-progress/ (🔄 active work)
+│   ├── pending/ (⏳ ready to start)
+│   └── blocked/ (🚫 blocked by dependencies)
+└── [Other documentation files]
 ```
+
+**Quick Navigation**:
+- **Find by State**: See [QUICK-REFERENCE.md](QUICK-REFERENCE.md)
+- **Find by Worker**: Browse `worker01/` through `worker10/` folders
+- **Detailed Analysis**: See [WORKER-ORGANIZATION-SUMMARY.md](WORKER-ORGANIZATION-SUMMARY.md)
 
 Related implementation:
 ```
