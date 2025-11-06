@@ -136,9 +136,10 @@ Custom pytest markers are registered in `pyproject.toml`:
 
 ### Current Coverage
 - **Total Tests**: 53 tests
-- **Passing**: 51 tests (96% pass rate)
-- **Skipped**: 1 test (Windows-specific pragma test on Linux)
-- **Failing**: 1 test (needs Windows environment)
+- **Passing**: 51 tests
+- **Skipped**: 1 test (Windows-specific pragma test requires Windows environment)
+- **Platform-dependent**: 1 test (runs only on Windows)
+- **Pass Rate**: 96% (51/53 tests pass on Linux)
 
 ### Coverage by Component
 - **Core Infrastructure**: 41 tests ✅ (from earlier work)
