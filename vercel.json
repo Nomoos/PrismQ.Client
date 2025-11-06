@@ -38,6 +38,7 @@
     }
   ],
   "env": {
+    "_comment": "Set VITE_API_URL in Vercel dashboard to your backend URL (e.g., https://your-backend.onrender.com)",
     "VITE_API_URL": "@api_url"
   }
 }

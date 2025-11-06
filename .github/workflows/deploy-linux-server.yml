@@ -32,7 +32,7 @@ jobs:
         run: |
           ssh -i ~/.ssh/deploy_key ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'ENDSSH'
             # Navigate to application directory
-            cd ${{ secrets.DEPLOY_PATH || '/opt/prismq-client' }}
+            cd ${{ secrets.DEPLOY_PATH || '/opt/PrismQ.Client' }}
             
             # Pull latest changes
             git pull origin main
@@ -43,12 +43,12 @@ jobs:
             # Rebuild and restart
             docker-compose up -d --build
             
-            # Wait for health check
+            # Wait for application to start
             echo "Waiting for application to be healthy..."
             sleep 10
             
-            # Check if application is running
-            if curl -f http://localhost:8000/api/health; then
+            # Check if application is running with retries
+            if curl -f --max-time 10 --retry 3 --retry-delay 2 http://localhost:8000/api/health; then
               echo "✅ Deployment successful!"
             else
               echo "❌ Health check failed"

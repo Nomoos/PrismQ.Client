@@ -150,8 +150,16 @@ git push heroku main
    - Configure the backend API URL in environment variables
 
 3. **Set environment variable:**
-   - In Vercel dashboard, add environment variable:
-   - `VITE_API_URL` = URL of your backend (e.g., `https://your-backend.onrender.com`)
+   - In Vercel dashboard, go to your project settings
+   - Navigate to "Environment Variables"
+   - Add the following variable:
+     - **Key:** `VITE_API_URL`
+     - **Value:** URL of your backend (e.g., `https://your-backend.onrender.com`)
+   - Save and redeploy
+   
+   **Note:** The `vercel.json` file references `@api_url` which is Vercel's secret reference syntax. You need to either:
+   - Set `VITE_API_URL` directly in the dashboard (recommended), OR
+   - Create a secret named `api_url` in Vercel and reference it with `@api_url`
 
 **Auto-deploy Configuration:**
 - ✅ Already configured in `vercel.json`
