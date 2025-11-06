@@ -160,10 +160,6 @@ __all__ = [
     "QueueBackupError",
     "QueueMaintenance",
     "QueueMaintenanceError",
-    # Worker engine
-    "QueueWorker",
-    "create_worker",
-    "TaskHandler",
     # Scheduling strategies
     "TaskClaimer",
     "FIFOTaskClaimer",
