@@ -3,7 +3,7 @@
 ## Overview
 This index organizes all issues related to the Client on-demand architecture implementation. Issues are categorized by component (Client, Worker, Integration) and status.
 
-**See Also**: [Queue System Issues](queue-system/) - SQLite-based task queue with 18 issues organized by 10 workers
+**See Also**: [Queue System Issues](done/queue-system/) - SQLite-based task queue with 18 issues organized by 10 workers
 
 ## Quick Status Summary
 - **Client Issues**: 4 completed ✅
@@ -17,25 +17,25 @@ This index organizes all issues related to the Client on-demand architecture imp
 
 ### ✅ Completed
 
-#### [ISSUE-CLIENT-001](client/ISSUE-CLIENT-001-remove-automatic-periodic-tasks.md): Remove Automatic Periodic Tasks
+#### [ISSUE-CLIENT-001](done/client/ISSUE-CLIENT-001-remove-automatic-periodic-tasks.md): Remove Automatic Periodic Tasks
 **Component**: Backend/src/main.py  
 **Priority**: High  
 **Commit**: 1e767c2  
 **Summary**: Removed automatic periodic task execution from Client backend to ensure all operations are triggered on-demand by UI requests.
 
-#### [ISSUE-CLIENT-002](client/ISSUE-CLIENT-002-add-ondemand-maintenance-endpoints.md): Add On-Demand Maintenance API Endpoints
+#### [ISSUE-CLIENT-002](done/client/ISSUE-CLIENT-002-add-ondemand-maintenance-endpoints.md): Add On-Demand Maintenance API Endpoints
 **Component**: Backend/src/api/system.py  
 **Priority**: High  
 **Commit**: 1e767c2  
 **Summary**: Created 4 REST API endpoints allowing UI to trigger maintenance operations on-demand.
 
-#### [ISSUE-CLIENT-003](client/ISSUE-CLIENT-003-create-ondemand-documentation.md): Create On-Demand Architecture Documentation
+#### [ISSUE-CLIENT-003](done/client/ISSUE-CLIENT-003-create-ondemand-documentation.md): Create On-Demand Architecture Documentation
 **Component**: Documentation  
 **Priority**: Medium  
 **Commits**: 5b14705, 583720a  
 **Summary**: Comprehensive documentation explaining on-demand architecture principles, endpoints, and migration guide.
 
-#### [ISSUE-CLIENT-004](client/ISSUE-CLIENT-004-add-ondemand-test-suite.md): Add Test Suite for On-Demand Architecture
+#### [ISSUE-CLIENT-004](done/client/ISSUE-CLIENT-004-add-ondemand-test-suite.md): Add Test Suite for On-Demand Architecture
 **Component**: _meta/tests/Backend/integration/  
 **Priority**: High  
 **Commit**: 1cab769  
@@ -47,7 +47,7 @@ This index organizes all issues related to the Client on-demand architecture imp
 
 ### 🔴 Not Started
 
-#### [ISSUE-WORKER-001](worker/ISSUE-WORKER-001-implement-cleanup-worker.md): Implement Cleanup Task Worker
+#### [ISSUE-WORKER-001](backlog/worker/ISSUE-WORKER-001-implement-cleanup-worker.md): Implement Cleanup Task Worker
 **Component**: Worker/Workers (Not Client)  
 **Priority**: Medium  
 **Status**: Not Started - Belongs in Worker Project  
@@ -61,7 +61,7 @@ This index organizes all issues related to the Client on-demand architecture imp
 
 **Dependencies**: None (independent worker)
 
-#### [ISSUE-WORKER-002](worker/ISSUE-WORKER-002-implement-health-check-worker.md): Implement Health Check Worker
+#### [ISSUE-WORKER-002](backlog/worker/ISSUE-WORKER-002-implement-health-check-worker.md): Implement Health Check Worker
 **Component**: Worker/Workers (Not Client)  
 **Priority**: Medium  
 **Status**: Not Started - Belongs in Worker Project  
@@ -81,7 +81,7 @@ This index organizes all issues related to the Client on-demand architecture imp
 
 ### 🔴 Not Started
 
-#### [ISSUE-INTEGRATION-001](integration/ISSUE-INTEGRATION-001-connect-client-to-worker-queue.md): Connect Client API to Worker Task Queue
+#### [ISSUE-INTEGRATION-001](wip/integration/ISSUE-INTEGRATION-001-connect-client-to-worker-queue.md): Connect Client API to Worker Task Queue
 **Component**: Backend/src/api/, Worker Integration  
 **Priority**: High  
 **Status**: Not Started - Future Work  
@@ -177,9 +177,9 @@ This ensures backward compatibility and safer deployment.
 ## Related Documentation
 
 ### Main Documents
-- [ISSUE_ORGANIZATION.md](../ISSUE_ORGANIZATION.md) - Detailed issue organization and recommendations
-- [ONDEMAND_ARCHITECTURE.md](../../ONDEMAND_ARCHITECTURE.md) - On-demand architecture principles
-- [IMPLEMENTATION_SUMMARY.md](../../IMPLEMENTATION_SUMMARY.md) - Complete implementation details
+- [ISSUE_ORGANIZATION.md](../docs/ISSUE_ORGANIZATION.md) - Detailed issue organization and recommendations
+- [ONDEMAND_ARCHITECTURE.md](../docs/ONDEMAND_ARCHITECTURE.md) - On-demand architecture principles
+- [IMPLEMENTATION_SUMMARY.md](../docs/IMPLEMENTATION_SUMMARY.md) - Complete implementation details
 
 ### Test Suite
 - [test_ondemand_architecture.py](../../_meta/tests/Backend/integration/test_ondemand_architecture.py) - 6 tests validating on-demand behavior
@@ -247,12 +247,12 @@ For creating new issues, use this template:
 ## Queue System Issues (SQLite Task Queue)
 
 ### Overview
-The queue system has 18 issues organized across 10 workers with state-based tracking. See the [queue-system directory](queue-system/) for complete details.
+The queue system has 18 issues organized across 10 workers with state-based tracking. See the [queue-system directory](done/queue-system/) for complete details.
 
 **Quick Links**:
-- 📋 [Quick Reference](queue-system/QUICK-REFERENCE.md) - Find by state, worker, or priority
-- 📊 [Organization Summary](queue-system/WORKER-ORGANIZATION-SUMMARY.md) - Status and analysis
-- 👥 [Parallelization Matrix](queue-system/QUEUE-SYSTEM-PARALLELIZATION.md) - Worker allocation
+- 📋 [Quick Reference](done/queue-system/QUICK-REFERENCE.md) - Find by state, worker, or priority
+- 📊 [Organization Summary](done/queue-system/WORKER-ORGANIZATION-SUMMARY.md) - Status and analysis
+- 👥 [Parallelization Matrix](done/queue-system/QUEUE-SYSTEM-PARALLELIZATION.md) - Worker allocation
 
 ### Status Summary
 - **Total Issues**: 18
@@ -281,10 +281,10 @@ The queue system has 18 issues organized across 10 workers with state-based trac
 
 ## Contact & Questions
 For questions about these issues, refer to:
-- Architecture: [ONDEMAND_ARCHITECTURE.md](../../ONDEMAND_ARCHITECTURE.md)
-- Implementation: [IMPLEMENTATION_SUMMARY.md](../../IMPLEMENTATION_SUMMARY.md)
-- Organization: [ISSUE_ORGANIZATION.md](../ISSUE_ORGANIZATION.md)
-- Queue System: [queue-system/README.md](queue-system/README.md)
+- Architecture: [ONDEMAND_ARCHITECTURE.md](../docs/ONDEMAND_ARCHITECTURE.md)
+- Implementation: [IMPLEMENTATION_SUMMARY.md](../docs/IMPLEMENTATION_SUMMARY.md)
+- Organization: [ISSUE_ORGANIZATION.md](../docs/ISSUE_ORGANIZATION.md)
+- Queue System: [queue-system/README.md](done/queue-system/README.md)
 
 ---
 
