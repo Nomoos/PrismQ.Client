@@ -219,10 +219,10 @@ class APIDatabase:
         params.append(task_type_id)
         
         with self.transaction() as conn:
-            conn.execute(
-                f"UPDATE task_types SET {', '.join(updates)} WHERE id = ?",
-                tuple(params)
-            )
+            # Note: Column names in updates list are safe - they are hardcoded strings, not user input
+            # Only the parameter values are from user input and properly parameterized with ?
+            query = f"UPDATE task_types SET {', '.join(updates)} WHERE id = ?"
+            conn.execute(query, tuple(params))
         
         return self.get_task_type(task_type_id)
     
@@ -363,10 +363,10 @@ class APIDatabase:
         params.append(task_id)
         
         with self.transaction() as conn:
-            conn.execute(
-                f"UPDATE task_list SET {', '.join(updates)} WHERE id = ?",
-                tuple(params)
-            )
+            # Note: Column names in updates list are safe - they are hardcoded strings, not user input
+            # Only the parameter values are from user input and properly parameterized with ?
+            query = f"UPDATE task_list SET {', '.join(updates)} WHERE id = ?"
+            conn.execute(query, tuple(params))
         
         return self.get_task(task_id)
     

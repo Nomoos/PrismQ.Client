@@ -102,14 +102,16 @@ def test_list_task_types(client):
 
 def test_list_task_types_with_inactive(client, test_db):
     """Test listing task types including inactive ones."""
+    from API.models.task_type import TaskTypeCreate
+    
     # Create and deactivate a task type
     result = test_db.create_task_type(
-        type("TaskTypeCreate", (), {
-            "name": "inactive_type",
-            "description": "Inactive",
-            "parameters_schema": {},
-            "metadata": {}
-        })()
+        TaskTypeCreate(
+            name="inactive_type",
+            description="Inactive",
+            parameters_schema={},
+            metadata={}
+        )
     )
     test_db.delete_task_type(result.id)
     
