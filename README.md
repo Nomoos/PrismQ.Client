@@ -11,8 +11,18 @@ Local web control panel for running PrismQ data collection modules.
 - **Concurrent execution** - Run multiple modules simultaneously
 - **On-demand architecture** - All operations triggered by UI requests (no autonomous background tasks)
 - **296 tests** - Comprehensive test coverage (195 backend + 101 frontend)
+- **🚀 Auto-deployment** - Configured for automatic deployment to Render.com, Railway.app, or Docker
 
-## 🚀 Quick Start
+## 🌐 Deployment
+
+**NEW:** This project now supports automatic deployment! 
+
+- **[Quick Deploy Guide](./QUICK_DEPLOY.md)** - 5-minute setup for Render.com or Railway.app
+- **[Full Deployment Guide](./DEPLOYMENT.md)** - Complete documentation for all platforms
+- **Auto-deploy enabled** - Push to `main` branch to automatically deploy
+- **CI/CD configured** - GitHub Actions runs tests on every commit
+
+## 🚀 Quick Start (Local Development)
 
 **Windows (One-click launcher):**
 ```cmd
