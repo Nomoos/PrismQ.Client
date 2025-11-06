@@ -105,6 +105,16 @@ from .worker import (
     WorkerEngine,
 )
 
+# Task handler registry (Worker 10 - Issue #339)
+from .task_handler_registry import (
+    TaskHandlerRegistry,
+    TaskHandlerInfo,
+    TaskHandlerNotRegisteredError,
+    TaskHandlerAlreadyRegisteredError,
+    get_global_registry,
+    reset_global_registry,
+)
+
 # Validation and support tools (Worker 01 Phase 2)
 from .validation import (
     QueueValidator,
@@ -166,6 +176,13 @@ __all__ = [
     "RetryConfig",
     "TaskExecutor",
     "WorkerEngine",
+    # Task handler registry (Worker 10 - Issue #339)
+    "TaskHandlerRegistry",
+    "TaskHandlerInfo",
+    "TaskHandlerNotRegisteredError",
+    "TaskHandlerAlreadyRegisteredError",
+    "get_global_registry",
+    "reset_global_registry",
     # Validation and support tools
     "QueueValidator",
     "quick_validate",
