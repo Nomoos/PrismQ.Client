@@ -11,16 +11,25 @@ Local web control panel for running PrismQ data collection modules.
 - **Concurrent execution** - Run multiple modules simultaneously
 - **On-demand architecture** - All operations triggered by UI requests (no autonomous background tasks)
 - **296 tests** - Comprehensive test coverage (195 backend + 101 frontend)
-- **🚀 Auto-deployment** - Configured for automatic deployment to Render.com, Railway.app, or Docker
+- **🚀 Auto-deployment** - Configured for 6 platforms: Render, Railway, Heroku, Vercel, Linux Server, Docker
 
 ## 🌐 Deployment
 
-**NEW:** This project now supports automatic deployment! 
+**NEW:** This project now supports automatic deployment to 6 platforms! 
 
-- **[Quick Deploy Guide](./QUICK_DEPLOY.md)** - 5-minute setup for Render.com or Railway.app
-- **[Full Deployment Guide](./DEPLOYMENT.md)** - Complete documentation for all platforms
+- **[Quick Deploy Guide](./QUICK_DEPLOY.md)** - 5-minute setup for any platform
+- **[Full Deployment Guide](./DEPLOYMENT.md)** - Complete documentation for all 6 platforms
+- **[Platform Comparison](./PLATFORM_COMPARISON.md)** - Choose the best platform for your needs
 - **Auto-deploy enabled** - Push to `main` branch to automatically deploy
 - **CI/CD configured** - GitHub Actions runs tests on every commit
+
+**Supported Platforms:**
+- ⭐ Render.com (recommended) - Free tier, easiest setup
+- Railway.app - $5/mo credit, great DX
+- Heroku - Classic PaaS, established platform
+- Vercel - Frontend CDN (pair with backend)
+- Linux Server - SSH auto-deploy, full control
+- Docker - Manual deployment, maximum flexibility
 
 ## 🚀 Quick Start (Local Development)
 
