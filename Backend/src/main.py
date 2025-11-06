@@ -17,6 +17,14 @@ from .core.exceptions import WebClientException
 from .core.resource_pool import initialize_resource_pool, cleanup_resource_pool
 from .api import modules, runs, system, queue
 
+# Import new API module routers
+import sys
+from pathlib import Path
+# Add Backend directory to path to import API module
+backend_dir = Path(__file__).parent.parent
+sys.path.insert(0, str(backend_dir))
+from API.endpoints import task_types_router, task_list_router
+
 # Configure event loop policy for Windows
 # On Windows, the default SelectorEventLoop doesn't support subprocess operations
 # We need to use ProactorEventLoop instead
@@ -152,6 +160,10 @@ app.include_router(modules.router, prefix="/api", tags=["Modules"])
 app.include_router(runs.router, prefix="/api", tags=["Runs"])
 app.include_router(system.router, prefix="/api", tags=["System"])
 app.include_router(queue.router, prefix="/api", tags=["Queue"])
+
+# Include new API module routers
+app.include_router(task_types_router, prefix="/api", tags=["TaskTypes"])
+app.include_router(task_list_router, prefix="/api", tags=["TaskList"])
 
 
 # Root endpoint
