@@ -246,6 +246,45 @@ const modules = await moduleService.listModules()
 6. **Gradual Migration**: Don't try to refactor everything at once
 7. **Review Regularly**: Assess module boundaries as code evolves
 
+## Known Issues and Future Improvements
+
+### Current Modules Module Issues
+
+The current `Backend/Modules` module implementation has some violations of the single responsibility principle that should be addressed in future refactoring:
+
+1. **Runtime Statistics in Module Listing**: The Modules module currently injects `ModuleRunner` to fetch runtime statistics (last_run, total_runs, success_rate) when listing modules. This violates SRP because:
+   - Module discovery should be separate from run statistics
+   - Creates coupling between Modules and run execution logic
+   - **Fix**: Move runtime statistics to a Runs module API and aggregate at the API gateway level
+
+2. **Module Launch Endpoint**: The Frontend modules feature has a `launchModule` method that calls `/api/modules/{moduleId}/run`, but this endpoint doesn't exist in the Modules module (and shouldn't). This is because:
+   - Module launching is a run execution concern, not a module metadata concern
+   - **Fix**: Move module launching to a dedicated Runs module
+   - The current implementation likely calls the old endpoint in `src/api/runs.py`
+
+3. **Parameter Validation Mixed with Metadata**: The Modules module handles both module metadata and parameter validation. While related, these could be separated:
+   - **Consider**: Separate validation logic into a dedicated service
+   - **Or**: Keep validation as it's directly related to parameter definitions
+
+### Migration Strategy for Existing Code
+
+Since the current implementation preserves existing functionality while demonstrating the pattern, the approach is:
+
+1. **Phase 1** (Current): Create example modules showing the pattern
+   - Backend/Modules and Frontend/features/modules demonstrate structure
+   - Old code in `src/` still works to maintain functionality
+   - Both old and new code paths coexist
+
+2. **Phase 2** (Future): Create remaining modules
+   - Backend/Runs module for run execution
+   - Backend/System module for system operations
+   - Frontend/runs and Frontend/system features
+
+3. **Phase 3** (Future): Remove old code
+   - Once all modules are created, remove old `src/api/` endpoints
+   - Update all imports to use new modules
+   - Remove duplicate code
+
 ## References
 
 - Backend API Module: `Backend/API/README.md`
