@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 from typing import Dict, Any
 
 # Add Backend to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "Backend"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "Backend"))
 
 # Import benchmark modules
 from throughput_benchmark import run_throughput_benchmarks

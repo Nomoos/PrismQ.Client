@@ -63,7 +63,7 @@ class MemoryProfiler:
         rss_values = [s["rss_mb"] for s in self.snapshots]
         
         return {
-            "snapshots": len(self.snapshots),
+            "snapshot_count": len(self.snapshots),
             "initial_rss_mb": rss_values[0],
             "final_rss_mb": rss_values[-1],
             "peak_rss_mb": max(rss_values),
