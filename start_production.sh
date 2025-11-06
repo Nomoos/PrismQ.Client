@@ -23,8 +23,15 @@ if [ ! -d "Backend/static" ]; then
     echo "📋 Copying static files to backend..."
     cd ..
     mkdir -p Backend/static
-    cp -r Frontend/dist/* Backend/static/
-    echo "✅ Frontend built and copied to Backend/static/"
+    
+    # Copy all files including hidden ones; handle empty directory case
+    if [ -d "Frontend/dist" ] && [ "$(ls -A Frontend/dist)" ]; then
+        cp -r Frontend/dist/. Backend/static/
+        echo "✅ Frontend built and copied to Backend/static/"
+    else
+        echo "❌ Error: Frontend/dist is empty or doesn't exist"
+        exit 1
+    fi
 else
     echo "✅ Frontend already built (Backend/static exists)"
 fi

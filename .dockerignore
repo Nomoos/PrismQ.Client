@@ -65,4 +65,3 @@ test-results/
 
 # npm
 npm-debug.log*
-package-lock.json

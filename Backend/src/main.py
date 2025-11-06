@@ -157,9 +157,14 @@ app.include_router(queue.router, prefix="/api", tags=["Queue"])
 
 
 # Mount static files for production deployment (if static directory exists)
+# Note: Mount order matters - more specific paths must come before catch-all mounts
 static_dir = Path(__file__).parent.parent / "static"
 if static_dir.exists():
-    app.mount("/assets", StaticFiles(directory=str(static_dir / "assets")), name="assets")
+    # Mount assets first (more specific path)
+    assets_dir = static_dir / "assets"
+    if assets_dir.exists():
+        app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
+    # Mount root last (catch-all for HTML5 routing)
     app.mount("/", StaticFiles(directory=str(static_dir), html=True), name="static")
     logger.info(f"Serving static files from {static_dir}")
 
