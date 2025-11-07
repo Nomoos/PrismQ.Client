@@ -20,7 +20,7 @@ TaskManager provides a REST API for managing tasks with parameter validation, de
 
 ## 📋 Requirements
 
-- PHP 7.4 or higher
+- PHP 8.0 or higher
 - MySQL 5.7+ or MariaDB 10.2+
 - Apache with mod_rewrite (for clean URLs)
 - PDO MySQL extension

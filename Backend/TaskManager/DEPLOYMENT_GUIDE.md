@@ -32,7 +32,7 @@ The script will validate:
 
 Before deployment, ensure your server meets these requirements:
 
-- **PHP**: 7.4 or higher
+- **PHP**: 8.0 or higher
 - **MySQL**: 5.7+ or MariaDB 10.2+
 - **PHP Extensions**: PDO, PDO_MySQL, JSON, cURL
 - **Apache**: mod_rewrite enabled
@@ -127,7 +127,7 @@ For servers with SSH access:
 - Prevents unauthorized deployment
 
 ### Step 2: Environment Validation
-- Checks PHP version (7.4+)
+- Checks PHP version (8.0+)
 - Verifies required PHP extensions
 - Checks directory write permissions
 
@@ -284,7 +284,7 @@ curl -X POST https://yourdomain.com/taskmanager/api/task-types/register \
 - **Solution**: Check the ADMIN_PASSWORD in deploy.php matches what you entered
 
 ### Error: "PHP version too old"
-- **Cause**: Server has PHP < 7.4
+- **Cause**: Server has PHP < 8.0
 - **Solution**: 
   - Upgrade PHP via hosting control panel
   - Or contact hosting provider

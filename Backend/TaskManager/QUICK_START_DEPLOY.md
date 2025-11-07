@@ -13,7 +13,7 @@ php check_setup.php
 
 ### Prerequisites Check
 ```bash
-✓ PHP 7.4+
+✓ PHP 8.0+
 ✓ MySQL 5.7+
 ✓ Apache mod_rewrite
 ✓ cURL extension

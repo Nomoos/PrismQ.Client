@@ -176,8 +176,8 @@ class TaskManagerDeployer
         $valid = true;
 
         // Check PHP version
-        if (version_compare(PHP_VERSION, '7.4.0', '<')) {
-            $this->error('PHP 7.4 or higher is required. Current: ' . PHP_VERSION);
+        if (version_compare(PHP_VERSION, '8.0.0', '<')) {
+            $this->error('PHP 8.0 or higher is required. Current: ' . PHP_VERSION);
             $valid = false;
         } else {
             $this->info('PHP version: ' . PHP_VERSION);
