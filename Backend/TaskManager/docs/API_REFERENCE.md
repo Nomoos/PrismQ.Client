@@ -697,4 +697,5 @@ Import the included Postman collection for easy API testing:
 
 For more information, see:
 - [README.md](../README.md) - Overview and quick start
+- [DATA_DRIVEN_ARCHITECTURE.md](DATA_DRIVEN_ARCHITECTURE.md) - Complete guide to data-driven API
 - [DEPLOYMENT.md](DEPLOYMENT.md) - Deployment guide

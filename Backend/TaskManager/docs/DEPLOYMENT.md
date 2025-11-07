@@ -418,6 +418,13 @@ find /path/to/backups -name "backup_*.sql" -mtime +7 -delete
 4. Document your specific TaskType schemas
 5. Create worker deployment guide for your specific use case
 
+## Related Documentation
+
+For more information, see:
+- **[README.md](../README.md)** - Overview and quick start
+- **[DATA_DRIVEN_ARCHITECTURE.md](DATA_DRIVEN_ARCHITECTURE.md)** - Complete guide to data-driven API architecture
+- **[API_REFERENCE.md](API_REFERENCE.md)** - Complete API documentation
+
 ## Support
 
 For issues or questions:
