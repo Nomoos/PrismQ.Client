@@ -60,12 +60,13 @@ class TaskController {
             $existing = $stmt->fetch();
             
             if ($existing) {
-                // Task already exists
+                // Task already exists - return existing task info
                 ApiResponse::success([
                     'id' => $existing['id'],
                     'status' => $existing['status'],
                     'deduplicated' => true
                 ], 'Task already exists (deduplicated)');
+                return; // Explicit return for clarity (ApiResponse::success() calls exit())
             }
             
             // Create new task

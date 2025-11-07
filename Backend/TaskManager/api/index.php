@@ -89,5 +89,6 @@ try {
     
 } catch (Exception $e) {
     error_log("API Error: " . $e->getMessage());
-    ApiResponse::error('Internal server error: ' . $e->getMessage(), 500);
+    // Don't expose internal error details in production
+    ApiResponse::error('Internal server error', 500);
 }

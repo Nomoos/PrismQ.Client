@@ -76,8 +76,15 @@ class JsonSchemaValidator {
             }
             if (isset($schema['pattern'])) {
                 // Use a delimiter that's unlikely to be in the pattern (# instead of /)
-                // and suppress errors in case of invalid regex
-                if (@preg_match('#' . $schema['pattern'] . '#', $value) === false || !preg_match('#' . $schema['pattern'] . '#', $value)) {
+                $pattern = '#' . $schema['pattern'] . '#';
+                
+                // Check for regex compilation errors first
+                $result = @preg_match($pattern, $value);
+                if ($result === false) {
+                    // Invalid regex pattern in schema
+                    $errors[] = "Invalid regex pattern in schema at $path";
+                } elseif ($result === 0) {
+                    // Valid regex but value doesn't match
                     $errors[] = "String does not match pattern at $path";
                 }
             }
