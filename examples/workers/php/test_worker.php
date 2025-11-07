@@ -1,17 +1,18 @@
 #!/usr/bin/env php
 <?php
+
 /**
  * TaskManager PHP Worker Test Script
- * 
+ *
  * Tests the worker implementation by:
  * 1. Verifying API connectivity
  * 2. Registering example task types
  * 3. Creating test tasks
  * 4. Verifying worker can claim and process them
- * 
+ *
  * Usage:
  *   php test_worker.php [options]
- * 
+ *
  * Options:
  *   --api-url=URL   TaskManager API URL (default: http://localhost/api)
  *   --cleanup       Remove test tasks after completion
@@ -19,6 +20,8 @@
  */
 
 require_once __DIR__ . '/WorkerClient.php';
+
+use PrismQ\TaskManager\Worker\WorkerClient;
 
 // Parse arguments
 $apiUrl = 'http://localhost/api';
@@ -29,11 +32,11 @@ foreach ($argv as $arg) {
         showHelp();
         exit(0);
     }
-    
+
     if (strpos($arg, '--api-url=') === 0) {
         $apiUrl = substr($arg, strlen('--api-url='));
     }
-    
+
     if ($arg === '--cleanup') {
         $cleanup = true;
     }
@@ -211,25 +214,24 @@ $maxAttempts = count($createdTasks) + 2; // Allow a few extra attempts
 for ($i = 0; $i < $maxAttempts && $processedCount < count($createdTasks); $i++) {
     try {
         $task = $client->claimTask('example.%');
-        
+
         if ($task === null) {
             echo "  ! No tasks available (attempt " . ($i + 1) . ")\n";
             sleep(1);
             continue;
         }
-        
+
         echo "  ✓ Claimed task #{$task['id']} ({$task['type']})\n";
-        
+
         // Simulate processing by completing immediately
         // In real scenario, worker.php would process this
         $result = ['test' => true, 'processed_by' => 'test_script'];
-        
+
         $client->completeTask($task['id'], $result);
         echo "  ✓ Completed task #{$task['id']}\n";
-        
+
         $processedCount++;
         $testsPassed += 2; // claim + complete
-        
     } catch (Exception $e) {
         echo "  ✗ Error processing task: {$e->getMessage()}\n";
         $testsFailed++;
@@ -276,8 +278,10 @@ try {
     echo "  ✗ Should have thrown exception for invalid task\n";
     $testsFailed++;
 } catch (Exception $e) {
-    if (strpos($e->getMessage(), 'not found') !== false || 
-        strpos($e->getMessage(), 'not in claimed state') !== false) {
+    if (
+        strpos($e->getMessage(), 'not found') !== false ||
+        strpos($e->getMessage(), 'not in claimed state') !== false
+    ) {
         echo "  ✓ Correctly handled invalid task completion\n";
         $testsPassed++;
     } else {
@@ -319,7 +323,13 @@ if ($testsFailed === 0) {
     exit(1);
 }
 
-function showHelp() {
+/**
+ * Show help message
+ *
+ * @return void
+ */
+function showHelp(): void
+{
     $script = basename(__FILE__);
     echo <<<HELP
 TaskManager PHP Worker Test Script
