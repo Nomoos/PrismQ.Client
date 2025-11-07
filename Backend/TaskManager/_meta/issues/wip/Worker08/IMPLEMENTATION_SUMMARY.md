@@ -109,7 +109,6 @@ class TaskManagerDeployer {
 
 3. **Security Warnings**
    - Reminds to change default password
-   - Prompts to delete deploy.php after use
    - Validates secure configuration
 
 ### Deployment Modes
@@ -162,7 +161,6 @@ Backend/TaskManager/
    - User: tm_user
    - Pass: dbpass123
 5. Click "Deploy TaskManager"
-6. Delete deploy.php
 ```
 
 ### CLI Deployment
@@ -175,7 +173,6 @@ php deploy.php
 # Database Password: dbpass123
 # Skip database setup? (y/n) [n]: n
 # ... deployment proceeds ...
-rm deploy.php
 ```
 
 ## Testing Performed
@@ -242,10 +239,9 @@ define('GITHUB_PATH', 'Backend/TaskManager');
 
 ### User Responsibility
 1. Change default admin password
-2. Delete deploy.php after use
-3. Use HTTPS in production
-4. Secure database credentials
-5. Review file permissions
+2. Use HTTPS in production
+3. Secure database credentials
+4. Review file permissions
 
 ## Known Limitations
 

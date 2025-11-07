@@ -169,7 +169,6 @@ Schema validation rejects:
 3. Enter admin password
 4. Fill database configuration
 5. Click "Deploy TaskManager"
-6. Delete deploy.php
 ```
 
 ### CLI Deployment
@@ -219,8 +218,7 @@ Before deployment, users must:
 2. Change admin password in deploy.php
 3. Upload deploy.php to server
 4. Run deployment (web or CLI)
-5. Delete deploy.php after success
-6. Test API health endpoint
+5. Test API health endpoint
 
 ## Success Metrics
 

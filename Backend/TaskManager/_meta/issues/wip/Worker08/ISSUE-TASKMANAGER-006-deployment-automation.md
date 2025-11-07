@@ -254,7 +254,6 @@ function checkHealth() {
 
 ## Security Considerations
 - Secure config.php permissions
-- Delete deploy.php after deployment
 - Use secure database passwords
 - Verify file integrity from GitHub
 - Log deployment actions

@@ -36,9 +36,6 @@ Click **Deploy TaskManager** → Done! ✓
 
 ### Post-Deployment
 ```bash
-# CRITICAL: Delete deploy script
-rm deploy.php
-
 # Test API
 curl https://yourdomain.com/path/api/health
 ```
@@ -72,7 +69,6 @@ TaskManager/
 ## ⚠️ Security Checklist
 
 - [ ] Changed ADMIN_PASSWORD in deploy.php
-- [ ] Deleted deploy.php after deployment
 - [ ] Using HTTPS (SSL enabled)
 - [ ] config.php has 640 permissions
 - [ ] Reviewed database user permissions

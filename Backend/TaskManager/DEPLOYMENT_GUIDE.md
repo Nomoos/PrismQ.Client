@@ -68,8 +68,8 @@ define('ADMIN_PASSWORD', 'MyStr0ng!P@ssw0rd#2025');
      - Validate the installation
 
 5. **Post-Deployment**
-   - **Delete deploy.php** for security!
    - Test your installation: `https://yourdomain.com/taskmanager/api/health`
+   - Review the configuration in `config/config.php`
 
 ### Method 2: Command-Line Deployment
 
@@ -95,11 +95,6 @@ For servers with SSH access:
    - Enter admin password
    - Provide database configuration
    - Wait for completion
-
-5. **Clean up**
-   ```bash
-   rm deploy.php
-   ```
 
 ## What the Deploy Script Does
 
@@ -153,7 +148,7 @@ _meta/config/config.example.php
 
 ```
 TaskManager/
-├── deploy.php              (DELETE AFTER DEPLOYMENT!)
+├── deploy.php
 ├── api/
 │   ├── .htaccess
 │   ├── index.php
@@ -289,27 +284,22 @@ curl -X POST https://yourdomain.com/taskmanager/api/task-types/register \
 
 ### After Deployment
 
-1. **Delete deploy.php immediately**
-   ```bash
-   rm deploy.php
-   ```
-
-2. **Secure config.php**
+1. **Secure config.php**
    ```bash
    chmod 640 config/config.php
    ```
 
-3. **Add .htaccess protection** (optional)
+2. **Add .htaccess protection** (optional)
    Create `/config/.htaccess`:
    ```apache
    Deny from all
    ```
 
-4. **Use HTTPS only**
+3. **Use HTTPS only**
    - Enable SSL certificate
    - Force HTTPS in .htaccess
 
-5. **Consider API authentication**
+4. **Consider API authentication**
    - Add API key validation
    - Implement rate limiting
    - Add IP whitelisting

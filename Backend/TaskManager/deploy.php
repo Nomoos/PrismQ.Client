@@ -601,10 +601,9 @@ class TaskManagerDeployer
         $this->output(str_repeat('=', 50) . "\n");
         
         $this->info('Next steps:');
-        $this->info('1. Delete this deploy.php file for security');
-        $this->info('2. Test the API: ' . $this->getApiUrl() . '/health');
-        $this->info('3. Review the configuration in config/config.php');
-        $this->info('4. Set up your workers to start claiming tasks');
+        $this->info('1. Test the API: ' . $this->getApiUrl() . '/health');
+        $this->info('2. Review the configuration in config/config.php');
+        $this->info('3. Set up your workers to start claiming tasks');
         
         if ($this->isWebMode) {
             echo '</pre></body></html>';
