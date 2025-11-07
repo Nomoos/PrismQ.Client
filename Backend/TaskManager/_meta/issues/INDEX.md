@@ -3,6 +3,8 @@
 ## Overview
 This directory contains all issues for the TaskManager project, organized by worker specialization.
 
+**📋 See also**: [PROJECT_PLAN.md](../PROJECT_PLAN.md) - Comprehensive project plan with timeline, dependencies, and roadmap
+
 ## Structure
 ```
 issues/

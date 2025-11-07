@@ -363,3 +363,10 @@ Proprietary - All Rights Reserved - Copyright (c) 2025 PrismQ
 - [API Reference](docs/API_REFERENCE.md) - Detailed API documentation
 - [Deployment Guide](docs/DEPLOYMENT.md) - Step-by-step deployment instructions
 - [Hosting Information](docs/HOSTING_INFO.md) - Vedos/Wedos account details and resource allocation
+
+## 📋 Project Management
+
+- [Project Plan](_meta/PROJECT_PLAN.md) - Comprehensive project roadmap and timeline
+- [Issue Tracking](_meta/issues/INDEX.md) - All project issues organized by worker
+- [Parallelization Matrix](_meta/PARALLELIZATION_MATRIX.md) - Worker coordination and dependencies
+- [Organization Summary](_meta/ORGANIZATION_SUMMARY.md) - Project structure and implementation details
