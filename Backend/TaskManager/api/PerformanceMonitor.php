@@ -36,6 +36,7 @@ class PerformanceMonitor {
      * @param string $operation Operation name for logging
      * @param callable $callback Function to measure
      * @return mixed Result from the callback
+     * @throws Exception Re-throws any exception from callback after logging timing
      */
     public static function measure($operation, $callback) {
         if (!self::$enabled) {
@@ -43,10 +44,36 @@ class PerformanceMonitor {
         }
         
         $start = microtime(true);
-        $result = $callback();
-        $duration = (microtime(true) - $start) * 1000; // Convert to milliseconds
+        $exception = null;
+        $result = null;
         
-        self::time($operation, $duration);
+        try {
+            $result = $callback();
+        } catch (Exception $e) {
+            $exception = $e;
+        } catch (Throwable $e) {
+            $exception = $e;
+        } finally {
+            // Always log timing, even if exception occurred
+            $duration = (microtime(true) - $start) * 1000;
+            self::time($operation, $duration);
+            
+            // Log exception context if one occurred
+            if ($exception !== null) {
+                error_log(sprintf(
+                    "SLOW [%s]: %.2fms (failed with %s: %s)",
+                    $operation,
+                    $duration,
+                    get_class($exception),
+                    $exception->getMessage()
+                ));
+            }
+        }
+        
+        // Re-throw exception if one occurred
+        if ($exception !== null) {
+            throw $exception;
+        }
         
         return $result;
     }
@@ -88,10 +115,16 @@ class PerformanceMonitor {
     /**
      * Set the threshold for logging slow operations
      * 
-     * @param int $milliseconds Threshold in milliseconds
+     * @param int $milliseconds Threshold in milliseconds (must be positive)
+     * @throws InvalidArgumentException If threshold is not positive
      */
     public static function setThreshold($milliseconds) {
-        self::$threshold = $milliseconds;
+        if (!is_numeric($milliseconds) || $milliseconds <= 0) {
+            throw new InvalidArgumentException(
+                "Threshold must be a positive number, got: " . var_export($milliseconds, true)
+            );
+        }
+        self::$threshold = (int)$milliseconds;
     }
     
     /**

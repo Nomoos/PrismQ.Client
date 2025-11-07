@@ -92,6 +92,52 @@ if (is_array($complexReturn) && $complexReturn['key'] === 'value' && $complexRet
     echo "  ✗ FAILED: Return values not preserved\n";
 }
 
+// Test 9: Exception handling
+echo "\n9. Testing exception handling...\n";
+try {
+    PerformanceMonitor::measure('exception_test', function() {
+        usleep(50000); // 50ms
+        throw new Exception('Test exception');
+    });
+    echo "  ✗ FAILED: Exception was not thrown\n";
+} catch (Exception $e) {
+    if ($e->getMessage() === 'Test exception') {
+        echo "  ✓ Exception caught and re-thrown correctly\n";
+    } else {
+        echo "  ✗ FAILED: Wrong exception message\n";
+    }
+}
+
+// Test 10: Threshold validation
+echo "\n10. Testing threshold validation...\n";
+try {
+    PerformanceMonitor::setThreshold(-100);
+    echo "  ✗ FAILED: Negative threshold was accepted\n";
+} catch (InvalidArgumentException $e) {
+    echo "  ✓ Negative threshold rejected correctly\n";
+}
+
+try {
+    PerformanceMonitor::setThreshold(0);
+    echo "  ✗ FAILED: Zero threshold was accepted\n";
+} catch (InvalidArgumentException $e) {
+    echo "  ✓ Zero threshold rejected correctly\n";
+}
+
+try {
+    PerformanceMonitor::setThreshold('invalid');
+    echo "  ✗ FAILED: Non-numeric threshold was accepted\n";
+} catch (InvalidArgumentException $e) {
+    echo "  ✓ Non-numeric threshold rejected correctly\n";
+}
+
+try {
+    PerformanceMonitor::setThreshold(100);
+    echo "  ✓ Valid threshold (100) accepted\n";
+} catch (Exception $e) {
+    echo "  ✗ FAILED: Valid threshold was rejected\n";
+}
+
 echo "\n=================================\n";
 echo "All tests completed!\n\n";
 echo "Notes:\n";
