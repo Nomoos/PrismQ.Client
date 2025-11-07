@@ -6,6 +6,9 @@
  * Routes requests to appropriate endpoints.
  */
 
+// Load configuration first
+require_once __DIR__ . '/../config/config.php';
+
 // Set headers to prevent caching
 header('Cache-Control: ' . API_RESPONSE_CACHE_CONTROL);
 header('Content-Type: application/json');
@@ -18,9 +21,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
-
-// Load configuration
-require_once __DIR__ . '/../config/config.php';
 
 // Load required files
 require_once __DIR__ . '/../database/Database.php';

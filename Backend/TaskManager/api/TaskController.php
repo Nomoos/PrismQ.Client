@@ -109,28 +109,25 @@ class TaskController {
             // Start transaction
             $this->db->beginTransaction();
             
-            // Find available task
+            // Find available task - pending tasks or claimed tasks that timed out
+            $timeout_threshold = date('Y-m-d H:i:s', time() - TASK_CLAIM_TIMEOUT);
+            
             $sql = "SELECT t.id, t.type_id, t.params_json, t.attempts, tt.name as type_name
                     FROM tasks t
                     JOIN task_types tt ON t.type_id = tt.id
-                    WHERE t.status = 'pending'";
+                    WHERE (t.status = 'pending' OR (t.status = 'claimed' AND t.claimed_at < ?))";
+            
+            $params = [$timeout_threshold];
             
             if ($type_pattern) {
                 $sql .= " AND tt.name LIKE ?";
+                $params[] = $type_pattern;
             }
-            
-            // Also reclaim tasks that were claimed but timed out
-            $timeout_threshold = date('Y-m-d H:i:s', time() - TASK_CLAIM_TIMEOUT);
-            $sql .= " OR (t.status = 'claimed' AND t.claimed_at < ?)";
             
             $sql .= " ORDER BY t.created_at ASC LIMIT 1 FOR UPDATE";
             
             $stmt = $this->db->prepare($sql);
-            if ($type_pattern) {
-                $stmt->execute([$type_pattern, $timeout_threshold]);
-            } else {
-                $stmt->execute([$timeout_threshold]);
-            }
+            $stmt->execute($params);
             
             $task = $stmt->fetch();
             

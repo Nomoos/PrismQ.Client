@@ -74,8 +74,12 @@ class JsonSchemaValidator {
             if (isset($schema['maxLength']) && strlen($value) > $schema['maxLength']) {
                 $errors[] = "String too long at $path: maximum length is {$schema['maxLength']}";
             }
-            if (isset($schema['pattern']) && !preg_match('/' . $schema['pattern'] . '/', $value)) {
-                $errors[] = "String does not match pattern at $path";
+            if (isset($schema['pattern'])) {
+                // Use a delimiter that's unlikely to be in the pattern (# instead of /)
+                // and suppress errors in case of invalid regex
+                if (@preg_match('#' . $schema['pattern'] . '#', $value) === false || !preg_match('#' . $schema['pattern'] . '#', $value)) {
+                    $errors[] = "String does not match pattern at $path";
+                }
             }
         }
         
