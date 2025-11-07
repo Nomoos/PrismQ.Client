@@ -66,6 +66,12 @@ define('ENABLE_SCHEMA_VALIDATION', true);
 // SECURITY & DEBUGGING
 // ============================================================================
 
+// API Key for authentication
+// CRITICAL: Change this to a secure, randomly generated key before deployment!
+// Generate a secure key using: openssl rand -hex 32
+// This key is used to authenticate all API requests
+define('API_KEY', 'changeme_generate_secure_random_key_here');
+
 // Display detailed error messages
 // IMPORTANT: Set to false in production!
 // Default: false (errors are logged but not displayed)
@@ -86,26 +92,31 @@ define('API_RESPONSE_CACHE_CONTROL', 'no-store, no-cache, must-revalidate, max-a
 /**
  * SECURITY CHECKLIST:
  * 
- * 1. Set restrictive file permissions:
+ * 1. Generate a secure API key:
+ *    openssl rand -hex 32
+ *    Update API_KEY constant above with the generated key
+ * 
+ * 2. Set restrictive file permissions:
  *    chmod 640 config.php
  *    
- * 2. Ensure config directory is not web-accessible:
+ * 3. Ensure config directory is not web-accessible:
  *    - Place it outside public_html, or
  *    - Use .htaccess to deny access
  *    
- * 3. Use strong database passwords:
+ * 4. Use strong database passwords:
  *    - Minimum 16 characters
  *    - Mix of letters, numbers, symbols
  *    
- * 4. Grant minimal database privileges:
+ * 5. Grant minimal database privileges:
  *    GRANT SELECT, INSERT, UPDATE, DELETE ON database.* TO 'user'@'localhost';
  *    (Do NOT grant DROP, CREATE, ALTER unless needed)
  *    
- * 5. Use HTTPS in production:
+ * 6. Use HTTPS in production:
  *    - Never transmit credentials over HTTP
  *    - Configure your web server for SSL/TLS
+ *    - All API requests must include X-API-Key header
  *    
- * 6. Regular backups:
+ * 7. Regular backups:
  *    - Backup database regularly
  *    - Store backups securely
  *    - Test restore procedures
