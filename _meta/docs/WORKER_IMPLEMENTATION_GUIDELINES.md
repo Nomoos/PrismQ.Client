@@ -333,9 +333,18 @@ Set timeouts for long-running operations:
 import signal
 from contextlib import contextmanager
 
+# Note: signal.alarm() only works on Unix-like systems (Linux, macOS)
+# For Windows compatibility, consider using threading.Timer or asyncio.wait_for
+
 @contextmanager
 def timeout(seconds):
-    """Context manager for timing out operations."""
+    """
+    Context manager for timing out operations (Unix-only).
+    
+    For cross-platform support, use:
+    - threading.Timer for simple timeouts
+    - asyncio.wait_for for async operations
+    """
     def timeout_handler(signum, frame):
         raise TimeoutError(f"Operation timed out after {seconds} seconds")
     
@@ -355,6 +364,48 @@ def process_task(self, task):
         return {'success': True, 'data': result}
     except TimeoutError as e:
         return {'success': False, 'error': str(e)}
+```
+
+**Cross-platform alternative using threading:**
+
+```python
+import threading
+from functools import wraps
+
+def timeout(seconds):
+    """Cross-platform timeout decorator using threading."""
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            result = [None]
+            exception = [None]
+            
+            def target():
+                try:
+                    result[0] = func(*args, **kwargs)
+                except Exception as e:
+                    exception[0] = e
+            
+            thread = threading.Thread(target=target)
+            thread.daemon = True
+            thread.start()
+            thread.join(timeout=seconds)
+            
+            if thread.is_alive():
+                raise TimeoutError(f"Operation timed out after {seconds} seconds")
+            
+            if exception[0]:
+                raise exception[0]
+            
+            return result[0]
+        return wrapper
+    return decorator
+
+@timeout(300)
+def process_task(self, task):
+    """Process task with timeout (cross-platform)."""
+    result = perform_work(task['params'])
+    return {'success': True, 'data': result}
 ```
 
 ## Error Handling

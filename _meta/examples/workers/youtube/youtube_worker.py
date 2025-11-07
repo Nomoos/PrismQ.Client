@@ -2,8 +2,9 @@
 """
 YouTube Shorts Scraper Worker Example
 
-A complete worker implementation example for the PrismQ.IdeaInspiration.Sources.Content.Shorts.YouTube
-repository demonstrating how to integrate with the TaskManager API for distributed task processing.
+A complete worker implementation example for the
+PrismQ.IdeaInspiration.Sources.Content.Shorts.YouTube repository
+demonstrating how to integrate with the TaskManager API for distributed task processing.
 
 This example shows:
 - Task claiming from TaskManager API
@@ -225,6 +226,8 @@ class YouTubeWorker:
         time.sleep(2)  # Simulate API call delay
         
         # Mock results - in real implementation, this would be actual scraped data
+        # Note: Limited to 5 results for mock demonstration purposes
+        MOCK_RESULT_LIMIT = 5
         mock_results = {
             'shorts': [
                 {
@@ -239,9 +242,9 @@ class YouTubeWorker:
                     'thumbnail_url': f'https://example.com/thumbnail_{i}.jpg',
                     'video_url': f'https://youtube.com/shorts/mock_video_{i}'
                 }
-                for i in range(1, min(max_results, 5) + 1)
+                for i in range(1, min(max_results, MOCK_RESULT_LIMIT) + 1)
             ],
-            'total_found': min(max_results, 5),
+            'total_found': min(max_results, MOCK_RESULT_LIMIT),
             'search_query': search_query,
             'language': language,
             'scraped_at': datetime.now().isoformat()
