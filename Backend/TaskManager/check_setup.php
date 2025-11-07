@@ -329,6 +329,7 @@ class EnvironmentChecker
     {
         if (function_exists('curl_init')) {
             // Test if cURL can make HTTPS requests to GitHub (the actual use case)
+            // Uses GET request (cURL default) instead of HEAD for realistic testing
             $ch = curl_init('https://api.github.com/');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_TIMEOUT, 5);
@@ -343,6 +344,7 @@ class EnvironmentChecker
             curl_close($ch);
             
             // HTTP status codes: 200 OK, 301 Moved Permanently, 302 Found
+            // Note: GitHub API may rate-limit, but even a rate-limited response confirms connectivity
             if ($result !== false && ($httpCode === 200 || $httpCode === 301 || $httpCode === 302)) {
                 $this->addCheck('cURL HTTPS', true, 
                     "Can make HTTPS requests to GitHub");
