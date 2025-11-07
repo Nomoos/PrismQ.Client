@@ -22,13 +22,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-// Authenticate API key for all requests except health check
-$requestPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$requestPath = str_replace('/api', '', $requestPath);
-$requestPath = rtrim($requestPath, '/');
-if ($requestPath === '') {
-    $requestPath = '/';
+/**
+ * Parse and normalize request path
+ */
+function parseRequestPath() {
+    $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    $path = str_replace('/api', '', $path);
+    $path = rtrim($path, '/');
+    return $path === '' ? '/' : $path;
 }
+
+// Parse request path once
+$requestPath = parseRequestPath();
 
 // Skip authentication for health check endpoint
 if ($requestPath !== '/health') {
@@ -64,23 +69,13 @@ require_once __DIR__ . '/ApiResponse.php';
 require_once __DIR__ . '/EndpointRouter.php';
 require_once __DIR__ . '/ActionExecutor.php';
 
-// Parse request
+// Get HTTP method
 $method = $_SERVER['REQUEST_METHOD'];
-$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$path = str_replace('/api', '', $path); // Remove /api prefix if present
-
-// Remove trailing slash
-$path = rtrim($path, '/');
-
-// If path is empty, set to root
-if ($path === '') {
-    $path = '/';
-}
 
 // Route the request using data-driven router
 try {
     $router = new EndpointRouter();
-    $router->route($method, $path);
+    $router->route($method, $requestPath);
     
 } catch (Exception $e) {
     error_log("API Error: " . $e->getMessage());
