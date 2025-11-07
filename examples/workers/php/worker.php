@@ -1,8 +1,9 @@
 #!/usr/bin/env php
 <?php
+
 /**
  * TaskManager PHP Worker Example
- * 
+ *
  * A complete, production-ready worker implementation that demonstrates:
  * - Task claiming from the TaskManager API
  * - Task processing with custom handlers
@@ -10,10 +11,10 @@
  * - Graceful shutdown on signals (SIGTERM, SIGINT)
  * - Configurable polling intervals and timeouts
  * - Support for filtering tasks by type pattern
- * 
+ *
  * Usage:
  *   php worker.php [options]
- * 
+ *
  * Options:
  *   --api-url=URL          TaskManager API base URL (default: http://localhost/api)
  *   --worker-id=ID         Worker identifier (default: auto-generated)
@@ -22,23 +23,25 @@
  *   --max-runs=NUM         Maximum number of tasks to process (default: unlimited)
  *   --debug                Enable debug logging
  *   --help                 Show this help message
- * 
+ *
  * Examples:
  *   # Run worker with default settings
  *   php worker.php
- * 
+ *
  *   # Run worker with custom API URL
  *   php worker.php --api-url=https://example.com/api
- * 
+ *
  *   # Process only specific task types
  *   php worker.php --type-pattern="PrismQ.Script.%"
- * 
+ *
  *   # Process up to 100 tasks then exit
  *   php worker.php --max-runs=100
  */
 
 // Require the WorkerClient helper class
 require_once __DIR__ . '/WorkerClient.php';
+
+use PrismQ\TaskManager\Worker\WorkerClient;
 
 // ============================================================================
 // Configuration
@@ -71,16 +74,15 @@ $maxConsecutiveErrors = 5;
 
 // Register signal handlers for graceful shutdown
 if (function_exists('pcntl_signal')) {
-    pcntl_signal(SIGTERM, function() use (&$shouldStop) {
+    pcntl_signal(SIGTERM, function () use (&$shouldStop) {
         echo "\n[SHUTDOWN] Received SIGTERM, finishing current task and exiting...\n";
         $shouldStop = true;
     });
-    
-    pcntl_signal(SIGINT, function() use (&$shouldStop) {
+
+    pcntl_signal(SIGINT, function () use (&$shouldStop) {
         echo "\n[SHUTDOWN] Received SIGINT (Ctrl+C), finishing current task and exiting...\n";
         $shouldStop = true;
     });
-    
     if ($debug) {
         echo "[INFO] Signal handlers registered (SIGTERM, SIGINT)\n";
     }
@@ -107,7 +109,10 @@ $client = new WorkerClient($apiUrl, $workerId, $debug);
 // Check API connectivity
 echo "[STARTUP] Checking API connectivity...\n";
 if (!$client->checkHealth()) {
-    die("[ERROR] Failed to connect to TaskManager API at {$apiUrl}\nPlease verify the URL and ensure the API is running.\n");
+    die(
+        "[ERROR] Failed to connect to TaskManager API at {$apiUrl}\n" .
+        "Please verify the URL and ensure the API is running.\n"
+    );
 }
 echo "[STARTUP] ✓ Connected to TaskManager API\n\n";
 
@@ -123,17 +128,17 @@ while (!$shouldStop) {
     if (function_exists('pcntl_signal_dispatch')) {
         pcntl_signal_dispatch();
     }
-    
+
     // Check if we've reached max runs
     if ($maxRuns > 0 && $tasksProcessed >= $maxRuns) {
         echo "[WORKER] Reached maximum task count ({$maxRuns}), exiting\n";
         break;
     }
-    
+
     try {
         // Try to claim a task
         $task = $client->claimTask($typePattern);
-        
+
         if ($task === null) {
             // No tasks available, wait before trying again
             if ($debug) {
@@ -142,45 +147,43 @@ while (!$shouldStop) {
             sleep($pollInterval);
             continue;
         }
-        
+
         // Reset consecutive error counter on successful claim
         $consecutiveErrors = 0;
-        
+
         // Process the task
         echo "[TASK #{$task['id']}] Processing (type: {$task['type']}, attempt: {$task['attempts']})\n";
-        
+
         try {
             $result = processTask($task);
-            
+
             // Mark task as completed
             $client->completeTask($task['id'], $result);
-            
+
             $tasksProcessed++;
             echo "[TASK #{$task['id']}] ✓ Completed successfully ({$tasksProcessed} total)\n\n";
-            
         } catch (Exception $e) {
             // Task processing failed, mark as failed
             $errorMessage = $e->getMessage();
             echo "[TASK #{$task['id']}] ✗ Failed: {$errorMessage}\n";
-            
+
             $client->failTask($task['id'], $errorMessage);
-            
+
             $tasksFailed++;
             echo "[TASK #{$task['id']}] Marked as failed ({$tasksFailed} total failures)\n\n";
         }
-        
     } catch (Exception $e) {
         // API communication error
         $consecutiveErrors++;
-        
+
         echo "[ERROR] API error: {$e->getMessage()}\n";
         echo "[ERROR] Consecutive errors: {$consecutiveErrors}/{$maxConsecutiveErrors}\n";
-        
+
         if ($consecutiveErrors >= $maxConsecutiveErrors) {
             echo "[ERROR] Too many consecutive errors, exiting\n";
             break;
         }
-        
+
         // Wait longer on errors
         echo "[ERROR] Waiting " . ($pollInterval * 2) . "s before retry...\n\n";
         sleep($pollInterval * 2);
@@ -215,35 +218,36 @@ exit(0);
 
 /**
  * Process a task based on its type
- * 
+ *
  * This is where you implement your task-specific logic.
  * Add handlers for each task type your worker supports.
- * 
+ *
  * @param array $task Task data from TaskManager
  * @return mixed Result data to store in TaskManager
  * @throws Exception on processing errors
  */
-function processTask($task) {
+function processTask(array $task): mixed
+{
     $type = $task['type'];
     $params = $task['params'];
-    
+
     // Route to appropriate handler based on task type
     switch ($type) {
         case 'example.echo':
             return handleEchoTask($params);
-            
+
         case 'example.uppercase':
             return handleUppercaseTask($params);
-            
+
         case 'example.math.add':
             return handleMathAddTask($params);
-            
+
         case 'example.sleep':
             return handleSleepTask($params);
-            
+
         case 'example.error':
             return handleErrorTask($params);
-            
+
         default:
             // Unknown task type - you can either handle it generically or fail
             throw new Exception("Unknown task type: {$type}");
@@ -253,12 +257,17 @@ function processTask($task) {
 /**
  * Example handler: Echo task
  * Simply returns the input message
+ *
+ * @param array $params Task parameters
+ * @return array Result data
+ * @throws Exception on validation errors
  */
-function handleEchoTask($params) {
+function handleEchoTask(array $params): array
+{
     if (!isset($params['message'])) {
         throw new Exception("Missing required parameter: message");
     }
-    
+
     return [
         'echoed' => $params['message'],
         'processed_at' => date('c')
@@ -268,12 +277,17 @@ function handleEchoTask($params) {
 /**
  * Example handler: Uppercase task
  * Converts text to uppercase
+ *
+ * @param array $params Task parameters
+ * @return array Result data
+ * @throws Exception on validation errors
  */
-function handleUppercaseTask($params) {
+function handleUppercaseTask(array $params): array
+{
     if (!isset($params['text'])) {
         throw new Exception("Missing required parameter: text");
     }
-    
+
     return [
         'original' => $params['text'],
         'uppercase' => strtoupper($params['text']),
@@ -284,16 +298,21 @@ function handleUppercaseTask($params) {
 /**
  * Example handler: Math addition task
  * Adds two numbers
+ *
+ * @param array $params Task parameters
+ * @return array Result data
+ * @throws Exception on validation errors
  */
-function handleMathAddTask($params) {
+function handleMathAddTask(array $params): array
+{
     if (!isset($params['a']) || !isset($params['b'])) {
         throw new Exception("Missing required parameters: a, b");
     }
-    
+
     if (!is_numeric($params['a']) || !is_numeric($params['b'])) {
         throw new Exception("Parameters must be numeric");
     }
-    
+
     return [
         'a' => $params['a'],
         'b' => $params['b'],
@@ -304,20 +323,25 @@ function handleMathAddTask($params) {
 /**
  * Example handler: Sleep task
  * Simulates long-running task
+ *
+ * @param array $params Task parameters
+ * @return array Result data
+ * @throws Exception on validation errors
  */
-function handleSleepTask($params) {
+function handleSleepTask(array $params): array
+{
     if (!isset($params['seconds'])) {
         throw new Exception("Missing required parameter: seconds");
     }
-    
+
     $seconds = intval($params['seconds']);
-    
+
     if ($seconds < 0 || $seconds > 60) {
         throw new Exception("Sleep duration must be between 0 and 60 seconds");
     }
-    
+
     sleep($seconds);
-    
+
     return [
         'slept_seconds' => $seconds,
         'completed_at' => date('c')
@@ -327,20 +351,24 @@ function handleSleepTask($params) {
 /**
  * Example handler: Error task
  * Intentionally fails to demonstrate error handling
+ *
+ * @param array $params Task parameters
+ * @throws Exception always
  */
-function handleErrorTask($params) {
+function handleErrorTask(array $params): never
+{
     $errorType = $params['error_type'] ?? 'generic';
-    
+
     switch ($errorType) {
         case 'exception':
             throw new Exception("Intentional exception for testing");
-            
+
         case 'validation':
             throw new Exception("Validation failed: Invalid input data");
-            
+
         case 'timeout':
             throw new Exception("Operation timed out after 30 seconds");
-            
+
         default:
             throw new Exception("Generic error for testing");
     }
@@ -348,11 +376,12 @@ function handleErrorTask($params) {
 
 /**
  * Parse command line arguments
- * 
+ *
  * @param array $argv Command line arguments
  * @return array Configuration array
  */
-function parseArguments($argv) {
+function parseArguments(array $argv): array
+{
     $config = [
         'api-url' => getenv('TASKMANAGER_API_URL') ?: 'http://localhost/api',
         'worker-id' => getenv('WORKER_ID') ?: ('worker-' . gethostname() . '-' . getmypid()),
@@ -361,19 +390,19 @@ function parseArguments($argv) {
         'max-runs' => intval(getenv('MAX_RUNS') ?: 0),
         'debug' => (getenv('DEBUG') === 'true' || getenv('DEBUG') === '1')
     ];
-    
+
     // Parse command line arguments
     foreach ($argv as $arg) {
         if ($arg === '--help' || $arg === '-h') {
             showHelp();
             exit(0);
         }
-        
+
         if (strpos($arg, '--') === 0) {
             $parts = explode('=', substr($arg, 2), 2);
             $key = $parts[0];
             $value = isset($parts[1]) ? $parts[1] : true;
-            
+
             if ($key === 'debug') {
                 $config['debug'] = true;
             } elseif (isset($config[$key])) {
@@ -381,16 +410,19 @@ function parseArguments($argv) {
             }
         }
     }
-    
+
     return $config;
 }
 
 /**
  * Show help message
+ *
+ * @return void
  */
-function showHelp() {
+function showHelp(): void
+{
     $script = basename(__FILE__);
-    
+
     echo <<<HELP
 TaskManager PHP Worker Example
 
