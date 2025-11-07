@@ -115,9 +115,31 @@ https://your-domain.com/api/
 ```bash
 # Health check
 curl https://your-domain.com/api/health
+
+# View interactive API documentation
+# Open in browser: https://your-domain.com/api/docs/
 ```
 
+**Production Example:**
+- API: `https://api.prismq.nomoos.cz/api/`
+- Swagger UI: `https://api.prismq.nomoos.cz/api/docs/`
+
 ## 📚 API Documentation
+
+### Interactive Documentation (Swagger UI)
+
+The TaskManager API provides interactive documentation via Swagger UI:
+
+**Access URL:** `https://your-domain.com/api/docs/`
+
+Features:
+- ✅ Browse all available endpoints
+- ✅ View request/response schemas
+- ✅ Try out API calls directly from the browser
+- ✅ View authentication requirements
+- ✅ Download OpenAPI specification
+
+**Example for production:** `https://api.prismq.nomoos.cz/api/docs/`
 
 ### Task Type Management
 
