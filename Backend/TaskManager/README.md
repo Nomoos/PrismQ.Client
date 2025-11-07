@@ -362,3 +362,4 @@ Proprietary - All Rights Reserved - Copyright (c) 2025 PrismQ
 - [PrismQ.Client](../../) - Main client application
 - [API Reference](docs/API_REFERENCE.md) - Detailed API documentation
 - [Deployment Guide](docs/DEPLOYMENT.md) - Step-by-step deployment instructions
+- [Hosting Information](docs/HOSTING_INFO.md) - Vedos/Wedos account details and resource allocation

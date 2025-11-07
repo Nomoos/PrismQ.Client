@@ -2,6 +2,8 @@
 
 Complete step-by-step guide for deploying TaskManager to Vedos shared hosting or any PHP/MySQL hosting provider.
 
+> 📋 **Hosting Account Information**: See [HOSTING_INFO.md](HOSTING_INFO.md) for details about the Vedos/Wedos hosting account, including resource allocation and account status.
+
 ## Prerequisites
 
 - Shared hosting account with:
