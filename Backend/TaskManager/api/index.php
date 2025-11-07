@@ -35,6 +35,62 @@ function parseRequestPath() {
 // Parse request path once
 $requestPath = parseRequestPath();
 
+// Serve OpenAPI documentation without authentication
+if ($requestPath === '/openapi.json') {
+    header('Content-Type: application/json');
+    $openapiPath = __DIR__ . '/../public/openapi.json';
+    if (file_exists($openapiPath)) {
+        readfile($openapiPath);
+    } else {
+        http_response_code(404);
+        echo json_encode(['error' => 'OpenAPI specification not found']);
+    }
+    exit();
+}
+
+// Serve Swagger UI at /docs
+if ($requestPath === '/docs' || preg_match('#^/docs/#', $requestPath)) {
+    // Redirect /docs to /docs/ to fix relative paths
+    if ($requestPath === '/docs') {
+        header('Location: /api/docs/');
+        exit();
+    }
+    
+    // Extract file path after /docs/
+    $filePath = preg_replace('#^/docs/#', '', $requestPath);
+    if (empty($filePath) || $filePath === '/') {
+        $filePath = 'index.html';
+    }
+    
+    $fullPath = __DIR__ . '/../public/swagger-ui/' . $filePath;
+    
+    // Security: prevent directory traversal
+    $realPath = realpath($fullPath);
+    $baseDir = realpath(__DIR__ . '/../public/swagger-ui/');
+    
+    if ($realPath && str_starts_with($realPath, $baseDir) && file_exists($realPath) && is_file($realPath)) {
+        // Set appropriate content type
+        $ext = pathinfo($realPath, PATHINFO_EXTENSION);
+        $contentTypes = [
+            'html' => 'text/html',
+            'css' => 'text/css',
+            'js' => 'application/javascript',
+            'json' => 'application/json',
+            'png' => 'image/png',
+            'jpg' => 'image/jpeg',
+            'gif' => 'image/gif',
+            'svg' => 'image/svg+xml',
+        ];
+        $contentType = $contentTypes[$ext] ?? 'application/octet-stream';
+        header('Content-Type: ' . $contentType);
+        readfile($realPath);
+    } else {
+        http_response_code(404);
+        echo '<!DOCTYPE html><html><body><h1>404 - File Not Found</h1></body></html>';
+    }
+    exit();
+}
+
 // Skip authentication for health check endpoint
 if ($requestPath !== '/health') {
     // Get API key from header
