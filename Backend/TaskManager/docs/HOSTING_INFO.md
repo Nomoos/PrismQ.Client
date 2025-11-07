@@ -27,7 +27,6 @@ This document contains information about the Vedos/Wedos webhosting account wher
 |-------|-------|
 | **Plan Variant** | NoLimit |
 | **Expiration** | 16.05.2026 |
-| **Days Until Expiration** | 190 days (as of documentation date) |
 | **VAT Billing** | No (Účtování bez DPH: ne) |
 
 ## Deployment Considerations
@@ -61,7 +60,7 @@ This document contains information about the Vedos/Wedos webhosting account wher
 - **Next Renewal**: 16.05.2026
 - **Renewal Period**: Annual (based on 2018 order to 2026 expiration)
 - **Action Required**: Renewal before 16.05.2026
-- **Current Status**: Active with 190 days remaining
+- **Current Status**: Active (check expiration date above for time remaining)
 
 ## Security Notes
 
@@ -96,7 +95,7 @@ When deploying to this hosting account:
 
 | Date | Update | Notes |
 |------|--------|-------|
-| 2025-01-07 | Initial documentation | Documented hosting account details from order information |
+| 07.11.2025 | Initial documentation | Documented hosting account details from order information |
 
 ---
 
