@@ -135,7 +135,9 @@ class CustomHandlers {
             }
         }
         
-        // Create dedupe key (use null byte separator to prevent collision)
+        // Create dedupe key
+        // Use null byte separator to prevent collision if type_name contains the separator
+        // Example: Without null byte, "type:A" + ":params" could collide with "type" + ":A:params"
         $params_json = json_encode($params, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $dedupe_key = hash('sha256', $type_name . "\0" . $params_json);
         

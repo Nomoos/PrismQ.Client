@@ -200,8 +200,22 @@ class EndpointRouter {
         if (is_int($value)) return 'integer';
         if (is_float($value)) return 'number';
         if (is_bool($value)) return 'boolean';
-        if (is_array($value)) return 'object';
         if (is_null($value)) return 'null';
+        
+        // Distinguish between JSON arrays (indexed) and objects (associative)
+        if (is_array($value)) {
+            // Empty arrays are treated as arrays, not objects
+            if (empty($value)) {
+                return 'array';
+            }
+            // If array keys are sequential integers starting from 0, it's an array
+            if (array_keys($value) === range(0, count($value) - 1)) {
+                return 'array';
+            }
+            // Otherwise it's an associative array (JSON object)
+            return 'object';
+        }
+        
         return 'unknown';
     }
 }

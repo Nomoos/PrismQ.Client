@@ -53,8 +53,11 @@ class ActionExecutor {
         
         // Validate select fields
         foreach ($select as $field) {
-            if ($field !== '*' && !preg_match('/^[a-zA-Z0-9_. ]+( as [a-zA-Z0-9_]+)?$/i', $field)) {
-                throw new Exception("Invalid select field: $field");
+            if ($field !== '*') {
+                // Allow: field_name, t.field_name, field_name as alias
+                if (!preg_match('/^[a-zA-Z0-9_.]+(\s+as\s+[a-zA-Z0-9_]+)?$/i', trim($field))) {
+                    throw new Exception("Invalid select field: $field");
+                }
             }
         }
         
@@ -104,8 +107,9 @@ class ActionExecutor {
         // Add optional WHERE conditions (only if values are provided)
         if (isset($config['where_optional'])) {
             foreach ($config['where_optional'] as $field => $value) {
-                // Validate field name (allow operators like '<', '>', 'LIKE')
-                if (!preg_match('/^[a-zA-Z0-9_.]+(( LIKE| <| >| <=| >=| !=))?$/i', $field)) {
+                // Validate field name with optional operators
+                // Allowed: field, field <, field >, field <=, field >=, field !=, field LIKE
+                if (!preg_match('/^[a-zA-Z0-9_.]+(\s+(LIKE|<|>|<=|>=|!=))?$/', trim($field))) {
                     throw new Exception("Invalid WHERE field: $field");
                 }
                 
