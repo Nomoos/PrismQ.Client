@@ -126,6 +126,13 @@ TestRunner::assertCount($expected, $array, $message);
 
 ## Writing New Tests
 
+### Naming Convention
+
+**Important**: The test runner relies on a strict naming convention:
+- Test files must be named `XxxTest.php` (e.g., `JsonSchemaValidatorTest.php`)
+- The test function must be named `testXxx()` (e.g., `testJsonSchemaValidator()`)
+- File: `XxxTest.php` → Function: `testXxx()`
+
 ### Example Unit Test
 
 ```php

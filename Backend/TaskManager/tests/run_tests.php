@@ -94,6 +94,8 @@ foreach ($suitesToRun as $suiteName) {
         }
         
         // Include and run the test
+        // Naming convention: Test files must be named XxxTest.php with function testXxx()
+        // Example: JsonSchemaValidatorTest.php contains testJsonSchemaValidator()
         $testFunction = null;
         
         // Extract function name from file (testXxx pattern)
