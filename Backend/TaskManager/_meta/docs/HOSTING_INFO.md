@@ -70,7 +70,7 @@ This document contains information about the Vedos/Wedos webhosting account wher
 ### Database Support
 - **Database System**: MariaDB (fully MySQL-compatible)
 - **Number of Databases**: Unlimited MariaDB databases
-- **Storage Capacity**: Up to 2 GB database storage (NoLimit tariff), 5 GB (NoLimit Extra)
+- **Storage Capacity**: Up to 2 GB database storage (applies to NoLimit tariff as used in this project)
 - **Management Tool**: phpMyAdmin (accessible from Vedos control panel)
 - **User Accounts**: Each database includes:
   - **Admin user**: Full privileges (recommended only for phpMyAdmin administration)
@@ -78,6 +78,8 @@ This document contains information about the Vedos/Wedos webhosting account wher
 - **Remote Access**: Not supported (connections must originate from web server for security)
 - **User Management**: Fixed predefined users; permissions cannot be changed (security feature)
 - **CRON Support**: Available for periodic PHP script execution
+
+**Note**: NoLimit Extra tariff provides 5 GB database storage, but this project uses the standard NoLimit tariff (2 GB limit).
 
 ## Renewal Information
 
