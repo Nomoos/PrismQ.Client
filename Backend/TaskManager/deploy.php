@@ -230,8 +230,8 @@ class TaskManagerDeployer
             require_once $configFile;
             
             // Check if required database constants are defined
-            if (!defined('DB_HOST') || !defined('DB_NAME') || !defined('DB_USER') || !defined('DB_PASS')) {
-                $result['error_message'] = 'config.php is missing required database constants (DB_HOST, DB_NAME, DB_USER, DB_PASS)';
+            if (!defined('DB_HOST') || !defined('DB_NAME') || !defined('DB_USER') || !defined('DB_PASS') || !defined('DB_CHARSET')) {
+                $result['error_message'] = 'config.php is missing required database constants (DB_HOST, DB_NAME, DB_USER, DB_PASS, DB_CHARSET)';
                 return $result;
             }
 
@@ -243,9 +243,10 @@ class TaskManagerDeployer
                 'db_pass' => DB_PASS
             ];
 
-            // Test database connection
+            // Test database connection with the actual database name
             try {
-                $dsn = "mysql:host=" . DB_HOST . ";charset=utf8mb4";
+                // Use the full DSN including database name to properly validate the connection
+                $dsn = sprintf('mysql:host=%s;dbname=%s;charset=%s', DB_HOST, DB_NAME, DB_CHARSET);
                 $pdo = new PDO($dsn, DB_USER, DB_PASS);
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 
