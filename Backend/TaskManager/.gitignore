@@ -19,6 +19,7 @@ logs/
 
 # Testing scripts (not for production)
 test_deploy.php
+test_check_setup.php
 
 # IDE files
 .vscode/
