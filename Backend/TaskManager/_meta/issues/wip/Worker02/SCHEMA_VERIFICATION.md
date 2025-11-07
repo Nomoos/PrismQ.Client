@@ -94,22 +94,22 @@ The database schema design for TaskManager is **complete and production-ready**.
 ## Files Delivered
 
 ### Core Files
-1. **database/schema.sql** (105 lines)
+1. **database/schema.sql** (~106 lines)
    - Complete database schema with comments
    - 6 tables with proper relationships
    - 13 indexes for query optimization
 
-2. **database/Database.php** (61 lines)
+2. **database/Database.php** (~62 lines)
    - Singleton pattern for connection management
    - PDO with prepared statements
    - Error handling and security
 
-3. **config/config.example.php** (135 lines)
+3. **config/config.example.php** (~135 lines)
    - All configuration options documented
    - Security checklist included
    - Performance tips provided
 
-4. **database/seed_endpoints.sql** (136 lines)
+4. **database/seed_endpoints.sql** (~136 lines)
    - 9 API endpoint definitions
    - 3 validation rule sets
    - Complete task management API
