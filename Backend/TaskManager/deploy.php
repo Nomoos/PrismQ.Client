@@ -55,6 +55,7 @@ class TaskManagerDeployer
     private $warnings = [];
     private $isWebMode = false;
     private $authenticated = false;
+    private $cachedConfigCheck = null;
 
     public function __construct()
     {
@@ -204,11 +205,111 @@ class TaskManagerDeployer
     }
 
     /**
+     * Check if config.php exists and test database connection
+     * Returns array with 'exists', 'credentials', and 'connection_ok' keys
+     * Results are cached to avoid repeated file operations and database connections
+     */
+    private function checkExistingConfig()
+    {
+        // Return cached result if available
+        if ($this->cachedConfigCheck !== null) {
+            return $this->cachedConfigCheck;
+        }
+
+        $result = [
+            'exists' => false,
+            'credentials' => null,
+            'connection_ok' => false,
+            'error_message' => null
+        ];
+
+        $configFile = CONFIG_PATH . '/config.php';
+        
+        if (!file_exists($configFile)) {
+            $result['error_message'] = 'config.php does not exist';
+            $this->cachedConfigCheck = $result;
+            return $result;
+        }
+
+        $result['exists'] = true;
+
+        try {
+            // Load config file
+            require_once $configFile;
+            
+            // Check if required database constants are defined
+            if (!defined('DB_HOST') || !defined('DB_NAME') || !defined('DB_USER') || !defined('DB_PASS') || !defined('DB_CHARSET')) {
+                $result['error_message'] = 'config.php is missing required database constants (DB_HOST, DB_NAME, DB_USER, DB_PASS, DB_CHARSET)';
+                $this->cachedConfigCheck = $result;
+                return $result;
+            }
+
+            // Store credentials
+            $result['credentials'] = [
+                'db_host' => DB_HOST,
+                'db_name' => DB_NAME,
+                'db_user' => DB_USER,
+                'db_pass' => DB_PASS
+            ];
+
+            // Test database connection with the actual database name
+            try {
+                // Use the full DSN including database name to properly validate the connection
+                $dsn = sprintf('mysql:host=%s;dbname=%s;charset=%s', DB_HOST, DB_NAME, DB_CHARSET);
+                $pdo = new PDO($dsn, DB_USER, DB_PASS);
+                $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                
+                // Connection successful
+                $result['connection_ok'] = true;
+                
+                // Explicitly close the connection to free resources
+                $pdo = null;
+                
+            } catch (PDOException $e) {
+                $result['error_message'] = 'Cannot connect to database with credentials from config.php: ' . $e->getMessage();
+            }
+
+        } catch (Throwable $e) {
+            $result['error_message'] = 'Error loading config.php: ' . $e->getMessage();
+        }
+
+        // Cache the result
+        $this->cachedConfigCheck = $result;
+        return $result;
+    }
+
+    /**
      * Collect configuration from user
      */
     private function collectConfiguration()
     {
         $config = [];
+
+        // First, check if config.php exists and has valid credentials
+        $existingConfig = $this->checkExistingConfig();
+
+        if ($existingConfig['exists'] && $existingConfig['connection_ok']) {
+            // Use existing credentials from config.php
+            $this->success('Found valid database credentials in config.php');
+            $config = $existingConfig['credentials'];
+            $config['skip_db'] = false;
+            
+            // In CLI mode, ask if user wants to skip database setup
+            if (!$this->isWebMode) {
+                $skipDb = $this->prompt('Database credentials found in config.php. Skip database setup? (y/n)', 'n');
+                $config['skip_db'] = (strtolower($skipDb) === 'y');
+            }
+            
+            return $config;
+        } else {
+            // Inform user about config.php status
+            if ($existingConfig['exists']) {
+                $this->warning('config.php exists but database connection failed: ' . $existingConfig['error_message']);
+                $this->info('Please provide valid database credentials below');
+            } else {
+                $this->info('config.php not found. Please provide database credentials for initial setup');
+            }
+        }
 
         if ($this->isWebMode) {
             // For web mode, get from POST or show form
@@ -572,6 +673,9 @@ class TaskManagerDeployer
      */
     private function showLoginForm()
     {
+        // Check existing config status
+        $existingConfig = $this->checkExistingConfig();
+        
         ?>
         <!DOCTYPE html>
         <html>
@@ -588,7 +692,9 @@ class TaskManagerDeployer
                 button { background: #4CAF50; color: white; padding: 12px 30px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
                 button:hover { background: #45a049; }
                 .info { background: #e3f2fd; padding: 15px; border-left: 4px solid #2196F3; margin-bottom: 20px; }
-                .warning { background: #fff3cd; padding: 10px; border-left: 4px solid #ffc107; margin: 10px 0; }
+                .success { background: #d4edda; padding: 15px; border-left: 4px solid #28a745; margin-bottom: 20px; }
+                .warning { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin-bottom: 20px; }
+                .error { background: #f8d7da; padding: 15px; border-left: 4px solid #dc3545; margin-bottom: 20px; }
             </style>
         </head>
         <body>
@@ -600,6 +706,26 @@ class TaskManagerDeployer
                     This script will download TaskManager files from GitHub and set up your environment.
                 </div>
 
+                <?php if ($existingConfig['exists'] && $existingConfig['connection_ok']): ?>
+                    <div class="success">
+                        <strong>✓ Database Configuration Found</strong><br>
+                        Valid database credentials detected in config.php. Database connection successful!<br>
+                        The deployment will use these existing credentials automatically.
+                    </div>
+                <?php elseif ($existingConfig['exists']): ?>
+                    <div class="error">
+                        <strong>✗ Database Connection Failed</strong><br>
+                        config.php exists but cannot connect to database:<br>
+                        <code><?php echo htmlspecialchars($existingConfig['error_message']); ?></code><br>
+                        Please provide valid database credentials below.
+                    </div>
+                <?php else: ?>
+                    <div class="warning">
+                        <strong>⚠️ No Configuration Found</strong><br>
+                        config.php does not exist. Please provide database credentials for initial setup.
+                    </div>
+                <?php endif; ?>
+
                 <form method="POST">
                     <div class="form-group">
                         <label for="api_key">API Key *</label>
@@ -609,34 +735,41 @@ class TaskManagerDeployer
                         </small>
                     </div>
 
-                    <h3>Database Configuration</h3>
-                    
-                    <div class="form-group">
-                        <label for="db_host">Database Host</label>
-                        <input type="text" id="db_host" name="db_host" value="localhost">
-                    </div>
+                    <?php if (!$existingConfig['exists'] || !$existingConfig['connection_ok']): ?>
+                        <h3>Database Configuration</h3>
+                        
+                        <div class="form-group">
+                            <label for="db_host">Database Host</label>
+                            <input type="text" id="db_host" name="db_host" value="localhost">
+                        </div>
 
-                    <div class="form-group">
-                        <label for="db_name">Database Name</label>
-                        <input type="text" id="db_name" name="db_name" value="taskmanager">
-                    </div>
+                        <div class="form-group">
+                            <label for="db_name">Database Name</label>
+                            <input type="text" id="db_name" name="db_name" value="taskmanager">
+                        </div>
 
-                    <div class="form-group">
-                        <label for="db_user">Database User *</label>
-                        <input type="text" id="db_user" name="db_user" required>
-                    </div>
+                        <div class="form-group">
+                            <label for="db_user">Database User *</label>
+                            <input type="text" id="db_user" name="db_user" required>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="db_pass">Database Password</label>
-                        <input type="password" id="db_pass" name="db_pass">
-                    </div>
+                        <div class="form-group">
+                            <label for="db_pass">Database Password</label>
+                            <input type="password" id="db_pass" name="db_pass">
+                        </div>
 
-                    <div class="form-group">
-                        <label>
-                            <input type="checkbox" name="skip_db">
-                            Skip database setup (already configured)
-                        </label>
-                    </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="skip_db">
+                                Skip database setup (already configured)
+                            </label>
+                        </div>
+                    <?php else: ?>
+                        <div class="info">
+                            <strong>Database fields hidden</strong><br>
+                            Using existing credentials from config.php. No database input required.
+                        </div>
+                    <?php endif; ?>
 
                     <div class="warning">
                         <strong>⚠️ Important:</strong> The API key is read from config.php. If deploying for the first time, use the default key from config.example.php, then generate a secure key after deployment using: <code>openssl rand -hex 32</code>
