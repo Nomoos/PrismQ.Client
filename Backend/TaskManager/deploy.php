@@ -235,11 +235,15 @@ class TaskManagerDeployer
             'api/.htaccess' => API_PATH . '/.htaccess',
             'api/index.php' => API_PATH . '/index.php',
             'api/ApiResponse.php' => API_PATH . '/ApiResponse.php',
+            'api/EndpointRouter.php' => API_PATH . '/EndpointRouter.php',
+            'api/ActionExecutor.php' => API_PATH . '/ActionExecutor.php',
+            'api/CustomHandlers.php' => API_PATH . '/CustomHandlers.php',
             'api/TaskController.php' => API_PATH . '/TaskController.php',
             'api/TaskTypeController.php' => API_PATH . '/TaskTypeController.php',
             'api/JsonSchemaValidator.php' => API_PATH . '/JsonSchemaValidator.php',
             'database/Database.php' => DATABASE_PATH . '/Database.php',
             'database/schema.sql' => DATABASE_PATH . '/schema.sql',
+            'database/seed_endpoints.sql' => DATABASE_PATH . '/seed_endpoints.sql',
             '_meta/config/config.example.php' => CONFIG_PATH . '/config.example.php',
         ];
 
@@ -377,6 +381,33 @@ class TaskManagerDeployer
             // Execute schema (only supports single statements or multi-statement with proper delimiters)
             $pdo->exec($schema);
             $this->info('Database schema created successfully');
+
+            // Import seed data for API endpoints
+            $seedFile = DATABASE_PATH . '/seed_endpoints.sql';
+            if (file_exists($seedFile)) {
+                $seedData = file_get_contents($seedFile);
+                
+                // Validate seed file - should contain INSERT INTO api_endpoints
+                if (stripos($seedData, 'INSERT INTO') === false) {
+                    $this->warning('Seed file does not contain INSERT statements, skipping');
+                } else if (stripos($seedData, 'api_endpoints') === false) {
+                    $this->warning('Seed file does not contain api_endpoints table references, skipping');
+                } else {
+                    // Check for dangerous SQL commands in seed file too
+                    foreach ($dangerousCommands as $cmd) {
+                        if (stripos($seedData, $cmd) !== false) {
+                            $this->error("Seed file contains dangerous command: {$cmd}");
+                            return false;
+                        }
+                    }
+                    
+                    // Execute seed data
+                    $pdo->exec($seedData);
+                    $this->info('API endpoints seeded successfully');
+                }
+            } else {
+                $this->warning("Seed file not found: {$seedFile} - API endpoints may need manual configuration");
+            }
 
             return true;
 

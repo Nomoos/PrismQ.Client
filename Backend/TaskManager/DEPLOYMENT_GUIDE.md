@@ -117,17 +117,22 @@ Downloads these files from the repository:
 api/.htaccess
 api/index.php
 api/ApiResponse.php
+api/EndpointRouter.php
+api/ActionExecutor.php
+api/CustomHandlers.php
 api/TaskController.php
 api/TaskTypeController.php
 api/JsonSchemaValidator.php
 database/Database.php
 database/schema.sql
+database/seed_endpoints.sql
 _meta/config/config.example.php
 ```
 
 ### Step 5: Database Setup
 - Creates database if it doesn't exist
-- Imports schema (creates tables: task_types, tasks, task_history)
+- Imports schema (creates tables: task_types, tasks, task_history, api_endpoints)
+- Seeds API endpoints with default TaskManager endpoints
 - Configures character set (UTF-8)
 
 ### Step 6: Application Configuration
@@ -153,6 +158,9 @@ TaskManager/
 │   ├── .htaccess
 │   ├── index.php
 │   ├── ApiResponse.php
+│   ├── EndpointRouter.php
+│   ├── ActionExecutor.php
+│   ├── CustomHandlers.php
 │   ├── TaskController.php
 │   ├── TaskTypeController.php
 │   └── JsonSchemaValidator.php
@@ -161,7 +169,8 @@ TaskManager/
 │   └── config.example.php
 └── database/
     ├── Database.php
-    └── schema.sql
+    ├── schema.sql
+    └── seed_endpoints.sql
 ```
 
 ## Post-Deployment Verification
