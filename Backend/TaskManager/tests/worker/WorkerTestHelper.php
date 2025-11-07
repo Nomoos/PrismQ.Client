@@ -222,14 +222,14 @@ class WorkerTestHelper {
      * Clean up test data
      */
     public function cleanup() {
-        // Delete test tasks
+        // Delete test tasks first (due to foreign key constraints)
         if (!empty($this->createdResources['tasks'])) {
             $placeholders = implode(',', array_fill(0, count($this->createdResources['tasks']), '?'));
             $stmt = $this->db->prepare("DELETE FROM tasks WHERE id IN ($placeholders)");
             $stmt->execute($this->createdResources['tasks']);
         }
         
-        // Delete test task types
+        // Then delete test task types
         if (!empty($this->createdResources['task_types'])) {
             $placeholders = implode(',', array_fill(0, count($this->createdResources['task_types']), '?'));
             $stmt = $this->db->prepare("DELETE FROM task_types WHERE name IN ($placeholders)");

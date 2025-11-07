@@ -24,9 +24,9 @@ Usage:
   php run_tests.php [options]
 
 Options:
-  --suite=<name>    Run specific test suite (unit, integration, worker, security)
-  --verbose         Show detailed error traces
-  --help            Show this help message
+  --suite=<name>         Run specific test suite (unit, integration, worker, security)
+  --verbose              Show detailed error traces
+  --help                 Show this help message
 
 Examples:
   php run_tests.php                    # Run all tests
