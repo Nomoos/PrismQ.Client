@@ -50,10 +50,36 @@ This document contains information about the Vedos/Wedos webhosting account wher
 
 ## Hosting Provider Details
 
-**Provider**: Vedos/Wedos  
+**Provider**: Vedos (https://vedos.cz)  
+**Product**: NoLimit Webhosting (https://vedos.cz/en/webhosting/nolimit/)  
 **Hosting Type**: Shared Linux Hosting  
-**Control Panel**: Standard cPanel/Plesk (typical for Vedos)  
+**Control Panel**: Vedos Control Panel with phpMyAdmin  
 **Support**: Available through Vedos support channels
+
+### Supported PHP Versions
+- **PHP 5.4 - 5.6**: Available (outdated, not recommended)
+- **PHP 7.0 - 7.4**: Available (deprecated, but still supported)
+- **PHP 8.0 - 8.4**: Available (current and recommended for new applications)
+- **Configuration**: PHP version can be selected during order and changed later via control panel
+- **Advanced Settings**: Customizable php.ini parameters available through admin interface
+- **Concurrent Threads**: Up to 25 concurrent PHP threads (NoLimit tariff)
+- **Memory Limit**: 512 MB per script (NoLimit tariff)
+- **File Upload Limit**: 256 MB (NoLimit tariff)
+- **POST Request Limit**: 256 MB (NoLimit tariff)
+
+### Database Support
+- **Database System**: MariaDB (fully MySQL-compatible)
+- **Number of Databases**: Unlimited MariaDB databases
+- **Storage Capacity**: Up to 2 GB database storage (applies to NoLimit tariff as used in this project)
+- **Management Tool**: phpMyAdmin (accessible from Vedos control panel)
+- **User Accounts**: Each database includes:
+  - **Admin user**: Full privileges (recommended only for phpMyAdmin administration)
+  - **Web user**: Limited rights (intended for PHP application connections)
+- **Remote Access**: Not supported (connections must originate from web server for security)
+- **User Management**: Fixed predefined users; permissions cannot be changed (security feature)
+- **CRON Support**: Available for periodic PHP script execution
+
+**Note**: NoLimit Extra tariff provides 5 GB database storage, but this project uses the standard NoLimit tariff (2 GB limit).
 
 ## Renewal Information
 
@@ -75,15 +101,17 @@ This document contains information about the Vedos/Wedos webhosting account wher
 
 When deploying to this hosting account:
 
-- [ ] Verify sufficient database space (7 MB → will grow to ~10-15 MB)
-- [ ] Confirm PHP version compatibility (7.4+ required)
-- [ ] Check MySQL/MariaDB version (5.7+/10.2+ required)
+- [ ] Verify sufficient database space (7 MB → will grow to ~10-15 MB within 2 GB limit)
+- [ ] Select PHP version (PHP 8.0+ recommended, 8.0-8.4 available)
+- [ ] Confirm MariaDB compatibility (MySQL-compatible, managed via phpMyAdmin)
+- [ ] Use web user account (not admin) for PHP application database connections
 - [ ] Verify Apache mod_rewrite availability
 - [ ] Test FTP/SFTP access
 - [ ] Backup existing data before deployment
-- [ ] Configure database credentials in config.php
+- [ ] Configure database credentials in config.php (use web user, not admin user)
 - [ ] Test API endpoints after deployment
-- [ ] Monitor resource usage post-deployment
+- [ ] Monitor resource usage post-deployment (512 MB memory limit, 25 concurrent threads)
+- [ ] Set up CRON jobs if needed for periodic tasks
 
 ## Related Documentation
 
@@ -96,6 +124,7 @@ When deploying to this hosting account:
 | Date | Update | Notes |
 |------|--------|-------|
 | 07.11.2025 | Initial documentation | Documented hosting account details from order information |
+| 07.11.2025 | Added provider and product details | Updated to include Vedos NoLimit webhosting specifications, supported PHP versions (5.4-8.4), and MariaDB database details |
 
 ---
 
