@@ -56,6 +56,11 @@ cd Frontend && npm run dev
 - **[Data Directory Rationale](./_meta/docs/DATA_DIRECTORY_RATIONALE.md)** - Data storage design decisions
 - **[Security Fixes](./_meta/docs/SECURITY_FIXES.md)** - Security updates and patches
 
+### Worker Implementation
+- **[Worker Implementation Plan](./_meta/docs/WORKER_IMPLEMENTATION_PLAN.md)** - Strategic implementation plan
+- **[Worker Implementation Guidelines](./_meta/docs/WORKER_IMPLEMENTATION_GUIDELINES.md)** - Best practices and patterns
+- **[Worker Examples](./_meta/examples/workers/README.md)** - Complete working examples
+
 ### Additional Resources
 - **[Screenshots Guide](./_meta/docs/SCREENSHOTS_GUIDE.md)** - UI screenshot capture
 - **[Postman Collection](./_meta/docs/POSTMAN_COLLECTION.md)** - API testing guide
@@ -68,6 +73,7 @@ cd Frontend && npm run dev
 - [Main Repository](../) - PrismQ.IdeaInspiration overview
 - [Backend](./Backend/) - FastAPI REST API
 - [Frontend](./Frontend/) - Vue 3 web UI
+- [TaskManager](./Backend/TaskManager/) - Task queue system
 
 ## 📄 License
 

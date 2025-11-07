@@ -24,14 +24,16 @@ Usage:
   php run_tests.php [options]
 
 Options:
-  --suite=<name>    Run specific test suite (unit, integration, api, security)
-  --verbose         Show detailed error traces
-  --help            Show this help message
+  --suite=<name>         Run specific test suite (unit, integration, worker, security)
+  --verbose              Show detailed error traces
+  --help                 Show this help message
 
 Examples:
-  php run_tests.php                # Run all tests
-  php run_tests.php --suite=unit   # Run only unit tests
-  php run_tests.php --verbose      # Run with verbose output
+  php run_tests.php                    # Run all tests
+  php run_tests.php --suite=unit       # Run only unit tests
+  php run_tests.php --suite=integration # Run only integration tests
+  php run_tests.php --suite=worker     # Run only worker tests
+  php run_tests.php --verbose          # Run with verbose output
 
 HELP;
     exit(0);
@@ -53,6 +55,18 @@ $testSuites = [
         'tests' => [
             __DIR__ . '/unit/JsonSchemaValidatorTest.php',
             __DIR__ . '/unit/ApiResponseTest.php'
+        ]
+    ],
+    'integration' => [
+        'name' => 'API Integration Tests',
+        'tests' => [
+            __DIR__ . '/integration/ApiIntegrationTest.php'
+        ]
+    ],
+    'worker' => [
+        'name' => 'Worker Tests',
+        'tests' => [
+            __DIR__ . '/worker/WorkerTest.php'
         ]
     ],
     'security' => [
