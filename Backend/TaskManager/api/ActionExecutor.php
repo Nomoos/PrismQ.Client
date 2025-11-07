@@ -48,6 +48,16 @@ class ActionExecutor {
         $table = $config['table'];
         $select = isset($config['select']) ? $config['select'] : ['*'];
         
+        // Validate and sanitize table name
+        $this->validateIdentifier($table, 'table name');
+        
+        // Validate select fields
+        foreach ($select as $field) {
+            if ($field !== '*' && !preg_match('/^[a-zA-Z0-9_. ]+( as [a-zA-Z0-9_]+)?$/i', $field)) {
+                throw new Exception("Invalid select field: $field");
+            }
+        }
+        
         // Build SELECT clause
         $selectClause = implode(', ', $select);
         $sql = "SELECT $selectClause FROM $table";
@@ -55,7 +65,21 @@ class ActionExecutor {
         // Add JOINs
         if (isset($config['joins'])) {
             foreach ($config['joins'] as $join) {
-                $joinType = $join['type'] ?? 'INNER';
+                $joinType = strtoupper($join['type'] ?? 'INNER');
+                
+                // Validate join type
+                if (!in_array($joinType, ['INNER', 'LEFT', 'RIGHT', 'OUTER'])) {
+                    throw new Exception("Invalid join type: $joinType");
+                }
+                
+                // Validate table name
+                $this->validateIdentifier($join['table'], 'join table');
+                
+                // Validate ON clause contains only safe characters
+                if (!preg_match('/^[a-zA-Z0-9_. =]+$/', $join['on'])) {
+                    throw new Exception("Invalid join ON clause");
+                }
+                
                 $sql .= " $joinType JOIN {$join['table']} ON {$join['on']}";
             }
         }
@@ -66,6 +90,11 @@ class ActionExecutor {
         
         if (isset($config['where'])) {
             foreach ($config['where'] as $field => $value) {
+                // Validate field name
+                if (!preg_match('/^[a-zA-Z0-9_.]+$/', $field)) {
+                    throw new Exception("Invalid WHERE field: $field");
+                }
+                
                 $resolved = $this->resolveValue($value, $requestData);
                 $whereClauses[] = "$field = ?";
                 $params[] = $resolved;
@@ -75,10 +104,15 @@ class ActionExecutor {
         // Add optional WHERE conditions (only if values are provided)
         if (isset($config['where_optional'])) {
             foreach ($config['where_optional'] as $field => $value) {
+                // Validate field name (allow operators like '<', '>', 'LIKE')
+                if (!preg_match('/^[a-zA-Z0-9_.]+(( LIKE| <| >| <=| >=| !=))?$/i', $field)) {
+                    throw new Exception("Invalid WHERE field: $field");
+                }
+                
                 $resolved = $this->resolveValue($value, $requestData);
                 if ($resolved !== null && $resolved !== '') {
                     // Handle LIKE patterns
-                    if (strpos($field, 'LIKE') !== false || strpos($resolved, '%') !== false) {
+                    if (stripos($field, 'LIKE') !== false || strpos($resolved, '%') !== false) {
                         $whereClauses[] = "$field LIKE ?";
                     } else {
                         $whereClauses[] = "$field = ?";
@@ -94,6 +128,10 @@ class ActionExecutor {
         
         // Add ORDER BY
         if (isset($config['order'])) {
+            // Validate ORDER BY clause
+            if (!preg_match('/^[a-zA-Z0-9_., ]+(ASC|DESC)?$/i', $config['order'])) {
+                throw new Exception("Invalid ORDER BY clause");
+            }
             $sql .= " ORDER BY {$config['order']}";
         }
         
@@ -150,11 +188,20 @@ class ActionExecutor {
      */
     private function executeInsert($config, $requestData) {
         $table = $config['table'];
+        
+        // Validate table name
+        $this->validateIdentifier($table, 'table name');
+        
         $fields = [];
         $values = [];
         $params = [];
         
         foreach ($config['fields'] as $field => $valueExpr) {
+            // Validate field name
+            if (!preg_match('/^[a-zA-Z0-9_]+$/', $field)) {
+                throw new Exception("Invalid field name: $field");
+            }
+            
             $fields[] = $field;
             $values[] = '?';
             $params[] = $this->resolveValue($valueExpr, $requestData);
@@ -176,10 +223,19 @@ class ActionExecutor {
      */
     private function executeUpdate($config, $requestData) {
         $table = $config['table'];
+        
+        // Validate table name
+        $this->validateIdentifier($table, 'table name');
+        
         $setClauses = [];
         $params = [];
         
         foreach ($config['set'] as $field => $valueExpr) {
+            // Validate field name
+            if (!preg_match('/^[a-zA-Z0-9_]+$/', $field)) {
+                throw new Exception("Invalid field name: $field");
+            }
+            
             $setClauses[] = "$field = ?";
             $params[] = $this->resolveValue($valueExpr, $requestData);
         }
@@ -190,6 +246,11 @@ class ActionExecutor {
         if (isset($config['where'])) {
             $whereClauses = [];
             foreach ($config['where'] as $field => $value) {
+                // Validate field name
+                if (!preg_match('/^[a-zA-Z0-9_.]+$/', $field)) {
+                    throw new Exception("Invalid WHERE field: $field");
+                }
+                
                 $whereClauses[] = "$field = ?";
                 $params[] = $this->resolveValue($value, $requestData);
             }
@@ -207,12 +268,21 @@ class ActionExecutor {
      */
     private function executeDelete($config, $requestData) {
         $table = $config['table'];
+        
+        // Validate table name
+        $this->validateIdentifier($table, 'table name');
+        
         $sql = "DELETE FROM $table";
         $params = [];
         
         if (isset($config['where'])) {
             $whereClauses = [];
             foreach ($config['where'] as $field => $value) {
+                // Validate field name
+                if (!preg_match('/^[a-zA-Z0-9_.]+$/', $field)) {
+                    throw new Exception("Invalid WHERE field: $field");
+                }
+                
                 $whereClauses[] = "$field = ?";
                 $params[] = $this->resolveValue($value, $requestData);
             }
@@ -309,5 +379,27 @@ class ActionExecutor {
         }
         
         return $data;
+    }
+    
+    /**
+     * Validate SQL identifier (table name, column name, etc.)
+     * Prevents SQL injection by ensuring only safe characters
+     */
+    private function validateIdentifier($identifier, $type = 'identifier') {
+        // Allow: letters, numbers, underscore, dot (for aliases), space (for aliases)
+        // Example: "users u", "table_name", "t.column_name"
+        if (!preg_match('/^[a-zA-Z0-9_. ]+$/', $identifier)) {
+            throw new Exception("Invalid $type: contains unsafe characters");
+        }
+        
+        // Prevent SQL keywords being used as table names without proper context
+        $dangerousKeywords = ['DROP', 'DELETE', 'TRUNCATE', 'ALTER', 'CREATE', 'EXEC', 'EXECUTE'];
+        $upperIdentifier = strtoupper($identifier);
+        
+        foreach ($dangerousKeywords as $keyword) {
+            if (strpos($upperIdentifier, $keyword) !== false) {
+                throw new Exception("Invalid $type: contains restricted keyword");
+            }
+        }
     }
 }

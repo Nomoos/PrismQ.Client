@@ -135,9 +135,9 @@ class CustomHandlers {
             }
         }
         
-        // Create dedupe key
+        // Create dedupe key (use null byte separator to prevent collision)
         $params_json = json_encode($params, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        $dedupe_key = hash('sha256', $type_name . ':' . $params_json);
+        $dedupe_key = hash('sha256', $type_name . "\0" . $params_json);
         
         // Check for existing task
         $stmt = $this->db->prepare("SELECT id, status FROM tasks WHERE dedupe_key = ?");
