@@ -35,8 +35,8 @@ if ($requestPath !== '/health') {
     // Get API key from header
     $apiKey = $_SERVER['HTTP_X_API_KEY'] ?? '';
     
-    // Validate API key
-    if (!defined('API_KEY') || $apiKey !== API_KEY) {
+    // Validate API key using hash_equals to prevent timing attacks
+    if (!defined('API_KEY') || !hash_equals(API_KEY, $apiKey)) {
         header('HTTP/1.1 401 Unauthorized');
         echo json_encode([
             'error' => 'Unauthorized',

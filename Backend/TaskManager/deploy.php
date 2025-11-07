@@ -21,12 +21,14 @@ if (file_exists($configFile)) {
         define('DEPLOY_API_KEY', API_KEY);
     } else {
         // Fallback for old config files without API_KEY
-        define('DEPLOY_API_KEY', 'changeme_generate_secure_random_key_here');
+        // SECURITY: This is a placeholder. You MUST change this in config.php
+        define('DEPLOY_API_KEY', bin2hex(random_bytes(16)));
     }
 } else {
     // For initial deployment when config.php doesn't exist yet
-    // This should be changed to match the API_KEY in config.example.php
-    define('DEPLOY_API_KEY', 'changeme_generate_secure_random_key_here');
+    // Generate a random key for this session - user must set permanent key in config.php
+    // SECURITY: This temporary key is only for the deployment process
+    define('DEPLOY_API_KEY', bin2hex(random_bytes(16)));
 }
 
 // GitHub configuration
@@ -142,7 +144,7 @@ class TaskManagerDeployer
             // Web-based authentication
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['api_key'])) {
                 $apiKey = $_POST['api_key'];
-                $this->authenticated = ($apiKey === DEPLOY_API_KEY);
+                $this->authenticated = hash_equals(DEPLOY_API_KEY, $apiKey);
                 return $this->authenticated;
             } else {
                 // Show login form
@@ -153,7 +155,7 @@ class TaskManagerDeployer
             // CLI authentication
             $this->output('API key authentication required.');
             $apiKey = $this->prompt('Enter API key: ', true);
-            $this->authenticated = ($apiKey === DEPLOY_API_KEY);
+            $this->authenticated = hash_equals(DEPLOY_API_KEY, $apiKey);
             return $this->authenticated;
         }
     }
