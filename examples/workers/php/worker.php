@@ -353,7 +353,6 @@ function handleSleepTask(array $params): array
  * Intentionally fails to demonstrate error handling
  *
  * @param array $params Task parameters
- * @return never
  * @throws Exception always
  */
 function handleErrorTask(array $params): never
