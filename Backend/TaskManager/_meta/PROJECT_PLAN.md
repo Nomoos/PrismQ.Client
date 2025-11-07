@@ -4,7 +4,7 @@
 
 The TaskManager is a **lightweight PHP+MySQL task queue system** with a **data-driven architecture** designed specifically for shared hosting environments (Vedos). It provides a REST API-based task management solution where **endpoints, validation rules, and actions are configured in the database** rather than hardcoded in PHP. The system operates entirely **on-demand via HTTP requests**, without requiring long-running background processes.
 
-**Timeline**: 3-4 weeks (14-23 days with parallelization)  
+**Timeline**: 3-4 weeks (15-24 days with parallelization)  
 **Team Size**: 10 specialized workers  
 **Current Status**: 50% complete (Phase 1 complete, Phase 2 starting)  
 **Architecture**: Data-driven, on-demand (no background processes)

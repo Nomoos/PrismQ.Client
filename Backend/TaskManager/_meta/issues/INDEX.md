@@ -189,8 +189,8 @@ ISSUE-000 (Master Plan - Data-Driven)
 
 ### By Priority
 - **Critical**: ISSUE-009 (Data-Driven Architecture Review)
-- **High**: ISSUE-001, 002, 003, 004, 005, 006
-- **Medium**: ISSUE-007, 008
+- **High**: ISSUE-001, ISSUE-002, ISSUE-003, ISSUE-004, ISSUE-005, ISSUE-006
+- **Medium**: ISSUE-007, ISSUE-008
 
 ## Next Steps
 
