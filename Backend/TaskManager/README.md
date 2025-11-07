@@ -27,14 +27,33 @@ TaskManager provides a REST API for managing tasks with parameter validation, de
 
 ## 🚀 Quick Start
 
-### 1. Database Setup
+### Automated Deployment (Recommended)
+
+**Use the automated deployment script for easy setup:**
+
+1. Upload `deploy.php` to your server
+2. Open in browser: `https://your-domain.com/path/deploy.php`
+3. Enter admin password and database credentials
+4. The script will automatically:
+   - Download all files from GitHub
+   - Set up the database
+   - Configure the application
+   - Validate the installation
+
+**📖 See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for detailed instructions**
+
+### Manual Deployment
+
+If you prefer manual setup:
+
+#### 1. Database Setup
 
 ```bash
 # Import the database schema
 mysql -u username -p database_name < database/schema.sql
 ```
 
-### 2. Configuration
+#### 2. Configuration
 
 ```bash
 # Copy the example config and edit with your database credentials
@@ -50,14 +69,14 @@ define('DB_USER', 'your_username');
 define('DB_PASS', 'your_password');
 ```
 
-### 3. Deploy to Server
+#### 3. Deploy to Server
 
 Upload the `TaskManager` directory to your web server. The API should be accessible at:
 ```
 https://your-domain.com/api/
 ```
 
-### 4. Test the Installation
+#### 4. Test the Installation
 
 ```bash
 # Health check
@@ -360,6 +379,6 @@ Proprietary - All Rights Reserved - Copyright (c) 2025 PrismQ
 ## 🔗 Related
 
 - [PrismQ.Client](../../) - Main client application
+- [Deployment Guide](DEPLOYMENT_GUIDE.md) - **Automated deployment script documentation**
 - [API Reference](docs/API_REFERENCE.md) - Detailed API documentation
-- [Deployment Guide](docs/DEPLOYMENT.md) - Step-by-step deployment instructions
 - [Hosting Information](docs/HOSTING_INFO.md) - Vedos/Wedos account details and resource allocation
