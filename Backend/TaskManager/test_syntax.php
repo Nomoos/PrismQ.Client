@@ -169,7 +169,7 @@ foreach ($sqlFiles as $file) {
     
     // Basic checks
     $hasCreateTable = preg_match('/CREATE TABLE/i', $content);
-    $hasInsert = preg_match('/INSERT INTO/i', $content);
+    $hasInsert = preg_match('/INSERT (IGNORE )?INTO/i', $content);
     
     if ($file === 'database/schema.sql' && $hasCreateTable) {
         echo "  ✓ $file (contains CREATE TABLE statements)\n";
