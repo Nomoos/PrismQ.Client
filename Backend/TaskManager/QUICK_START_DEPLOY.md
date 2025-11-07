@@ -2,6 +2,15 @@
 
 ## 🚀 Fast Track Deployment
 
+### Step 0: Check Environment (IMPORTANT!)
+Before deployment, verify your environment:
+```bash
+# Upload check_setup.php to server, then:
+php check_setup.php
+# Or visit: https://yourdomain.com/path/check_setup.php
+```
+**Only proceed if all critical checks pass!**
+
 ### Prerequisites Check
 ```bash
 ✓ PHP 7.4+
