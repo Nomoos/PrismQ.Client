@@ -1,18 +1,21 @@
 #!/usr/bin/env php
 <?php
+
 /**
  * Example: Create Tasks for TaskManager
- * 
+ *
  * This script demonstrates how to programmatically:
  * 1. Register task types with JSON schemas
  * 2. Create tasks with validated parameters
  * 3. Monitor task status
- * 
+ *
  * Usage:
  *   php create_tasks_example.php [--api-url=URL]
  */
 
 require_once __DIR__ . '/WorkerClient.php';
+
+use PrismQ\TaskManager\Worker\WorkerClient;
 
 // Parse arguments
 $apiUrl = 'http://localhost/api';
@@ -119,17 +122,16 @@ foreach ($tasks as $taskData) {
     try {
         $task = $client->createTask($taskData['type'], $taskData['params']);
         $createdTaskIds[] = $task['id'];
-        
+
         echo "✓ Created task #{$task['id']}\n";
         echo "  Type: {$task['type']}\n";
         echo "  Status: {$task['status']}\n";
-        
+
         if (isset($task['deduplicated']) && $task['deduplicated']) {
             echo "  Note: Task was deduplicated (already exists)\n";
         }
-        
+
         echo "\n";
-        
     } catch (Exception $e) {
         echo "✗ Failed to create task: {$e->getMessage()}\n\n";
     }
@@ -154,10 +156,9 @@ foreach ($batchTopics as $topic) {
             'style' => 'casual',
             'length' => 1000
         ]);
-        
+
         $createdTaskIds[] = $task['id'];
         echo "✓ Created task #{$task['id']}: {$topic}\n";
-        
     } catch (Exception $e) {
         echo "✗ Failed: {$topic} - {$e->getMessage()}\n";
     }
@@ -176,27 +177,26 @@ $tasksToCheck = array_slice($createdTaskIds, 0, 3);
 foreach ($tasksToCheck as $taskId) {
     try {
         $task = $client->getTask($taskId);
-        
+
         echo "Task #{$taskId}:\n";
         echo "  Status: {$task['status']}\n";
         echo "  Type: {$task['type']}\n";
         echo "  Attempts: {$task['attempts']}\n";
-        
+
         if ($task['claimed_by']) {
             echo "  Claimed by: {$task['claimed_by']}\n";
             echo "  Claimed at: {$task['claimed_at']}\n";
         }
-        
+
         if ($task['status'] === 'completed' && isset($task['result'])) {
             echo "  Result: " . json_encode($task['result'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n";
         }
-        
+
         if ($task['error_message']) {
             echo "  Error: {$task['error_message']}\n";
         }
-        
+
         echo "\n";
-        
     } catch (Exception $e) {
         echo "✗ Failed to get task #{$taskId}: {$e->getMessage()}\n\n";
     }
@@ -211,14 +211,13 @@ try {
         'status' => 'pending',
         'limit' => 10
     ]);
-    
+
     echo "Found {$result['count']} pending tasks:\n";
-    
+
     foreach ($result['tasks'] as $task) {
         echo "  - Task #{$task['id']} ({$task['type']}) - created {$task['created_at']}\n";
     }
     echo "\n";
-    
 } catch (Exception $e) {
     echo "✗ Failed to list tasks: {$e->getMessage()}\n\n";
 }
