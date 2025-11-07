@@ -10,6 +10,7 @@ class WorkerClient {
     private $apiBaseUrl;
     private $workerId;
     private $debug;
+    private $timeout;
     
     /**
      * Create a new WorkerClient instance
@@ -17,11 +18,13 @@ class WorkerClient {
      * @param string $apiBaseUrl Base URL for the TaskManager API (e.g., https://example.com/api)
      * @param string $workerId Unique identifier for this worker instance
      * @param bool $debug Enable debug logging
+     * @param int $timeout Request timeout in seconds (default: 30)
      */
-    public function __construct($apiBaseUrl, $workerId, $debug = false) {
+    public function __construct($apiBaseUrl, $workerId, $debug = false, $timeout = 30) {
         $this->apiBaseUrl = rtrim($apiBaseUrl, '/');
         $this->workerId = $workerId;
         $this->debug = $debug;
+        $this->timeout = $timeout;
     }
     
     /**
@@ -260,7 +263,7 @@ class WorkerClient {
         
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
         
         if ($method === 'POST') {
             curl_setopt($ch, CURLOPT_POST, true);

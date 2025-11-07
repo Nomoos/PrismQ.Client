@@ -686,6 +686,14 @@ class CustomWorkerClient extends WorkerClient {
         echo "[PROGRESS] Task #{$taskId}: {$progress}%\n";
     }
 }
+
+// Example: Create client with custom timeout for long-running tasks
+$client = new WorkerClient(
+    'https://api.example.com/api',
+    'worker-01',
+    true,  // debug
+    60     // 60 second timeout for API requests
+);
 ```
 
 ### Task Result Callbacks
