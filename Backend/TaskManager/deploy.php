@@ -3,19 +3,31 @@
  * TaskManager Deployment Script
  * 
  * This script downloads TaskManager files from GitHub repository and sets up the environment.
- * Requires admin password authentication before proceeding.
+ * Requires API key authentication before proceeding (reads from config.php if available).
  * 
  * Usage:
  *   Interactive mode: php deploy.php
  *   Web mode: access via browser (https://your-domain.com/deploy.php)
  * 
  * @author Worker08 - DevOps & Deployment Specialist
- * @version 1.0.0
+ * @version 1.1.0
  */
 
-// Admin password - CHANGE THIS BEFORE DEPLOYMENT!
-// SECURITY: Use a strong password with uppercase, lowercase, numbers, and special characters
-define('ADMIN_PASSWORD', 'changeme123'); // TODO: CRITICAL - Change this to a secure password before use!
+// Try to load API key from existing config.php, otherwise use default for initial setup
+$configFile = __DIR__ . '/config/config.php';
+if (file_exists($configFile)) {
+    require_once $configFile;
+    if (defined('API_KEY')) {
+        define('DEPLOY_API_KEY', API_KEY);
+    } else {
+        // Fallback for old config files without API_KEY
+        define('DEPLOY_API_KEY', 'changeme_generate_secure_random_key_here');
+    }
+} else {
+    // For initial deployment when config.php doesn't exist yet
+    // This should be changed to match the API_KEY in config.example.php
+    define('DEPLOY_API_KEY', 'changeme_generate_secure_random_key_here');
+}
 
 // GitHub configuration
 define('GITHUB_REPO_OWNER', 'Nomoos');
@@ -122,15 +134,15 @@ class TaskManagerDeployer
     }
 
     /**
-     * Authenticate user with admin password
+     * Authenticate user with API key
      */
     private function authenticate()
     {
         if ($this->isWebMode) {
             // Web-based authentication
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['password'])) {
-                $password = $_POST['password'];
-                $this->authenticated = ($password === ADMIN_PASSWORD);
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['api_key'])) {
+                $apiKey = $_POST['api_key'];
+                $this->authenticated = ($apiKey === DEPLOY_API_KEY);
                 return $this->authenticated;
             } else {
                 // Show login form
@@ -139,9 +151,9 @@ class TaskManagerDeployer
             }
         } else {
             // CLI authentication
-            $this->output('Admin authentication required.');
-            $password = $this->prompt('Enter admin password: ', true);
-            $this->authenticated = ($password === ADMIN_PASSWORD);
+            $this->output('API key authentication required.');
+            $apiKey = $this->prompt('Enter API key: ', true);
+            $this->authenticated = ($apiKey === DEPLOY_API_KEY);
             return $this->authenticated;
         }
     }
@@ -419,11 +431,19 @@ class TaskManagerDeployer
 
     /**
      * Configure application by creating config.php
+     * Note: Does not overwrite existing config.php to preserve custom settings like API_KEY
      */
     private function configureApplication($config)
     {
         $exampleFile = CONFIG_PATH . '/config.example.php';
         $configFile = CONFIG_PATH . '/config.php';
+
+        // Check if config.php already exists
+        if (file_exists($configFile)) {
+            $this->info("Configuration file already exists: {$configFile}");
+            $this->info("Skipping config creation to preserve existing settings (including API_KEY)");
+            return true;
+        }
 
         if (!file_exists($exampleFile)) {
             $this->error("Configuration example file not found: {$exampleFile}");
@@ -563,8 +583,11 @@ class TaskManagerDeployer
 
                 <form method="POST">
                     <div class="form-group">
-                        <label for="password">Admin Password *</label>
-                        <input type="password" id="password" name="password" required>
+                        <label for="api_key">API Key *</label>
+                        <input type="password" id="api_key" name="api_key" required>
+                        <small style="color: #666; display: block; margin-top: 5px;">
+                            Use the API_KEY from your config.php file. For initial setup, use the default from config.example.php.
+                        </small>
                     </div>
 
                     <h3>Database Configuration</h3>
@@ -597,7 +620,7 @@ class TaskManagerDeployer
                     </div>
 
                     <div class="warning">
-                        <strong>⚠️ Important:</strong> Make sure to change the ADMIN_PASSWORD in deploy.php before deployment!
+                        <strong>⚠️ Important:</strong> The API key is read from config.php. If deploying for the first time, use the default key from config.example.php, then generate a secure key after deployment using: <code>openssl rand -hex 32</code>
                     </div>
 
                     <button type="submit">Deploy TaskManager</button>

@@ -14,12 +14,37 @@ header('Cache-Control: ' . API_RESPONSE_CACHE_CONTROL);
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-API-Key');
 
 // Handle OPTIONS requests for CORS
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
+}
+
+// Authenticate API key for all requests except health check
+$requestPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$requestPath = str_replace('/api', '', $requestPath);
+$requestPath = rtrim($requestPath, '/');
+if ($requestPath === '') {
+    $requestPath = '/';
+}
+
+// Skip authentication for health check endpoint
+if ($requestPath !== '/health') {
+    // Get API key from header
+    $apiKey = $_SERVER['HTTP_X_API_KEY'] ?? '';
+    
+    // Validate API key
+    if (!defined('API_KEY') || $apiKey !== API_KEY) {
+        header('HTTP/1.1 401 Unauthorized');
+        echo json_encode([
+            'error' => 'Unauthorized',
+            'message' => 'Invalid or missing API key. Include X-API-Key header with your request.',
+            'timestamp' => date('c')
+        ]);
+        exit();
+    }
 }
 
 // Load required files
