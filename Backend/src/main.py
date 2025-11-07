@@ -16,14 +16,15 @@ from .core.config import settings
 from .core.logger import setup_logging
 from .core.exceptions import WebClientException
 from .core.resource_pool import initialize_resource_pool, cleanup_resource_pool
-from .api import modules, runs, system, queue
+from .api import runs, system, queue
 
-# Import new API module routers
-# Add Backend directory to path to import API module (temporary until API module is in src)
+# Import modular endpoints (new pattern - modules are self-contained at Backend/ level)
+# Add Backend directory to path to import modules
 backend_dir = Path(__file__).parent.parent
 if str(backend_dir) not in sys.path:
     sys.path.insert(0, str(backend_dir))
 from API.endpoints import task_types_router, task_list_router
+from Modules.endpoints import router as modules_router
 
 # Configure event loop policy for Windows
 # On Windows, the default SelectorEventLoop doesn't support subprocess operations
@@ -156,7 +157,7 @@ async def general_exception_handler(request: Request, exc: Exception):
 
 
 # Include routers
-app.include_router(modules.router, prefix="/api", tags=["Modules"])
+app.include_router(modules_router, prefix="/api", tags=["Modules"])
 app.include_router(runs.router, prefix="/api", tags=["Runs"])
 app.include_router(system.router, prefix="/api", tags=["System"])
 app.include_router(queue.router, prefix="/api", tags=["Queue"])
