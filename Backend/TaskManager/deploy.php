@@ -387,9 +387,11 @@ class TaskManagerDeployer
             if (file_exists($seedFile)) {
                 $seedData = file_get_contents($seedFile);
                 
-                // Validate seed file
+                // Validate seed file - should contain INSERT INTO api_endpoints
                 if (stripos($seedData, 'INSERT INTO') === false) {
                     $this->warning('Seed file does not contain INSERT statements, skipping');
+                } else if (stripos($seedData, 'api_endpoints') === false) {
+                    $this->warning('Seed file does not contain api_endpoints table references, skipping');
                 } else {
                     // Check for dangerous SQL commands in seed file too
                     foreach ($dangerousCommands as $cmd) {
