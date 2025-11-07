@@ -45,7 +45,7 @@ Based on where `deploy.php` is located:
    - Database files (3 files)
    - Config example (1 file)
    - **OpenAPI documentation (2 files)**
-   - **Swagger UI assets (20 files)**
+   - **Swagger UI assets (18 files)**
 
 2. **Routing**: The `api/index.php` file handles routing for all `/api/*` requests:
    ```php

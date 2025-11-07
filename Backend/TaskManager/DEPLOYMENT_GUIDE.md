@@ -153,7 +153,7 @@ database/seed_endpoints.sql
 _meta/config/config.example.php
 public/openapi.json
 public/README.md
-public/swagger-ui/* (20 files)
+public/swagger-ui/* (18 files)
 ```
 **Total: 33 files**
 
