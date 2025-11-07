@@ -36,7 +36,18 @@ if ($requestPath !== '/health') {
     $apiKey = $_SERVER['HTTP_X_API_KEY'] ?? '';
     
     // Validate API key using hash_equals to prevent timing attacks
-    if (!defined('API_KEY') || !hash_equals(API_KEY, $apiKey)) {
+    // Check if API_KEY is defined first to avoid warnings
+    if (!defined('API_KEY')) {
+        header('HTTP/1.1 500 Internal Server Error');
+        echo json_encode([
+            'error' => 'Configuration Error',
+            'message' => 'API_KEY not configured. Please check your config.php file.',
+            'timestamp' => date('c')
+        ]);
+        exit();
+    }
+    
+    if (!hash_equals(API_KEY, $apiKey)) {
         header('HTTP/1.1 401 Unauthorized');
         echo json_encode([
             'error' => 'Unauthorized',

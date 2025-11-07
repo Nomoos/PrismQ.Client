@@ -16,12 +16,18 @@
 // Try to load API key from existing config.php, otherwise use default for initial setup
 $configFile = __DIR__ . '/config/config.php';
 if (file_exists($configFile)) {
-    require_once $configFile;
-    if (defined('API_KEY')) {
-        define('DEPLOY_API_KEY', API_KEY);
-    } else {
-        // Fallback for old config files without API_KEY
-        // SECURITY: This is a placeholder. You MUST change this in config.php
+    try {
+        require_once $configFile;
+        if (defined('API_KEY')) {
+            define('DEPLOY_API_KEY', API_KEY);
+        } else {
+            // Fallback for old config files without API_KEY
+            // SECURITY: This is a placeholder. You MUST change this in config.php
+            define('DEPLOY_API_KEY', bin2hex(random_bytes(16)));
+        }
+    } catch (Throwable $e) {
+        // Config file has errors, use random key for this session
+        error_log('Failed to load config.php: ' . $e->getMessage());
         define('DEPLOY_API_KEY', bin2hex(random_bytes(16)));
     }
 } else {
@@ -520,12 +526,21 @@ class TaskManagerDeployer
 
         // Check if database connection works
         if (file_exists($configFile)) {
-            require_once $configFile;
-            
             try {
-                $dsn = sprintf('mysql:host=%s;dbname=%s;charset=%s', DB_HOST, DB_NAME, DB_CHARSET);
-                $pdo = new PDO($dsn, DB_USER, DB_PASS);
-                $this->info('Database connection: OK');
+                require_once $configFile;
+                
+                // Verify required constants are defined
+                if (!defined('DB_HOST') || !defined('DB_NAME') || !defined('DB_USER') || !defined('DB_PASS') || !defined('DB_CHARSET')) {
+                    $this->error('Configuration file is missing required database constants');
+                    $valid = false;
+                } else {
+                    $dsn = sprintf('mysql:host=%s;dbname=%s;charset=%s', DB_HOST, DB_NAME, DB_CHARSET);
+                    $pdo = new PDO($dsn, DB_USER, DB_PASS);
+                    $this->info('Database connection: OK');
+                }
+            } catch (Throwable $e) {
+                $this->error('Configuration file error: ' . $e->getMessage());
+                $valid = false;
             } catch (PDOException $e) {
                 $this->error('Database connection failed: ' . $e->getMessage());
                 $valid = false;
