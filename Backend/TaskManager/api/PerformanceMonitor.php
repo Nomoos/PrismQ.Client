@@ -162,11 +162,19 @@ class PerformanceMonitor {
 
 // Initialize from environment if available
 if (isset($_ENV['PERFORMANCE_MONITOR_THRESHOLD'])) {
-    PerformanceMonitor::setThreshold((int)$_ENV['PERFORMANCE_MONITOR_THRESHOLD']);
+    try {
+        PerformanceMonitor::setThreshold((int)$_ENV['PERFORMANCE_MONITOR_THRESHOLD']);
+    } catch (InvalidArgumentException $e) {
+        // Log error but don't fail - use default threshold
+        error_log("Warning: Invalid PERFORMANCE_MONITOR_THRESHOLD in environment: " . $e->getMessage());
+    }
 }
 
 if (isset($_ENV['PERFORMANCE_MONITOR_ENABLED'])) {
-    if ($_ENV['PERFORMANCE_MONITOR_ENABLED'] === 'false' || $_ENV['PERFORMANCE_MONITOR_ENABLED'] === '0') {
+    $value = strtolower(trim($_ENV['PERFORMANCE_MONITOR_ENABLED']));
+    // Accept: false, 0, no, off, disabled
+    if (in_array($value, ['false', '0', 'no', 'off', 'disabled'], true)) {
         PerformanceMonitor::disable();
     }
+    // Accept: true, 1, yes, on, enabled (or any other value = enabled)
 }
