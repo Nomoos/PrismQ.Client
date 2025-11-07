@@ -139,7 +139,9 @@ function handleCustomTask($params) {
 
 ## Requirements
 
-- PHP 7.4 or higher (8.x recommended)
+- **PHP 8.0 or higher** (8.1+ recommended for best compatibility)
+  - The worker uses `mixed` type hints (PHP 8.0+)
+  - The worker uses `never` return type (PHP 8.1+)
 - cURL extension (`php-curl`)
 - PCNTL extension (optional, for signal handling)
 

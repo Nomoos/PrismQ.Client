@@ -59,7 +59,8 @@ cd Frontend && npm run dev
 ### Worker Implementation
 - **[Worker Implementation Plan](./_meta/docs/WORKER_IMPLEMENTATION_PLAN.md)** - Strategic implementation plan
 - **[Worker Implementation Guidelines](./_meta/docs/WORKER_IMPLEMENTATION_GUIDELINES.md)** - Best practices and patterns
-- **[Worker Examples](./_meta/examples/workers/README.md)** - Complete working examples
+- **[Worker Examples](./examples/workers/README.md)** - Production-ready worker examples (Python, PHP)
+- **[Worker Integration Guide](./examples/workers/INTEGRATION_GUIDE.md)** - Complete integration documentation
 
 ### Additional Resources
 - **[Screenshots Guide](./_meta/docs/SCREENSHOTS_GUIDE.md)** - UI screenshot capture
