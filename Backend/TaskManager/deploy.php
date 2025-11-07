@@ -55,6 +55,7 @@ class TaskManagerDeployer
     private $warnings = [];
     private $isWebMode = false;
     private $authenticated = false;
+    private $cachedConfigCheck = null;
 
     public function __construct()
     {
@@ -206,9 +207,15 @@ class TaskManagerDeployer
     /**
      * Check if config.php exists and test database connection
      * Returns array with 'exists', 'credentials', and 'connection_ok' keys
+     * Results are cached to avoid repeated file operations and database connections
      */
     private function checkExistingConfig()
     {
+        // Return cached result if available
+        if ($this->cachedConfigCheck !== null) {
+            return $this->cachedConfigCheck;
+        }
+
         $result = [
             'exists' => false,
             'credentials' => null,
@@ -220,6 +227,7 @@ class TaskManagerDeployer
         
         if (!file_exists($configFile)) {
             $result['error_message'] = 'config.php does not exist';
+            $this->cachedConfigCheck = $result;
             return $result;
         }
 
@@ -232,6 +240,7 @@ class TaskManagerDeployer
             // Check if required database constants are defined
             if (!defined('DB_HOST') || !defined('DB_NAME') || !defined('DB_USER') || !defined('DB_PASS') || !defined('DB_CHARSET')) {
                 $result['error_message'] = 'config.php is missing required database constants (DB_HOST, DB_NAME, DB_USER, DB_PASS, DB_CHARSET)';
+                $this->cachedConfigCheck = $result;
                 return $result;
             }
 
@@ -253,6 +262,9 @@ class TaskManagerDeployer
                 // Connection successful
                 $result['connection_ok'] = true;
                 
+                // Explicitly close the connection to free resources
+                $pdo = null;
+                
             } catch (PDOException $e) {
                 $result['error_message'] = 'Cannot connect to database with credentials from config.php: ' . $e->getMessage();
             }
@@ -261,6 +273,8 @@ class TaskManagerDeployer
             $result['error_message'] = 'Error loading config.php: ' . $e->getMessage();
         }
 
+        // Cache the result
+        $this->cachedConfigCheck = $result;
         return $result;
     }
 
