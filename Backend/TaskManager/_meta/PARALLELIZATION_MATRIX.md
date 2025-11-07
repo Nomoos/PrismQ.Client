@@ -160,7 +160,7 @@ Parallel Track D: Worker06 (Worker Documentation & Examples)
 
 With optimal parallelization: **~17 days**  
 Without parallelization: **~32 days**  
-**Efficiency gain: ~47%**
+**Time savings: ~47%** (15 days saved)
 
 ### Data-Driven Architecture Advantages
 - Reduced code complexity (endpoints in database, not PHP)
