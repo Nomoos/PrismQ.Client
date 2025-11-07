@@ -48,6 +48,7 @@ define('INSTALL_PATH', __DIR__);
 define('CONFIG_PATH', INSTALL_PATH . '/config');
 define('API_PATH', INSTALL_PATH . '/api');
 define('DATABASE_PATH', INSTALL_PATH . '/database');
+define('PUBLIC_PATH', INSTALL_PATH . '/public');
 
 class TaskManagerDeployer
 {
@@ -175,8 +176,8 @@ class TaskManagerDeployer
         $valid = true;
 
         // Check PHP version
-        if (version_compare(PHP_VERSION, '7.4.0', '<')) {
-            $this->error('PHP 7.4 or higher is required. Current: ' . PHP_VERSION);
+        if (version_compare(PHP_VERSION, '8.0.0', '<')) {
+            $this->error('PHP 8.0 or higher is required. Current: ' . PHP_VERSION);
             $valid = false;
         } else {
             $this->info('PHP version: ' . PHP_VERSION);
@@ -366,10 +367,32 @@ class TaskManagerDeployer
             'database/schema.sql' => DATABASE_PATH . '/schema.sql',
             'database/seed_endpoints.sql' => DATABASE_PATH . '/seed_endpoints.sql',
             '_meta/config/config.example.php' => CONFIG_PATH . '/config.example.php',
+            // OpenAPI documentation files
+            'public/openapi.json' => PUBLIC_PATH . '/openapi.json',
+            'public/README.md' => PUBLIC_PATH . '/README.md',
+            // Swagger UI files
+            'public/swagger-ui/index.html' => PUBLIC_PATH . '/swagger-ui/index.html',
+            'public/swagger-ui/index.css' => PUBLIC_PATH . '/swagger-ui/index.css',
+            'public/swagger-ui/swagger-initializer.js' => PUBLIC_PATH . '/swagger-ui/swagger-initializer.js',
+            'public/swagger-ui/swagger-ui-bundle.js' => PUBLIC_PATH . '/swagger-ui/swagger-ui-bundle.js',
+            'public/swagger-ui/swagger-ui-bundle.js.map' => PUBLIC_PATH . '/swagger-ui/swagger-ui-bundle.js.map',
+            'public/swagger-ui/swagger-ui-standalone-preset.js' => PUBLIC_PATH . '/swagger-ui/swagger-ui-standalone-preset.js',
+            'public/swagger-ui/swagger-ui-standalone-preset.js.map' => PUBLIC_PATH . '/swagger-ui/swagger-ui-standalone-preset.js.map',
+            'public/swagger-ui/swagger-ui.css' => PUBLIC_PATH . '/swagger-ui/swagger-ui.css',
+            'public/swagger-ui/swagger-ui.css.map' => PUBLIC_PATH . '/swagger-ui/swagger-ui.css.map',
+            'public/swagger-ui/swagger-ui.js' => PUBLIC_PATH . '/swagger-ui/swagger-ui.js',
+            'public/swagger-ui/swagger-ui.js.map' => PUBLIC_PATH . '/swagger-ui/swagger-ui.js.map',
+            'public/swagger-ui/swagger-ui-es-bundle.js' => PUBLIC_PATH . '/swagger-ui/swagger-ui-es-bundle.js',
+            'public/swagger-ui/swagger-ui-es-bundle.js.map' => PUBLIC_PATH . '/swagger-ui/swagger-ui-es-bundle.js.map',
+            'public/swagger-ui/swagger-ui-es-bundle-core.js' => PUBLIC_PATH . '/swagger-ui/swagger-ui-es-bundle-core.js',
+            'public/swagger-ui/swagger-ui-es-bundle-core.js.map' => PUBLIC_PATH . '/swagger-ui/swagger-ui-es-bundle-core.js.map',
+            'public/swagger-ui/favicon-16x16.png' => PUBLIC_PATH . '/swagger-ui/favicon-16x16.png',
+            'public/swagger-ui/favicon-32x32.png' => PUBLIC_PATH . '/swagger-ui/favicon-32x32.png',
+            'public/swagger-ui/oauth2-redirect.html' => PUBLIC_PATH . '/swagger-ui/oauth2-redirect.html',
         ];
 
         // Create directories if they don't exist
-        $dirs = [API_PATH, DATABASE_PATH, CONFIG_PATH];
+        $dirs = [API_PATH, DATABASE_PATH, CONFIG_PATH, PUBLIC_PATH, PUBLIC_PATH . '/swagger-ui'];
         foreach ($dirs as $dir) {
             if (!is_dir($dir)) {
                 if (!mkdir($dir, 0755, true)) {
@@ -808,8 +831,9 @@ class TaskManagerDeployer
         
         $this->info('Next steps:');
         $this->info('1. Test the API: ' . $this->getApiUrl() . '/health');
-        $this->info('2. Review the configuration in config/config.php');
-        $this->info('3. Set up your workers to start claiming tasks');
+        $this->info('2. View API documentation: ' . $this->getApiUrl() . '/docs/');
+        $this->info('3. Review the configuration in config/config.php');
+        $this->info('4. Set up your workers to start claiming tasks');
         
         if ($this->isWebMode) {
             echo '</pre></body></html>';

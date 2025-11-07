@@ -13,7 +13,7 @@ php check_setup.php
 
 ### Prerequisites Check
 ```bash
-✓ PHP 7.4+
+✓ PHP 8.0+
 ✓ MySQL 5.7+
 ✓ Apache mod_rewrite
 ✓ cURL extension
@@ -47,7 +47,14 @@ Click **Deploy TaskManager** → Done! ✓
 ```bash
 # Test API
 curl https://yourdomain.com/path/api/health
+
+# View API documentation (open in browser)
+# https://yourdomain.com/path/api/docs/
 ```
+
+**Production Example:**
+- Health: `https://api.prismq.nomoos.cz/api/health`
+- Swagger: `https://api.prismq.nomoos.cz/api/docs/`
 
 ## 📁 What Gets Created
 
@@ -102,7 +109,7 @@ TaskManager/
 
 1. ✓ Authenticates with admin password
 2. ✓ Validates PHP version & extensions
-3. ✓ Downloads 9 files from GitHub
+3. ✓ Downloads 33 files from GitHub (API, database, Swagger UI)
 4. ✓ Creates database & tables
 5. ✓ Generates config.php
 6. ✓ Sets secure permissions

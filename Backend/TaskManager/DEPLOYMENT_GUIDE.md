@@ -32,7 +32,7 @@ The script will validate:
 
 Before deployment, ensure your server meets these requirements:
 
-- **PHP**: 7.4 or higher
+- **PHP**: 8.0 or higher
 - **MySQL**: 5.7+ or MariaDB 10.2+
 - **PHP Extensions**: PDO, PDO_MySQL, JSON, cURL
 - **Apache**: mod_rewrite enabled
@@ -127,7 +127,7 @@ For servers with SSH access:
 - Prevents unauthorized deployment
 
 ### Step 2: Environment Validation
-- Checks PHP version (7.4+)
+- Checks PHP version (8.0+)
 - Verifies required PHP extensions
 - Checks directory write permissions
 
@@ -151,7 +151,11 @@ database/Database.php
 database/schema.sql
 database/seed_endpoints.sql
 _meta/config/config.example.php
+public/openapi.json
+public/README.md
+public/swagger-ui/* (18 files)
 ```
+**Total: 33 files**
 
 ### Step 5: Database Setup
 - Creates database if it doesn't exist
@@ -191,10 +195,18 @@ TaskManager/
 ├── config/
 │   ├── config.php          (Generated, contains credentials)
 │   └── config.example.php
-└── database/
-    ├── Database.php
-    ├── schema.sql
-    └── seed_endpoints.sql
+├── database/
+│   ├── Database.php
+│   ├── schema.sql
+│   └── seed_endpoints.sql
+└── public/
+    ├── openapi.json        (OpenAPI 3.0 specification)
+    ├── README.md
+    └── swagger-ui/         (Interactive API documentation)
+        ├── index.html
+        ├── swagger-ui-bundle.js
+        ├── swagger-ui.css
+        └── ... (other Swagger UI assets)
 ```
 
 ## Post-Deployment Verification
@@ -216,7 +228,26 @@ Expected response:
 }
 ```
 
-### 2. Check Database Tables
+### 2. Access Interactive API Documentation (Swagger UI)
+Open your browser and navigate to:
+```
+https://yourdomain.com/taskmanager/api/docs/
+```
+
+**Example for production deployment:**
+```
+https://api.prismq.nomoos.cz/api/docs/
+```
+
+You should see the Swagger UI interface with:
+- Complete API documentation
+- Interactive "Try it out" functionality
+- Request/response examples
+- Schema definitions
+
+**Note:** The Swagger UI is publicly accessible (no authentication required) for documentation purposes. However, actual API endpoints still require the API key.
+
+### 3. Check Database Tables
 Log into MySQL and verify:
 ```sql
 USE taskmanager;
@@ -227,8 +258,9 @@ Should show:
 - `task_types`
 - `tasks`
 - `task_history`
+- `api_endpoints`
 
-### 3. Test API Endpoint
+### 4. Test API Endpoint
 Try registering a task type:
 ```bash
 curl -X POST https://yourdomain.com/taskmanager/api/task-types/register \
@@ -252,7 +284,7 @@ curl -X POST https://yourdomain.com/taskmanager/api/task-types/register \
 - **Solution**: Check the ADMIN_PASSWORD in deploy.php matches what you entered
 
 ### Error: "PHP version too old"
-- **Cause**: Server has PHP < 7.4
+- **Cause**: Server has PHP < 8.0
 - **Solution**: 
   - Upgrade PHP via hosting control panel
   - Or contact hosting provider
