@@ -2,13 +2,24 @@
 
 This directory contains project documentation and issue tracking for the TaskManager implementation.
 
+## Quick Links
+
+- **[📋 PROJECT_PLAN.md](PROJECT_PLAN.md)** - Comprehensive project plan and roadmap
+- **[📊 PARALLELIZATION_MATRIX.md](PARALLELIZATION_MATRIX.md)** - Worker coordination and dependencies
+- **[📁 issues/INDEX.md](issues/INDEX.md)** - Complete issue tracking and status
+- **[📖 ORGANIZATION_SUMMARY.md](ORGANIZATION_SUMMARY.md)** - Implementation details
+
 ## Structure
 
 ```
 _meta/
-├── docs/           # Project documentation
-├── issues/         # Issue tracking with worker specialization
-│   ├── new/        # New issues to be assigned
+├── PROJECT_PLAN.md           # Master project plan (START HERE)
+├── PARALLELIZATION_MATRIX.md # Worker coordination strategy
+├── ORGANIZATION_SUMMARY.md   # Implementation summary
+├── docs/                     # Project documentation
+├── issues/                   # Issue tracking with worker specialization
+│   ├── INDEX.md              # Issue tracking and status
+│   ├── new/                  # New issues to be assigned
 │   │   ├── Worker01/ - Project Manager & Issue Creation Specialist
 │   │   ├── Worker02/ - SQL Database Expert
 │   │   ├── Worker03/ - PHP Backend Expert
@@ -19,10 +30,10 @@ _meta/
 │   │   ├── Worker08/ - DevOps & Deployment Specialist
 │   │   ├── Worker09/ - Performance & Optimization Expert
 │   │   └── Worker10/ - Senior Review Master
-│   ├── wip/        # Work in progress issues by worker
+│   ├── wip/                  # Work in progress issues by worker
 │   │   └── Worker01-10/ (same structure as new/)
-│   └── done/       # Completed issues (archived without worker folders)
-└── README.md       # This file
+│   └── done/                 # Completed issues (archived without worker folders)
+└── README.md                 # This file
 ```
 
 ## Worker Specializations
