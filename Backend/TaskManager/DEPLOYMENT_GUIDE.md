@@ -4,6 +4,30 @@
 
 This guide explains how to deploy TaskManager to a server using the automated deployment script (`deploy.php`).
 
+## Step 0: Check Your Environment
+
+**IMPORTANT:** Before attempting deployment, run the environment check script to verify your server meets all requirements:
+
+### Using Web Browser
+1. Upload `check_setup.php` to your server
+2. Access it via browser: `https://yourdomain.com/check_setup.php`
+3. Review the results and fix any issues before proceeding
+
+### Using Command Line
+```bash
+php check_setup.php
+```
+
+The script will validate:
+- PHP version and extensions
+- File permissions
+- Apache modules
+- MySQL availability
+- Disk space and memory limits
+- cURL and OpenSSL functionality
+
+**Only proceed with deployment if all critical checks pass!**
+
 ## Prerequisites
 
 Before deployment, ensure your server meets these requirements:
