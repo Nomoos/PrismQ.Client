@@ -75,6 +75,10 @@ define('DEBUG_MODE', false);
 // Leave empty to use PHP's default error_log location
 define('ERROR_LOG_PATH', '');
 
+// API response cache control header
+// Prevents caching of API responses in browsers and proxies
+define('API_RESPONSE_CACHE_CONTROL', 'no-store, no-cache, must-revalidate, max-age=0');
+
 // ============================================================================
 // NOTES
 // ============================================================================
