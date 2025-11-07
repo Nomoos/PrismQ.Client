@@ -17,6 +17,9 @@ logs/
 *.tmp
 *.temp
 
+# Testing scripts (not for production)
+test_deploy.php
+
 # IDE files
 .vscode/
 .idea/
