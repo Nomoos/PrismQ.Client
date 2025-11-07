@@ -291,7 +291,7 @@ php -l worker.php  # PHP
 
 | Feature | Python | PHP |
 |---------|--------|-----|
-| **Language Version** | Python 3.7+ | PHP 7.4+ |
+| **Language Version** | Python 3.7+ | PHP 8.0+ (8.1+ recommended) |
 | **Dependencies** | requests | cURL |
 | **Async Support** | Native (asyncio) | Via processes |
 | **Deployment** | systemd, Docker, K8s | systemd, supervisor, cron |
