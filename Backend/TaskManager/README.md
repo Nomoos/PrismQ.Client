@@ -27,6 +27,28 @@ TaskManager provides a REST API for managing tasks with parameter validation, de
 
 ## 🚀 Quick Start
 
+### Step 0: Check Your Environment
+
+**Before deployment, verify your server meets all requirements:**
+
+```bash
+# Upload check_setup.php to your server, then run:
+php check_setup.php
+
+# Or access via web browser:
+https://your-domain.com/path/check_setup.php
+```
+
+The environment check will validate:
+- PHP version and required extensions
+- File and directory permissions
+- Apache modules and .htaccess support
+- MySQL/MariaDB availability
+- Disk space and memory limits
+- cURL and OpenSSL functionality
+
+**⚠️ Important:** Fix any critical issues before proceeding with deployment!
+
 ### Automated Deployment (Recommended)
 
 **Use the automated deployment script for easy setup:**
