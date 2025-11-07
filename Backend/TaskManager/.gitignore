@@ -21,6 +21,9 @@ logs/
 test_deploy.php
 test_check_setup.php
 
+# Composer dependencies
+vendor/
+
 # IDE files
 .vscode/
 .idea/
