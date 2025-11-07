@@ -2,7 +2,7 @@
 -- This file populates the api_endpoints table with default TaskManager endpoints
 
 -- Health check endpoint
-INSERT INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
+INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
 ('/health', 'GET', 'Health check endpoint', 'custom', 
 '{
     "handler": "health_check",
@@ -13,7 +13,7 @@ INSERT INTO api_endpoints (path, method, description, action_type, action_config
 }', TRUE);
 
 -- Register/Update Task Type
-INSERT INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
+INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
 ('/task-types/register', 'POST', 'Register or update a task type', 'custom',
 '{
     "handler": "task_type_register",
@@ -21,7 +21,7 @@ INSERT INTO api_endpoints (path, method, description, action_type, action_config
 }', TRUE);
 
 -- Get Task Type by Name
-INSERT INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
+INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
 ('/task-types/:name', 'GET', 'Get task type by name', 'query',
 '{
     "table": "task_types",
@@ -33,7 +33,7 @@ INSERT INTO api_endpoints (path, method, description, action_type, action_config
 }', TRUE);
 
 -- List All Task Types
-INSERT INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
+INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
 ('/task-types', 'GET', 'List all task types', 'query',
 '{
     "table": "task_types",
@@ -43,7 +43,7 @@ INSERT INTO api_endpoints (path, method, description, action_type, action_config
 }', TRUE);
 
 -- Create Task
-INSERT INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
+INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
 ('/tasks', 'POST', 'Create a new task', 'custom',
 '{
     "handler": "task_create",
@@ -51,7 +51,7 @@ INSERT INTO api_endpoints (path, method, description, action_type, action_config
 }', TRUE);
 
 -- Claim Task
-INSERT INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
+INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
 ('/tasks/claim', 'POST', 'Claim an available task for processing', 'custom',
 '{
     "handler": "task_claim",
@@ -59,7 +59,7 @@ INSERT INTO api_endpoints (path, method, description, action_type, action_config
 }', TRUE);
 
 -- Complete Task
-INSERT INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
+INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
 ('/tasks/:id/complete', 'POST', 'Complete a claimed task', 'custom',
 '{
     "handler": "task_complete",
@@ -67,7 +67,7 @@ INSERT INTO api_endpoints (path, method, description, action_type, action_config
 }', TRUE);
 
 -- Get Task by ID
-INSERT INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
+INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
 ('/tasks/:id', 'GET', 'Get task status and details', 'query',
 '{
     "table": "tasks t",
@@ -95,7 +95,7 @@ INSERT INTO api_endpoints (path, method, description, action_type, action_config
 }', TRUE);
 
 -- List Tasks
-INSERT INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
+INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
 ('/tasks', 'GET', 'List tasks with optional filters', 'query',
 '{
     "table": "tasks t",
@@ -121,15 +121,15 @@ INSERT INTO api_endpoints (path, method, description, action_type, action_config
 }', TRUE);
 
 -- Add validations for task creation
-INSERT INTO api_validations (endpoint_id, param_name, param_source, validation_rules_json, error_message)
+INSERT IGNORE INTO api_validations (endpoint_id, param_name, param_source, validation_rules_json, error_message)
 SELECT id, 'type', 'body', '{"type": "string", "required": true, "minLength": 1}', 'Task type is required'
 FROM api_endpoints WHERE path = '/tasks' AND method = 'POST';
 
-INSERT INTO api_validations (endpoint_id, param_name, param_source, validation_rules_json, error_message)
+INSERT IGNORE INTO api_validations (endpoint_id, param_name, param_source, validation_rules_json, error_message)
 SELECT id, 'params', 'body', '{"type": "object", "required": true}', 'Task parameters are required'
 FROM api_endpoints WHERE path = '/tasks' AND method = 'POST';
 
 -- Add validations for task claim
-INSERT INTO api_validations (endpoint_id, param_name, param_source, validation_rules_json, error_message)
+INSERT IGNORE INTO api_validations (endpoint_id, param_name, param_source, validation_rules_json, error_message)
 SELECT id, 'worker_id', 'body', '{"type": "string", "required": true, "minLength": 1}', 'Worker ID is required'
 FROM api_endpoints WHERE path = '/tasks/claim' AND method = 'POST';
