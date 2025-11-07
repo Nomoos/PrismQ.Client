@@ -14,7 +14,8 @@
  */
 
 // Admin password - CHANGE THIS BEFORE DEPLOYMENT!
-define('ADMIN_PASSWORD', 'changeme123'); // TODO: Change this to a secure password
+// SECURITY: Use a strong password with uppercase, lowercase, numbers, and special characters
+define('ADMIN_PASSWORD', 'changeme123'); // TODO: CRITICAL - Change this to a secure password before use!
 
 // GitHub configuration
 define('GITHUB_REPO_OWNER', 'Nomoos');
@@ -260,7 +261,8 @@ class TaskManagerDeployer
             $url = $baseUrl . '/' . $sourcePath;
             $this->info("Downloading: {$sourcePath}");
             
-            $content = @file_get_contents($url);
+            // Try cURL first (more reliable), fallback to file_get_contents
+            $content = $this->downloadFile($url);
             if ($content === false) {
                 $this->warning("Failed to download: {$sourcePath}");
                 continue;
@@ -282,6 +284,40 @@ class TaskManagerDeployer
 
         $this->info("Downloaded {$downloadedCount} of " . count($files) . " files");
         return $downloadedCount > 0;
+    }
+
+    /**
+     * Download file from URL using cURL or file_get_contents
+     */
+    private function downloadFile($url)
+    {
+        // Try cURL first (more reliable and secure)
+        if (extension_loaded('curl')) {
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'TaskManager-Deployer/1.0');
+            
+            $content = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            
+            if ($httpCode === 200 && $content !== false) {
+                return $content;
+            }
+        }
+        
+        // Fallback to file_get_contents
+        $context = stream_context_create([
+            'http' => [
+                'timeout' => 30,
+                'user_agent' => 'TaskManager-Deployer/1.0'
+            ]
+        ]);
+        
+        return @file_get_contents($url, false, $context);
     }
 
     /**
@@ -315,6 +351,17 @@ class TaskManagerDeployer
             }
 
             $schema = file_get_contents($schemaFile);
+            
+            // Basic validation: check that schema looks legitimate
+            // Should contain CREATE TABLE statements and not contain DROP DATABASE
+            if (stripos($schema, 'CREATE TABLE') === false) {
+                $this->error('Schema file does not contain CREATE TABLE statements');
+                return false;
+            }
+            if (stripos($schema, 'DROP DATABASE') !== false) {
+                $this->error('Schema file contains dangerous DROP DATABASE statement');
+                return false;
+            }
             
             // Execute schema
             $pdo->exec($schema);
@@ -603,12 +650,18 @@ class TaskManagerDeployer
             echo "{$question}: ";
         }
 
-        if ($hidden && function_exists('readline')) {
-            // Hidden input for CLI (won't work on all systems)
-            system('stty -echo');
-            $input = trim(fgets(STDIN));
-            system('stty echo');
-            echo "\n";
+        if ($hidden && function_exists('readline') && DIRECTORY_SEPARATOR !== '\\') {
+            // Hidden input for CLI on Unix-like systems
+            // Note: This may not work on all systems (especially Windows)
+            if (@system('stty -echo 2>/dev/null') !== false) {
+                $input = trim(fgets(STDIN));
+                @system('stty echo 2>/dev/null');
+                echo "\n";
+            } else {
+                // Fallback: visible input if stty not available
+                $this->warning('Hidden input not available, password will be visible');
+                $input = trim(fgets(STDIN));
+            }
         } else {
             $input = trim(fgets(STDIN));
         }
