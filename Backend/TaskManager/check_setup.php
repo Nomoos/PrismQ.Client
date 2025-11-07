@@ -259,7 +259,7 @@ class EnvironmentChecker
         $memoryLimit = ini_get('memory_limit');
         $minRequired = 64; // MB
         
-        if ($memoryLimit == -1) {
+        if ($memoryLimit === '-1') {
             $this->addCheck('Memory Limit', true, "Unlimited");
         } else {
             $limitBytes = $this->parseSize($memoryLimit);
@@ -296,9 +296,9 @@ class EnvironmentChecker
         $maxExecutionTime = ini_get('max_execution_time');
         $recommended = 60; // seconds
         
-        if ($maxExecutionTime == 0) {
+        if ($maxExecutionTime === '0') {
             $this->addCheck('Execution Time', true, "Unlimited");
-        } elseif ($maxExecutionTime < $recommended) {
+        } elseif ((int)$maxExecutionTime < $recommended) {
             $this->addCheck('Execution Time', true, 
                 "{$maxExecutionTime} seconds (recommended: {$recommended}+)",
                 "Consider increasing max_execution_time for longer operations");
@@ -334,13 +334,16 @@ class EnvironmentChecker
             curl_setopt($ch, CURLOPT_TIMEOUT, 5);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
             curl_setopt($ch, CURLOPT_USERAGENT, 'TaskManager-Setup-Check/1.0');
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
             
             $result = @curl_exec($ch);
             $error = curl_error($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
             
-            if ($result !== false && ($httpCode == 200 || $httpCode == 301 || $httpCode == 302)) {
+            // HTTP status codes: 200 OK, 301 Moved Permanently, 302 Found
+            if ($result !== false && ($httpCode === 200 || $httpCode === 301 || $httpCode === 302)) {
                 $this->addCheck('cURL HTTPS', true, 
                     "Can make HTTPS requests to GitHub");
             } else {
