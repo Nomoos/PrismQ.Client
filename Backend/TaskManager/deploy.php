@@ -336,6 +336,12 @@ class TaskManagerDeployer
             $pdo = new PDO($dsn, $config['db_user'], $config['db_pass']);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+            // Validate database name (alphanumeric, underscore, hyphen only)
+            if (!preg_match('/^[a-zA-Z0-9_-]+$/', $config['db_name'])) {
+                $this->error('Invalid database name. Use only letters, numbers, underscores, and hyphens.');
+                return false;
+            }
+
             // Create database if it doesn't exist
             $pdo->exec("CREATE DATABASE IF NOT EXISTS `{$config['db_name']}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
             $this->info("Database '{$config['db_name']}' ready");
@@ -352,18 +358,23 @@ class TaskManagerDeployer
 
             $schema = file_get_contents($schemaFile);
             
-            // Basic validation: check that schema looks legitimate
-            // Should contain CREATE TABLE statements and not contain DROP DATABASE
+            // Enhanced validation: check that schema looks legitimate
+            // Should contain CREATE TABLE statements and not contain dangerous operations
             if (stripos($schema, 'CREATE TABLE') === false) {
                 $this->error('Schema file does not contain CREATE TABLE statements');
                 return false;
             }
-            if (stripos($schema, 'DROP DATABASE') !== false) {
-                $this->error('Schema file contains dangerous DROP DATABASE statement');
-                return false;
+            
+            // Check for dangerous SQL commands
+            $dangerousCommands = ['DROP DATABASE', 'DROP USER', 'GRANT ALL', 'REVOKE', 'SHUTDOWN'];
+            foreach ($dangerousCommands as $cmd) {
+                if (stripos($schema, $cmd) !== false) {
+                    $this->error("Schema file contains dangerous command: {$cmd}");
+                    return false;
+                }
             }
             
-            // Execute schema
+            // Execute schema (only supports single statements or multi-statement with proper delimiters)
             $pdo->exec($schema);
             $this->info('Database schema created successfully');
 
@@ -391,12 +402,17 @@ class TaskManagerDeployer
         // Read example config
         $content = file_get_contents($exampleFile);
 
-        // Replace placeholders
+        // Escape values for PHP string context (handle quotes and backslashes)
+        $escapePhpString = function($value) {
+            return addslashes($value);
+        };
+
+        // Replace placeholders with escaped values
         $replacements = [
-            "'localhost'" => "'{$config['db_host']}'",
-            "'taskmanager'" => "'{$config['db_name']}'",
-            "'your_db_user'" => "'{$config['db_user']}'",
-            "'your_db_password'" => "'{$config['db_pass']}'",
+            "'localhost'" => "'" . $escapePhpString($config['db_host']) . "'",
+            "'taskmanager'" => "'" . $escapePhpString($config['db_name']) . "'",
+            "'your_db_user'" => "'" . $escapePhpString($config['db_user']) . "'",
+            "'your_db_password'" => "'" . $escapePhpString($config['db_pass']) . "'",
         ];
 
         $content = str_replace(array_keys($replacements), array_values($replacements), $content);
@@ -650,13 +666,30 @@ class TaskManagerDeployer
             echo "{$question}: ";
         }
 
-        if ($hidden && function_exists('readline') && DIRECTORY_SEPARATOR !== '\\') {
+        if ($hidden && DIRECTORY_SEPARATOR !== '\\') {
             // Hidden input for CLI on Unix-like systems
             // Note: This may not work on all systems (especially Windows)
-            if (@system('stty -echo 2>/dev/null') !== false) {
-                $input = trim(fgets(STDIN));
-                @system('stty echo 2>/dev/null');
-                echo "\n";
+            
+            // Test if stty is available
+            $sttyAvailable = false;
+            $testOutput = [];
+            $testResult = 0;
+            exec('which stty 2>/dev/null', $testOutput, $testResult);
+            $sttyAvailable = ($testResult === 0);
+            
+            if ($sttyAvailable) {
+                // Disable echo
+                exec('stty -echo 2>&1', $output, $result);
+                if ($result === 0) {
+                    $input = trim(fgets(STDIN));
+                    // Re-enable echo
+                    exec('stty echo 2>&1');
+                    echo "\n";
+                } else {
+                    // Fallback if stty failed
+                    $this->warning('Unable to hide password input');
+                    $input = trim(fgets(STDIN));
+                }
             } else {
                 // Fallback: visible input if stty not available
                 $this->warning('Hidden input not available, password will be visible');
