@@ -132,7 +132,7 @@ class EnvironmentChecker
                 "Installation directory is writable");
             
             // Try to create a test file
-            $testFile = $testDir . '/.write_test_' . time();
+            $testFile = $this->getTempFileName('.write_test_');
             if (@file_put_contents($testFile, 'test') !== false) {
                 @unlink($testFile);
                 $this->addCheck('File Creation', true, 
@@ -149,7 +149,7 @@ class EnvironmentChecker
         }
 
         // Check if we can create subdirectories
-        $testSubdir = $testDir . '/.test_subdir_' . time();
+        $testSubdir = $this->getTempFileName('.test_subdir_');
         if (@mkdir($testSubdir, 0755)) {
             @rmdir($testSubdir);
             $this->addCheck('Subdirectory Creation', true, 
@@ -191,8 +191,7 @@ class EnvironmentChecker
     private function checkHtaccessSupport()
     {
         // Check if AllowOverride is enabled by testing .htaccess
-        $testDir = __DIR__;
-        $htaccessFile = $testDir . '/.htaccess_test_' . time();
+        $htaccessFile = $this->getTempFileName('.htaccess_test_');
         $testContent = "# Test file\nRewriteEngine On\n";
         
         if (@file_put_contents($htaccessFile, $testContent) !== false) {
@@ -329,24 +328,25 @@ class EnvironmentChecker
     private function checkCurlFunctionality()
     {
         if (function_exists('curl_init')) {
-            // Test if cURL can make HTTPS requests
-            $ch = curl_init('https://www.google.com');
+            // Test if cURL can make HTTPS requests to GitHub (the actual use case)
+            $ch = curl_init('https://api.github.com/');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-            curl_setopt($ch, CURLOPT_NOBODY, true);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'TaskManager-Setup-Check/1.0');
             
             $result = @curl_exec($ch);
             $error = curl_error($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
             
-            if ($result !== false && $httpCode == 200) {
+            if ($result !== false && ($httpCode == 200 || $httpCode == 301 || $httpCode == 302)) {
                 $this->addCheck('cURL HTTPS', true, 
-                    "Can make HTTPS requests");
+                    "Can make HTTPS requests to GitHub");
             } else {
                 $this->addCheck('cURL HTTPS', true, 
-                    "HTTPS test inconclusive",
-                    "cURL is available but HTTPS connectivity couldn't be verified");
+                    "HTTPS test inconclusive" . ($error ? " ($error)" : ""),
+                    "cURL is available but connectivity couldn't be verified. Deployment may still work if your server can access GitHub.");
             }
         } else {
             $this->addCheck('cURL', false, 
@@ -372,6 +372,14 @@ class EnvironmentChecker
         } elseif ($recommendation) {
             $this->warnings[] = $message;
         }
+    }
+
+    /**
+     * Generate temporary file name with unique timestamp and random component
+     */
+    private function getTempFileName($prefix)
+    {
+        return __DIR__ . '/' . $prefix . time() . '_' . mt_rand(1000, 9999);
     }
 
     /**
@@ -534,11 +542,14 @@ class EnvironmentChecker
         
         switch ($unit) {
             case 'g':
-                $value *= 1024;
+                $value *= 1024 * 1024 * 1024;
+                break;
             case 'm':
-                $value *= 1024;
+                $value *= 1024 * 1024;
+                break;
             case 'k':
                 $value *= 1024;
+                break;
         }
         
         return $value;
