@@ -40,7 +40,7 @@ Based on where `deploy.php` is located:
 
 ## How It Works
 
-1. **Deployment**: When you run `deploy.php`, it downloads 35 files from GitHub, including:
+1. **Deployment**: When you run `deploy.php`, it downloads 33 files from GitHub, including:
    - API files (9 files)
    - Database files (3 files)
    - Config example (1 file)

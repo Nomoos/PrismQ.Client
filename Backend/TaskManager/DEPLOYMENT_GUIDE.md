@@ -155,7 +155,7 @@ public/openapi.json
 public/README.md
 public/swagger-ui/* (20 files)
 ```
-**Total: 35 files**
+**Total: 33 files**
 
 ### Step 5: Database Setup
 - Creates database if it doesn't exist

@@ -109,7 +109,7 @@ TaskManager/
 
 1. ✓ Authenticates with admin password
 2. ✓ Validates PHP version & extensions
-3. ✓ Downloads 35 files from GitHub (API, database, Swagger UI)
+3. ✓ Downloads 33 files from GitHub (API, database, Swagger UI)
 4. ✓ Creates database & tables
 5. ✓ Generates config.php
 6. ✓ Sets secure permissions
