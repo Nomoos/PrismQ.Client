@@ -25,6 +25,18 @@ TaskManager provides a REST API for managing tasks with parameter validation, de
 - Apache with mod_rewrite (for clean URLs)
 - PDO MySQL extension
 
+## 📚 Documentation
+
+**Complete documentation is available in the `docs/` folder:**
+
+- **[Data-Driven Architecture](docs/DATA_DRIVEN_ARCHITECTURE.md)** - Learn how endpoints are defined in the database, not code. Includes detailed guides on all action types (query, insert, update, delete, custom), template syntax, validation system, and how to add new endpoints without code changes.
+
+- **[API Reference](docs/API_REFERENCE.md)** - Complete API documentation with all endpoints, request/response examples, and curl commands.
+
+- **[Deployment Guide](docs/DEPLOYMENT.md)** - Step-by-step guide for deploying to Vedos or any shared hosting, including database setup, configuration, and troubleshooting.
+
+- **[Hosting Information](docs/HOSTING_INFO.md)** - Details about the Vedos/Wedos hosting account and resources.
+
 ## 🚀 Quick Start
 
 ### Step 0: Check Your Environment
@@ -401,6 +413,7 @@ Proprietary - All Rights Reserved - Copyright (c) 2025 PrismQ
 ## 🔗 Related
 
 - [PrismQ.Client](../../) - Main client application
+- [Data-Driven Architecture](docs/DATA_DRIVEN_ARCHITECTURE.md) - **Complete guide to the data-driven API architecture**
 - [Deployment Guide](DEPLOYMENT_GUIDE.md) - **Automated deployment script documentation**
 - [API Reference](docs/API_REFERENCE.md) - Detailed API documentation
 - [Hosting Information](docs/HOSTING_INFO.md) - Vedos/Wedos account details and resource allocation
