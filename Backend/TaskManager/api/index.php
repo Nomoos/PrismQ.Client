@@ -68,7 +68,8 @@ if ($requestPath === '/docs' || preg_match('#^/docs/#', $requestPath)) {
     $realPath = realpath($fullPath);
     $baseDir = realpath(__DIR__ . '/../public/swagger-ui/');
     
-    if ($realPath && str_starts_with($realPath, $baseDir) && file_exists($realPath) && is_file($realPath)) {
+    // PHP 7.4 compatible: use substr instead of str_starts_with (PHP 8.0+)
+    if ($realPath && substr($realPath, 0, strlen($baseDir)) === $baseDir && file_exists($realPath) && is_file($realPath)) {
         // Set appropriate content type
         $ext = pathinfo($realPath, PATHINFO_EXTENSION);
         $contentTypes = [
