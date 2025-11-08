@@ -199,6 +199,69 @@ class TaskController {
     }
     
     /**
+     * Update task progress
+     * POST /tasks/{id}/progress
+     * 
+     * Parameters:
+     * - worker_id (required): Worker identifier (must match claimed_by)
+     * - progress (required): Progress percentage (0-100)
+     * - message (optional): Progress message for logging
+     */
+    public function updateProgress($task_id) {
+        $data = ApiResponse::getRequestBody();
+        ApiResponse::validateRequired($data, ['worker_id', 'progress']);
+        
+        $worker_id = trim($data['worker_id']);
+        $progress = intval($data['progress']);
+        $message = isset($data['message']) ? trim($data['message']) : null;
+        
+        // Validate progress range
+        if ($progress < 0 || $progress > 100) {
+            ApiResponse::error('Progress must be between 0 and 100', 400);
+        }
+        
+        try {
+            // Get current task
+            $stmt = $this->db->prepare("SELECT id, status, claimed_by FROM tasks WHERE id = ?");
+            $stmt->execute([$task_id]);
+            $task = $stmt->fetch();
+            
+            if (!$task) {
+                ApiResponse::error('Task not found', 404);
+            }
+            
+            if ($task['status'] !== 'claimed') {
+                ApiResponse::error('Task is not in claimed state', 400);
+            }
+            
+            if ($task['claimed_by'] !== $worker_id) {
+                ApiResponse::error('Task is claimed by another worker', 403);
+            }
+            
+            // Update task progress
+            $stmt = $this->db->prepare(
+                "UPDATE tasks SET progress = ?, updated_at = NOW() WHERE id = ?"
+            );
+            $stmt->execute([$progress, $task_id]);
+            
+            // Log to history if enabled
+            if (ENABLE_TASK_HISTORY) {
+                $log_message = $message ? "Progress: {$progress}% - {$message}" : "Progress: {$progress}%";
+                $this->logHistory($task_id, 'progress_update', $worker_id, $log_message);
+            }
+            
+            ApiResponse::success([
+                'id' => $task_id,
+                'progress' => $progress
+            ], 'Task progress updated successfully');
+            
+        } catch (PDOException $e) {
+            error_log("Task progress update error: " . $e->getMessage());
+            ApiResponse::error('Failed to update task progress', 500);
+        }
+    }
+    
+    /**
      * Complete a task with result
      * POST /tasks/{id}/complete
      */
@@ -279,7 +342,7 @@ class TaskController {
         try {
             $stmt = $this->db->prepare(
                 "SELECT t.id, tt.name as type, t.status, t.params_json, t.result_json, 
-                        t.error_message, t.priority, t.attempts, t.claimed_by, t.claimed_at, 
+                        t.error_message, t.priority, t.progress, t.attempts, t.claimed_by, t.claimed_at, 
                         t.completed_at, t.created_at
                  FROM tasks t
                  JOIN task_types tt ON t.type_id = tt.id
@@ -320,7 +383,7 @@ class TaskController {
             $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 50;
             $offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0;
             
-            $sql = "SELECT t.id, tt.name as type, t.status, t.priority, t.attempts, t.claimed_by, 
+            $sql = "SELECT t.id, tt.name as type, t.status, t.priority, t.progress, t.attempts, t.claimed_by, 
                            t.created_at, t.completed_at
                     FROM tasks t
                     JOIN task_types tt ON t.type_id = tt.id

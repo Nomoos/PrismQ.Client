@@ -152,6 +152,38 @@ class TaskManagerWorker:
             self.consecutive_errors += 1
             return None
             
+    def update_progress(self, task_id: str, progress: int, message: Optional[str] = None) -> bool:
+        """Update task progress."""
+        # Validate progress range
+        if not 0 <= progress <= 100:
+            self.logger.error(f"Invalid progress value: {progress}. Must be between 0 and 100.")
+            return False
+            
+        try:
+            payload = {
+                'worker_id': self.worker_id,
+                'progress': progress
+            }
+            if message:
+                payload['message'] = message
+            
+            response = requests.post(
+                urljoin(self.api_url, f'/tasks/{task_id}/progress'),
+                json=payload,
+                timeout=10
+            )
+            
+            if response.status_code == 200:
+                self.logger.info(f"✓ Task {task_id} progress: {progress}%")
+                return True
+            else:
+                self.logger.warning(f"Failed to update progress: HTTP {response.status_code}")
+                return False
+                
+        except requests.exceptions.RequestException as e:
+            self.logger.error(f"Error updating progress: {e}")
+            return False
+            
     def complete_task(self, task_id: str, result: Dict[str, Any]) -> bool:
         """Mark a task as completed."""
         try:
@@ -271,10 +303,23 @@ class TaskManagerWorker:
             }
     
     def _handle_sleep(self, params: Dict[str, Any]) -> Dict[str, Any]:
-        """Simulate long-running task."""
+        """Simulate long-running task with progress updates."""
         duration = min(params.get('duration', 2), 30)  # Max 30 seconds
-        self.logger.debug(f"Sleeping for {duration} seconds")
-        time.sleep(duration)
+        self.logger.debug(f"Sleeping for {duration} seconds with progress updates")
+        
+        # Simulate progress updates during long-running task
+        steps = min(duration, 10)  # Update progress at most 10 times
+        step_duration = duration / steps if steps > 0 else duration
+        
+        for i in range(1, steps + 1):
+            time.sleep(step_duration)
+            
+            # Update progress
+            progress = int((i / steps) * 100)
+            # Note: task_id would need to be passed to handlers for this to work
+            # For now, just log the progress
+            self.logger.info(f"Progress: {progress}% (step {i}/{steps})")
+            
         return {
             'success': True,
             'data': {
