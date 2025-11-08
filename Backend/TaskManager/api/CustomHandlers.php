@@ -439,6 +439,108 @@ class CustomHandlers {
     }
     
     /**
+     * Update Task Progress
+     */
+    #[OA\Post(
+        path: '/tasks/{id}/progress',
+        operationId: 'updateTaskProgress',
+        summary: 'Update task progress',
+        tags: ['Tasks'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                required: true,
+                description: 'Task ID',
+                schema: new OA\Schema(type: 'integer')
+            )
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['worker_id', 'progress'],
+                properties: [
+                    new OA\Property(property: 'worker_id', type: 'string', example: 'worker-001'),
+                    new OA\Property(property: 'progress', type: 'integer', minimum: 0, maximum: 100, example: 50, description: 'Progress percentage'),
+                    new OA\Property(property: 'message', type: 'string', example: 'Processing item 5 of 10', description: 'Optional progress message')
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Progress updated successfully',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'id', type: 'integer', example: 123),
+                        new OA\Property(property: 'progress', type: 'integer', example: 50),
+                        new OA\Property(property: 'message', type: 'string', example: 'Task progress updated successfully')
+                    ]
+                )
+            ),
+            new OA\Response(response: 400, description: 'Invalid progress value or task not in claimed state'),
+            new OA\Response(response: 403, description: 'Task is claimed by another worker'),
+            new OA\Response(response: 404, description: 'Task not found')
+        ]
+    )]
+    public function task_update_progress($requestData, $config) {
+        $data = $requestData['body'];
+        $task_id = $requestData['path']['id'];
+        
+        // Validate required fields
+        $required = $config['required_fields'] ?? [];
+        foreach ($required as $field) {
+            if (!isset($data[$field]) || $data[$field] === '') {
+                throw new Exception("Missing required field: $field", 400);
+            }
+        }
+        
+        $worker_id = trim($data['worker_id']);
+        $progress = intval($data['progress']);
+        $message = isset($data['message']) ? trim($data['message']) : null;
+        
+        // Validate progress range (also validated in endpoint validation, but double-check)
+        if ($progress < 0 || $progress > 100) {
+            throw new Exception('Progress must be between 0 and 100', 400);
+        }
+        
+        // Get current task
+        $stmt = $this->db->prepare("SELECT id, status, claimed_by FROM tasks WHERE id = ?");
+        $stmt->execute([$task_id]);
+        $task = $stmt->fetch();
+        
+        if (!$task) {
+            throw new Exception('Task not found', 404);
+        }
+        
+        if ($task['status'] !== 'claimed') {
+            throw new Exception('Task is not in claimed state', 400);
+        }
+        
+        if ($task['claimed_by'] !== $worker_id) {
+            throw new Exception('Task is claimed by another worker', 403);
+        }
+        
+        // Update task progress
+        $stmt = $this->db->prepare(
+            "UPDATE tasks SET progress = ?, updated_at = NOW() WHERE id = ?"
+        );
+        $stmt->execute([$progress, $task_id]);
+        
+        // Log to history
+        if (ENABLE_TASK_HISTORY) {
+            $log_message = $message ? "Progress: {$progress}% - {$message}" : "Progress: {$progress}%";
+            $this->logHistory($task_id, 'progress_update', $worker_id, $log_message);
+        }
+        
+        return [
+            'id' => $task_id,
+            'progress' => $progress,
+            'message' => 'Task progress updated successfully'
+        ];
+    }
+    
+    /**
      * Log to task history
      */
     private function logHistory($task_id, $status_change, $worker_id, $message) {

@@ -128,6 +128,41 @@ class WorkerClient
     }
 
     /**
+     * Update task progress
+     *
+     * @param int $taskId Task ID to update
+     * @param int $progress Progress percentage (0-100)
+     * @param string|null $message Optional progress message
+     * @return bool True on success
+     * @throws Exception on API errors
+     */
+    public function updateProgress(int $taskId, int $progress, ?string $message = null): bool
+    {
+        // Validate progress range
+        if ($progress < 0 || $progress > 100) {
+            throw new Exception("Progress must be between 0 and 100");
+        }
+
+        $data = [
+            'worker_id' => $this->workerId,
+            'progress' => $progress
+        ];
+
+        if ($message !== null) {
+            $data['message'] = $message;
+        }
+
+        $response = $this->post("/tasks/{$taskId}/progress", $data);
+
+        if ($response['success']) {
+            $this->log("✓ Updated task #{$taskId} progress to {$progress}%");
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Get task details
      *
      * @param int $taskId Task ID to retrieve

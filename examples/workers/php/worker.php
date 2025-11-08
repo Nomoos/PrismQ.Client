@@ -68,6 +68,9 @@ $tasksFailed = 0;
 $consecutiveErrors = 0;
 $maxConsecutiveErrors = 5;
 
+// Make client and current task available globally for progress updates
+$currentTaskId = null;
+
 // ============================================================================
 // Signal Handling
 // ============================================================================
@@ -151,6 +154,9 @@ while (!$shouldStop) {
         // Reset consecutive error counter on successful claim
         $consecutiveErrors = 0;
 
+        // Set current task ID for progress updates
+        $currentTaskId = $task['id'];
+
         // Process the task
         echo "[TASK #{$task['id']}] Processing (type: {$task['type']}, attempt: {$task['attempts']})\n";
 
@@ -171,6 +177,9 @@ while (!$shouldStop) {
 
             $tasksFailed++;
             echo "[TASK #{$task['id']}] Marked as failed ({$tasksFailed} total failures)\n\n";
+        } finally {
+            // Clear current task ID
+            $currentTaskId = null;
         }
     } catch (Exception $e) {
         // API communication error
@@ -322,7 +331,7 @@ function handleMathAddTask(array $params): array
 
 /**
  * Example handler: Sleep task
- * Simulates long-running task
+ * Simulates long-running task with progress updates
  *
  * @param array $params Task parameters
  * @return array Result data
@@ -330,6 +339,8 @@ function handleMathAddTask(array $params): array
  */
 function handleSleepTask(array $params): array
 {
+    global $client, $currentTaskId;
+    
     if (!isset($params['seconds'])) {
         throw new Exception("Missing required parameter: seconds");
     }
@@ -340,7 +351,24 @@ function handleSleepTask(array $params): array
         throw new Exception("Sleep duration must be between 0 and 60 seconds");
     }
 
-    sleep($seconds);
+    // Simulate progress updates during long-running task
+    $steps = min($seconds, 10); // Update progress at most 10 times
+    $stepDuration = $seconds / $steps;
+    
+    for ($i = 1; $i <= $steps; $i++) {
+        sleep($stepDuration);
+        
+        // Update progress
+        $progress = intval(($i / $steps) * 100);
+        if ($currentTaskId && $client) {
+            try {
+                $client->updateProgress($currentTaskId, $progress, "Step {$i}/{$steps}");
+            } catch (Exception $e) {
+                // Log but don't fail the task on progress update errors
+                echo "[WARNING] Failed to update progress: {$e->getMessage()}\n";
+            }
+        }
+    }
 
     return [
         'slept_seconds' => $seconds,

@@ -66,6 +66,14 @@ INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action
     "required_fields": ["worker_id", "success"]
 }', TRUE);
 
+-- Update Task Progress
+INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
+('/tasks/:id/progress', 'POST', 'Update task progress', 'custom',
+'{
+    "handler": "task_update_progress",
+    "required_fields": ["worker_id", "progress"]
+}', TRUE);
+
 -- Get Task by ID
 INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
 ('/tasks/:id', 'GET', 'Get task status and details', 'query',
@@ -81,6 +89,8 @@ INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action
         "t.params_json as params", 
         "t.result_json as result",
         "t.error_message",
+        "t.priority",
+        "t.progress",
         "t.attempts",
         "t.claimed_by",
         "t.claimed_at",
@@ -106,6 +116,8 @@ INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action
         "t.id",
         "tt.name as type",
         "t.status",
+        "t.priority",
+        "t.progress",
         "t.attempts",
         "t.claimed_by",
         "t.created_at",
@@ -133,3 +145,12 @@ FROM api_endpoints WHERE path = '/tasks' AND method = 'POST';
 INSERT IGNORE INTO api_validations (endpoint_id, param_name, param_source, validation_rules_json, error_message)
 SELECT id, 'worker_id', 'body', '{"type": "string", "required": true, "minLength": 1}', 'Worker ID is required'
 FROM api_endpoints WHERE path = '/tasks/claim' AND method = 'POST';
+
+-- Add validations for task progress update
+INSERT IGNORE INTO api_validations (endpoint_id, param_name, param_source, validation_rules_json, error_message)
+SELECT id, 'worker_id', 'body', '{"type": "string", "required": true, "minLength": 1}', 'Worker ID is required'
+FROM api_endpoints WHERE path = '/tasks/:id/progress' AND method = 'POST';
+
+INSERT IGNORE INTO api_validations (endpoint_id, param_name, param_source, validation_rules_json, error_message)
+SELECT id, 'progress', 'body', '{"type": "integer", "required": true, "minimum": 0, "maximum": 100}', 'Progress must be between 0 and 100'
+FROM api_endpoints WHERE path = '/tasks/:id/progress' AND method = 'POST';
