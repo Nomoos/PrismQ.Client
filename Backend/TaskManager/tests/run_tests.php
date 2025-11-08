@@ -60,7 +60,8 @@ $testSuites = [
     'integration' => [
         'name' => 'API Integration Tests',
         'tests' => [
-            __DIR__ . '/integration/ApiIntegrationTest.php'
+            __DIR__ . '/integration/ApiIntegrationTest.php',
+            __DIR__ . '/integration/EnhancedClaimTest.php'
         ]
     ],
     'worker' => [
