@@ -109,17 +109,17 @@ class TaskController {
      * 
      * Parameters:
      * - worker_id (required): Worker identifier
-     * - task_type_id (optional): Specific task type ID to claim
+     * - task_type_id (required): Specific task type ID to claim
      * - type_pattern (optional): Task type name pattern (e.g., "PrismQ.%")
      * - sort_by (optional): Field to sort by (created_at, priority, id, attempts)
      * - sort_order (optional): Sort direction (ASC or DESC)
      */
     public function claim() {
         $data = ApiResponse::getRequestBody();
-        ApiResponse::validateRequired($data, ['worker_id']);
+        ApiResponse::validateRequired($data, ['worker_id', 'task_type_id']);
         
         $worker_id = trim($data['worker_id']);
-        $task_type_id = isset($data['task_type_id']) ? intval($data['task_type_id']) : null;
+        $task_type_id = intval($data['task_type_id']);
         $type_pattern = isset($data['type_pattern']) ? trim($data['type_pattern']) : null;
         $sort_by = isset($data['sort_by']) ? trim($data['sort_by']) : 'created_at';
         $sort_order = isset($data['sort_order']) ? strtoupper(trim($data['sort_order'])) : 'ASC';
@@ -145,17 +145,12 @@ class TaskController {
             $sql = "SELECT t.id, t.type_id, t.params_json, t.attempts, t.priority, tt.name as type_name
                     FROM tasks t
                     JOIN task_types tt ON t.type_id = tt.id
-                    WHERE (t.status = 'pending' OR (t.status = 'claimed' AND t.claimed_at < ?))";
+                    WHERE (t.status = 'pending' OR (t.status = 'claimed' AND t.claimed_at < ?))
+                    AND t.type_id = ?";
             
-            $params = [$timeout_threshold];
+            $params = [$timeout_threshold, $task_type_id];
             
-            // Filter by specific task type ID
-            if ($task_type_id) {
-                $sql .= " AND t.type_id = ?";
-                $params[] = $task_type_id;
-            }
-            
-            // Filter by type pattern (can be used with or without task_type_id)
+            // Filter by type pattern (optional additional filter)
             if ($type_pattern) {
                 $sql .= " AND tt.name LIKE ?";
                 $params[] = $type_pattern;

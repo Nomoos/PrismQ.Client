@@ -4,20 +4,24 @@
  * 
  * This file demonstrates how workers can use the enhanced claim endpoint
  * to implement different task claiming strategies.
+ * 
+ * Note: task_type_id is required in all claim requests
  */
 
 // Example 1: Simple FIFO Worker (First In, First Out)
 // This is the default behavior - claims oldest tasks first
-function worker_fifo($worker_id) {
+function worker_fifo($worker_id, $task_type_id) {
     $claim_request = [
         'worker_id' => $worker_id,
+        'task_type_id' => $task_type_id,
         'sort_by' => 'created_at',
         'sort_order' => 'ASC'
     ];
     
-    // Or simply omit sort parameters for default FIFO behavior:
+    // Or omit sort parameters for default FIFO behavior:
     $claim_request_simple = [
-        'worker_id' => $worker_id
+        'worker_id' => $worker_id,
+        'task_type_id' => $task_type_id
     ];
     
     // Make API call to claim task
@@ -27,9 +31,10 @@ function worker_fifo($worker_id) {
 
 // Example 2: LIFO Worker (Last In, First Out)
 // Claims newest tasks first - useful for processing recent requests
-function worker_lifo($worker_id) {
+function worker_lifo($worker_id, $task_type_id) {
     $claim_request = [
         'worker_id' => $worker_id,
+        'task_type_id' => $task_type_id,
         'sort_by' => 'created_at',
         'sort_order' => 'DESC'
     ];
@@ -41,9 +46,10 @@ function worker_lifo($worker_id) {
 
 // Example 3: Priority-Based Worker
 // Claims highest priority tasks first - ideal for production environments
-function worker_priority($worker_id) {
+function worker_priority($worker_id, $task_type_id) {
     $claim_request = [
         'worker_id' => $worker_id,
+        'task_type_id' => $task_type_id,
         'sort_by' => 'priority',
         'sort_order' => 'DESC'  // Highest priority first
     ];
@@ -70,9 +76,10 @@ function worker_specialized($worker_id, $task_type_id) {
 
 // Example 5: Worker that processes tasks by pattern with priority
 // Claims tasks matching a pattern, prioritized
-function worker_pattern_priority($worker_id, $type_pattern = 'PrismQ.%') {
+function worker_pattern_priority($worker_id, $task_type_id, $type_pattern = 'PrismQ.%') {
     $claim_request = [
         'worker_id' => $worker_id,
+        'task_type_id' => $task_type_id,
         'type_pattern' => $type_pattern,
         'sort_by' => 'priority',
         'sort_order' => 'DESC'
@@ -85,9 +92,10 @@ function worker_pattern_priority($worker_id, $type_pattern = 'PrismQ.%') {
 
 // Example 6: Retry-Focused Worker
 // Claims tasks with fewest attempts first (handles new tasks before retries)
-function worker_fresh_tasks($worker_id) {
+function worker_fresh_tasks($worker_id, $task_type_id) {
     $claim_request = [
         'worker_id' => $worker_id,
+        'task_type_id' => $task_type_id,
         'sort_by' => 'attempts',
         'sort_order' => 'ASC'  // Fewest attempts first
     ];
@@ -138,15 +146,18 @@ class EnhancedWorker {
         $this->strategy = $strategy;
     }
     
-    public function claimTask($task_type_id = null, $type_pattern = null) {
+    public function claimTask($task_type_id, $type_pattern = null) {
+        // task_type_id is required
+        if (!$task_type_id) {
+            throw new Exception('task_type_id is required');
+        }
+        
         $claim_request = [
-            'worker_id' => $this->worker_id
+            'worker_id' => $this->worker_id,
+            'task_type_id' => $task_type_id
         ];
         
-        // Add filtering
-        if ($task_type_id) {
-            $claim_request['task_type_id'] = $task_type_id;
-        }
+        // Add optional pattern filtering
         if ($type_pattern) {
             $claim_request['type_pattern'] = $type_pattern;
         }
@@ -229,17 +240,17 @@ echo "========================\n\n";
 
 echo "Example 1: FIFO Worker Claim Request\n";
 $worker = new EnhancedWorker('worker-001', 'fifo');
-print_r($worker->claimTask());
+print_r($worker->claimTask(1));  // task_type_id is required
 echo "\n";
 
 echo "Example 2: Priority Worker Claim Request\n";
 $worker = new EnhancedWorker('worker-002', 'priority');
-print_r($worker->claimTask());
+print_r($worker->claimTask(1));
 echo "\n";
 
 echo "Example 3: LIFO Worker Claim Request\n";
 $worker = new EnhancedWorker('worker-003', 'lifo');
-print_r($worker->claimTask());
+print_r($worker->claimTask(1));
 echo "\n";
 
 echo "Example 4: Priority Worker with Type Filter\n";
@@ -249,5 +260,5 @@ echo "\n";
 
 echo "Example 5: Priority Worker with Pattern Filter\n";
 $worker = new EnhancedWorker('worker-005', 'priority');
-print_r($worker->claimTask(null, 'PrismQ.%'));
+print_r($worker->claimTask(1, 'PrismQ.%'));  // task_type_id + pattern
 echo "\n";

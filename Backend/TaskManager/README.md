@@ -213,7 +213,7 @@ Content-Type: application/json
 
 {
   "worker_id": "worker-001",
-  "task_type_id": 5,                    // Optional: specific task type ID
+  "task_type_id": 5,                    // Required: specific task type ID
   "type_pattern": "PrismQ.Script.%",    // Optional: filter by type pattern
   "sort_by": "priority",                // Optional: created_at (default), priority, id, attempts
   "sort_order": "DESC"                  // Optional: ASC (default) or DESC

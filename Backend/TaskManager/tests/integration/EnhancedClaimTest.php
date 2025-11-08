@@ -64,6 +64,12 @@ function testEnhancedClaimEndpoint() {
         
         $helper->registerTaskType('test.fifo', '1.0.0', ['type' => 'object']);
         
+        // Get task type ID
+        $db = $helper->getDb();
+        $stmt = $db->prepare("SELECT id FROM task_types WHERE name = ?");
+        $stmt->execute(['test.fifo']);
+        $taskType = $stmt->fetch();
+        
         // Create tasks in order with small delays
         $task1 = $helper->createTask('test.fifo', ['order' => 1]);
         usleep(100000); // 100ms delay
@@ -74,6 +80,7 @@ function testEnhancedClaimEndpoint() {
         // Claim with FIFO (default behavior)
         $response = $helper->post('/tasks/claim', [
             'worker_id' => 'test-worker-fifo',
+            'task_type_id' => $taskType['id'],
             'sort_by' => 'created_at',
             'sort_order' => 'ASC'
         ]);
@@ -93,6 +100,12 @@ function testEnhancedClaimEndpoint() {
         
         $helper->registerTaskType('test.lifo', '1.0.0', ['type' => 'object']);
         
+        // Get task type ID
+        $db = $helper->getDb();
+        $stmt = $db->prepare("SELECT id FROM task_types WHERE name = ?");
+        $stmt->execute(['test.lifo']);
+        $taskType = $stmt->fetch();
+        
         // Create tasks in order
         $task1 = $helper->createTask('test.lifo', ['order' => 1]);
         usleep(100000);
@@ -103,6 +116,7 @@ function testEnhancedClaimEndpoint() {
         // Claim with LIFO
         $response = $helper->post('/tasks/claim', [
             'worker_id' => 'test-worker-lifo',
+            'task_type_id' => $taskType['id'],
             'sort_by' => 'created_at',
             'sort_order' => 'DESC'
         ]);
@@ -121,6 +135,12 @@ function testEnhancedClaimEndpoint() {
         $helper->getDb()->exec("UPDATE tasks SET status = 'completed' WHERE status = 'pending'");
         
         $helper->registerTaskType('test.priority.sort', '1.0.0', ['type' => 'object']);
+        
+        // Get task type ID
+        $db = $helper->getDb();
+        $stmt = $db->prepare("SELECT id FROM task_types WHERE name = ?");
+        $stmt->execute(['test.priority.sort']);
+        $taskType = $stmt->fetch();
         
         // Create tasks with different priorities
         $lowPriority = $helper->post('/tasks', [
@@ -144,6 +164,7 @@ function testEnhancedClaimEndpoint() {
         // Claim by priority
         $response = $helper->post('/tasks/claim', [
             'worker_id' => 'test-worker-priority',
+            'task_type_id' => $taskType['id'],
             'sort_by' => 'priority',
             'sort_order' => 'DESC'
         ]);
@@ -161,6 +182,12 @@ function testEnhancedClaimEndpoint() {
         
         $helper->registerTaskType('test.priority.asc', '1.0.0', ['type' => 'object']);
         
+        // Get task type ID
+        $db = $helper->getDb();
+        $stmt = $db->prepare("SELECT id FROM task_types WHERE name = ?");
+        $stmt->execute(['test.priority.asc']);
+        $taskType = $stmt->fetch();
+        
         // Create tasks with different priorities
         $task1 = $helper->post('/tasks', [
             'type' => 'test.priority.asc',
@@ -177,6 +204,7 @@ function testEnhancedClaimEndpoint() {
         // Claim by priority ASC
         $response = $helper->post('/tasks/claim', [
             'worker_id' => 'test-worker-priority-asc',
+            'task_type_id' => $taskType['id'],
             'sort_by' => 'priority',
             'sort_order' => 'ASC'
         ]);
@@ -275,9 +303,26 @@ function testEnhancedClaimEndpoint() {
     // Validation Tests
     // ========================================================================
     
+    $runner->addTest('Reject claim without task_type_id', function() use ($helper) {
+        $response = $helper->post('/tasks/claim', [
+            'worker_id' => 'test-worker-invalid'
+        ]);
+        
+        TestRunner::assertFalse($response['data']['success'], 'Should reject missing task_type_id');
+        TestRunner::assertStringContains('required', strtolower($response['data']['message']));
+    });
+    
     $runner->addTest('Reject invalid sort_by field', function() use ($helper) {
+        // Register a task type for validation tests
+        $helper->registerTaskType('test.validation', '1.0.0', ['type' => 'object']);
+        $db = $helper->getDb();
+        $stmt = $db->prepare("SELECT id FROM task_types WHERE name = ?");
+        $stmt->execute(['test.validation']);
+        $taskType = $stmt->fetch();
+        
         $response = $helper->post('/tasks/claim', [
             'worker_id' => 'test-worker-invalid',
+            'task_type_id' => $taskType['id'],
             'sort_by' => 'invalid_field'
         ]);
         
@@ -286,8 +331,15 @@ function testEnhancedClaimEndpoint() {
     });
     
     $runner->addTest('Reject invalid sort_order value', function() use ($helper) {
+        // Use existing validation task type
+        $db = $helper->getDb();
+        $stmt = $db->prepare("SELECT id FROM task_types WHERE name = ?");
+        $stmt->execute(['test.validation']);
+        $taskType = $stmt->fetch();
+        
         $response = $helper->post('/tasks/claim', [
             'worker_id' => 'test-worker-invalid',
+            'task_type_id' => $taskType['id'],
             'sort_order' => 'INVALID'
         ]);
         
@@ -305,6 +357,12 @@ function testEnhancedClaimEndpoint() {
         
         $helper->registerTaskType('test.id.sort', '1.0.0', ['type' => 'object']);
         
+        // Get task type ID
+        $db = $helper->getDb();
+        $stmt = $db->prepare("SELECT id FROM task_types WHERE name = ?");
+        $stmt->execute(['test.id.sort']);
+        $taskType = $stmt->fetch();
+        
         $task1 = $helper->createTask('test.id.sort', ['order' => 1]);
         $task2 = $helper->createTask('test.id.sort', ['order' => 2]);
         $task3 = $helper->createTask('test.id.sort', ['order' => 3]);
@@ -312,6 +370,7 @@ function testEnhancedClaimEndpoint() {
         // Claim by ID ASC
         $response = $helper->post('/tasks/claim', [
             'worker_id' => 'test-worker-id',
+            'task_type_id' => $taskType['id'],
             'sort_by' => 'id',
             'sort_order' => 'ASC'
         ]);
@@ -328,9 +387,16 @@ function testEnhancedClaimEndpoint() {
     $runner->addTest('Claim task with fewest attempts first', function() use ($helper) {
         // This test would need to manually update attempts in the database
         // For simplicity, we'll just verify the parameter is accepted
+        // Register a task type for validation
+        $helper->registerTaskType('test.attempts', '1.0.0', ['type' => 'object']);
+        $db = $helper->getDb();
+        $stmt = $db->prepare("SELECT id FROM task_types WHERE name = ?");
+        $stmt->execute(['test.attempts']);
+        $taskType = $stmt->fetch();
         
         $response = $helper->post('/tasks/claim', [
             'worker_id' => 'test-worker-attempts',
+            'task_type_id' => $taskType['id'],
             'sort_by' => 'attempts',
             'sort_order' => 'ASC'
         ]);

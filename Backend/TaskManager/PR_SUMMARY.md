@@ -28,13 +28,15 @@ The original problem statement requested:
 
 **Existing Parameters (still supported):**
 - `worker_id`: Required worker identifier
-- `type_pattern`: Filter by task type name pattern
+- `task_type_id`: Required task type ID to claim
+- `type_pattern`: Optional filter by task type name pattern
 
 **Examples:**
 ```json
 // FIFO (First In, First Out) - Default
 {
   "worker_id": "worker-001",
+  "task_type_id": 5,
   "sort_by": "created_at",
   "sort_order": "ASC"
 }
@@ -42,6 +44,7 @@ The original problem statement requested:
 // LIFO (Last In, First Out)
 {
   "worker_id": "worker-001",
+  "task_type_id": 5,
   "sort_by": "created_at",
   "sort_order": "DESC"
 }
@@ -49,6 +52,7 @@ The original problem statement requested:
 // Priority-based (Highest first)
 {
   "worker_id": "worker-001",
+  "task_type_id": 5,
   "sort_by": "priority",
   "sort_order": "DESC"
 }
