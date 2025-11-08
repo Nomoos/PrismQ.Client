@@ -216,11 +216,18 @@ function testApiIntegration() {
             'properties' => ['data' => ['type' => 'string']]
         ]);
         
+        // Get task type ID
+        $db = $helper->getDb();
+        $stmt = $db->prepare("SELECT id FROM task_types WHERE name = ?");
+        $stmt->execute(['test.claim.valid']);
+        $taskType = $stmt->fetch();
+        
         $createResponse = $helper->createTask('test.claim.valid', ['data' => 'test']);
         
         // Claim the task
         $claimResponse = $helper->post('/tasks/claim', [
-            'worker_id' => 'test-worker-claim'
+            'worker_id' => 'test-worker-claim',
+            'task_type_id' => $taskType['id']
         ]);
         
         TestRunner::assertTrue($claimResponse['data']['success'], 'Claim should succeed');
@@ -234,12 +241,19 @@ function testApiIntegration() {
         $helper->registerTaskType('test.pattern.match', '1.0.0', ['type' => 'object']);
         $helper->registerTaskType('other.pattern.match', '1.0.0', ['type' => 'object']);
         
+        // Get task type ID
+        $db = $helper->getDb();
+        $stmt = $db->prepare("SELECT id FROM task_types WHERE name = ?");
+        $stmt->execute(['test.pattern.match']);
+        $taskType = $stmt->fetch();
+        
         $helper->createTask('test.pattern.match', []);
         $helper->createTask('other.pattern.match', []);
         
         // Claim with pattern
         $response = $helper->post('/tasks/claim', [
             'worker_id' => 'test-worker-pattern',
+            'task_type_id' => $taskType['id'],
             'type_pattern' => 'test.%'
         ]);
         
@@ -253,8 +267,16 @@ function testApiIntegration() {
         // Clean up all pending tasks first
         $helper->getDb()->exec("UPDATE tasks SET status = 'completed' WHERE status = 'pending'");
         
+        // Register a task type to get an ID
+        $helper->registerTaskType('test.empty', '1.0.0', ['type' => 'object']);
+        $db = $helper->getDb();
+        $stmt = $db->prepare("SELECT id FROM task_types WHERE name = ?");
+        $stmt->execute(['test.empty']);
+        $taskType = $stmt->fetch();
+        
         $response = $helper->post('/tasks/claim', [
-            'worker_id' => 'test-worker-empty'
+            'worker_id' => 'test-worker-empty',
+            'task_type_id' => $taskType['id']
         ]);
         
         // Should return success=false or empty data
@@ -270,10 +292,20 @@ function testApiIntegration() {
     $runner->addTest('Complete task successfully', function() use ($helper) {
         // Register, create, and claim a task
         $helper->registerTaskType('test.complete.success', '1.0.0', ['type' => 'object']);
+        
+        // Get task type ID
+        $db = $helper->getDb();
+        $stmt = $db->prepare("SELECT id FROM task_types WHERE name = ?");
+        $stmt->execute(['test.complete.success']);
+        $taskType = $stmt->fetch();
+        
         $createResponse = $helper->createTask('test.complete.success', []);
         $taskId = $createResponse['data']['data']['id'];
         
-        $helper->post('/tasks/claim', ['worker_id' => 'test-worker-complete']);
+        $helper->post('/tasks/claim', [
+            'worker_id' => 'test-worker-complete',
+            'task_type_id' => $taskType['id']
+        ]);
         
         // Complete the task
         $response = $helper->post("/tasks/{$taskId}/complete", [
@@ -292,10 +324,20 @@ function testApiIntegration() {
     $runner->addTest('Mark task as failed', function() use ($helper) {
         // Register, create, and claim a task
         $helper->registerTaskType('test.complete.fail', '1.0.0', ['type' => 'object']);
+        
+        // Get task type ID
+        $db = $helper->getDb();
+        $stmt = $db->prepare("SELECT id FROM task_types WHERE name = ?");
+        $stmt->execute(['test.complete.fail']);
+        $taskType = $stmt->fetch();
+        
         $createResponse = $helper->createTask('test.complete.fail', []);
         $taskId = $createResponse['data']['data']['id'];
         
-        $helper->post('/tasks/claim', ['worker_id' => 'test-worker-fail']);
+        $helper->post('/tasks/claim', [
+            'worker_id' => 'test-worker-fail',
+            'task_type_id' => $taskType['id']
+        ]);
         
         // Mark as failed
         $response = $helper->post("/tasks/{$taskId}/complete", [
