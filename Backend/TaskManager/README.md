@@ -186,7 +186,8 @@ Content-Type: application/json
     "topic": "AI in Healthcare",
     "style": "formal",
     "length": 1500
-  }
+  },
+  "priority": 10  // Optional: task priority (default: 0, higher = more important)
 }
 ```
 
@@ -199,6 +200,7 @@ Response:
     "id": 123,
     "type": "PrismQ.Script.Generate",
     "status": "pending",
+    "priority": 10,
     "dedupe_key": "abc123..."
   }
 }
@@ -211,9 +213,18 @@ Content-Type: application/json
 
 {
   "worker_id": "worker-001",
-  "type_pattern": "PrismQ.Script.%"  // Optional: filter by type pattern
+  "task_type_id": 5,                    // Optional: specific task type ID
+  "type_pattern": "PrismQ.Script.%",    // Optional: filter by type pattern
+  "sort_by": "priority",                // Optional: created_at (default), priority, id, attempts
+  "sort_order": "DESC"                  // Optional: ASC (default) or DESC
 }
 ```
+
+**Sorting Examples:**
+- FIFO (First In, First Out): `"sort_by": "created_at", "sort_order": "ASC"` (default)
+- LIFO (Last In, First Out): `"sort_by": "created_at", "sort_order": "DESC"`
+- Highest Priority First: `"sort_by": "priority", "sort_order": "DESC"`
+- Lowest Attempts First: `"sort_by": "attempts", "sort_order": "ASC"`
 
 Response:
 ```json
@@ -228,7 +239,8 @@ Response:
       "style": "formal",
       "length": 1500
     },
-    "attempts": 1
+    "attempts": 1,
+    "priority": 10
   }
 }
 ```
@@ -282,6 +294,7 @@ GET /api/tasks?status=pending&type=PrismQ.Script.%&limit=10&offset=0
 - `status`: pending | claimed | completed | failed
 - `params_json`: Task parameters (validated against schema)
 - `dedupe_key`: SHA-256 hash for deduplication
+- `priority`: Task priority (higher values = higher priority, default: 0)
 - `result_json`: Task result when completed
 - `attempts`: Retry counter
 - `claimed_by`: Worker ID that claimed the task

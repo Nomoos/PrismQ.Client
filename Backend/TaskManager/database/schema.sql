@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS tasks (
     dedupe_key VARCHAR(64) NOT NULL,  -- Hash of type + params for deduplication
     result_json TEXT,                 -- Task result (populated on completion)
     error_message TEXT,               -- Error details if failed
+    priority INT DEFAULT 0,           -- Task priority (higher values = higher priority)
     attempts INT DEFAULT 0,           -- Number of execution attempts
     claimed_by VARCHAR(255),          -- Worker identifier that claimed this task
     claimed_at TIMESTAMP NULL,        -- When task was claimed
@@ -37,7 +38,8 @@ CREATE TABLE IF NOT EXISTS tasks (
     INDEX idx_type_status (type_id, status),
     INDEX idx_status (status),
     INDEX idx_dedupe (dedupe_key),
-    INDEX idx_created (created_at)
+    INDEX idx_created (created_at),
+    INDEX idx_priority (priority)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Task execution history (optional, for audit trail)

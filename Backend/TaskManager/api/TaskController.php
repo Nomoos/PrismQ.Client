@@ -17,6 +17,11 @@ class TaskController {
     /**
      * Create a new task
      * POST /tasks
+     * 
+     * Parameters:
+     * - type (required): Task type name
+     * - params (required): Task parameters (validated against task type schema)
+     * - priority (optional): Task priority (default: 0, higher values = higher priority)
      */
     public function create() {
         $data = ApiResponse::getRequestBody();
@@ -24,6 +29,7 @@ class TaskController {
         
         $type_name = trim($data['type']);
         $params = $data['params'];
+        $priority = isset($data['priority']) ? intval($data['priority']) : 0;
         
         try {
             // Get task type
@@ -55,7 +61,7 @@ class TaskController {
             $dedupe_key = hash('sha256', $type_name . ':' . $params_json);
             
             // Check for existing task with same dedupe key
-            $stmt = $this->db->prepare("SELECT id, status FROM tasks WHERE dedupe_key = ?");
+            $stmt = $this->db->prepare("SELECT id, status, priority FROM tasks WHERE dedupe_key = ?");
             $stmt->execute([$dedupe_key]);
             $existing = $stmt->fetch();
             
@@ -64,6 +70,7 @@ class TaskController {
                 ApiResponse::success([
                     'id' => $existing['id'],
                     'status' => $existing['status'],
+                    'priority' => $existing['priority'],
                     'deduplicated' => true
                 ], 'Task already exists (deduplicated)');
                 return; // Explicit return for clarity (ApiResponse::success() calls exit())
@@ -71,9 +78,9 @@ class TaskController {
             
             // Create new task
             $stmt = $this->db->prepare(
-                "INSERT INTO tasks (type_id, status, params_json, dedupe_key) VALUES (?, 'pending', ?, ?)"
+                "INSERT INTO tasks (type_id, status, params_json, dedupe_key, priority) VALUES (?, 'pending', ?, ?, ?)"
             );
-            $stmt->execute([$taskType['id'], $params_json, $dedupe_key]);
+            $stmt->execute([$taskType['id'], $params_json, $dedupe_key, $priority]);
             
             $task_id = $this->db->lastInsertId();
             
@@ -86,6 +93,7 @@ class TaskController {
                 'id' => $task_id,
                 'type' => $type_name,
                 'status' => 'pending',
+                'priority' => $priority,
                 'dedupe_key' => $dedupe_key
             ], 'Task created successfully', 201);
             
@@ -98,13 +106,34 @@ class TaskController {
     /**
      * Claim an available task for processing
      * POST /tasks/claim
+     * 
+     * Parameters:
+     * - worker_id (required): Worker identifier
+     * - task_type_id (optional): Specific task type ID to claim
+     * - type_pattern (optional): Task type name pattern (e.g., "PrismQ.%")
+     * - sort_by (optional): Field to sort by (created_at, priority, id, attempts)
+     * - sort_order (optional): Sort direction (ASC or DESC)
      */
     public function claim() {
         $data = ApiResponse::getRequestBody();
         ApiResponse::validateRequired($data, ['worker_id']);
         
         $worker_id = trim($data['worker_id']);
+        $task_type_id = isset($data['task_type_id']) ? intval($data['task_type_id']) : null;
         $type_pattern = isset($data['type_pattern']) ? trim($data['type_pattern']) : null;
+        $sort_by = isset($data['sort_by']) ? trim($data['sort_by']) : 'created_at';
+        $sort_order = isset($data['sort_order']) ? strtoupper(trim($data['sort_order'])) : 'ASC';
+        
+        // Validate sort_by field (whitelist to prevent SQL injection)
+        $allowed_sort_fields = ['created_at', 'priority', 'id', 'attempts'];
+        if (!in_array($sort_by, $allowed_sort_fields)) {
+            ApiResponse::error('Invalid sort_by field. Allowed values: ' . implode(', ', $allowed_sort_fields), 400);
+        }
+        
+        // Validate sort_order (whitelist to prevent SQL injection)
+        if (!in_array($sort_order, ['ASC', 'DESC'])) {
+            ApiResponse::error('Invalid sort_order. Allowed values: ASC, DESC', 400);
+        }
         
         try {
             // Start transaction
@@ -113,19 +142,27 @@ class TaskController {
             // Find available task - pending tasks or claimed tasks that timed out
             $timeout_threshold = date('Y-m-d H:i:s', time() - TASK_CLAIM_TIMEOUT);
             
-            $sql = "SELECT t.id, t.type_id, t.params_json, t.attempts, tt.name as type_name
+            $sql = "SELECT t.id, t.type_id, t.params_json, t.attempts, t.priority, tt.name as type_name
                     FROM tasks t
                     JOIN task_types tt ON t.type_id = tt.id
                     WHERE (t.status = 'pending' OR (t.status = 'claimed' AND t.claimed_at < ?))";
             
             $params = [$timeout_threshold];
             
+            // Filter by specific task type ID
+            if ($task_type_id) {
+                $sql .= " AND t.type_id = ?";
+                $params[] = $task_type_id;
+            }
+            
+            // Filter by type pattern (can be used with or without task_type_id)
             if ($type_pattern) {
                 $sql .= " AND tt.name LIKE ?";
                 $params[] = $type_pattern;
             }
             
-            $sql .= " ORDER BY t.created_at ASC LIMIT 1 FOR UPDATE";
+            // Add sorting - using validated fields only
+            $sql .= " ORDER BY t.{$sort_by} {$sort_order} LIMIT 1 FOR UPDATE";
             
             $stmt = $this->db->prepare($sql);
             $stmt->execute($params);
@@ -155,7 +192,8 @@ class TaskController {
                 'id' => $task['id'],
                 'type' => $task['type_name'],
                 'params' => json_decode($task['params_json'], true),
-                'attempts' => $task['attempts'] + 1
+                'attempts' => $task['attempts'] + 1,
+                'priority' => $task['priority']
             ], 'Task claimed successfully');
             
         } catch (PDOException $e) {
@@ -246,7 +284,7 @@ class TaskController {
         try {
             $stmt = $this->db->prepare(
                 "SELECT t.id, tt.name as type, t.status, t.params_json, t.result_json, 
-                        t.error_message, t.attempts, t.claimed_by, t.claimed_at, 
+                        t.error_message, t.priority, t.attempts, t.claimed_by, t.claimed_at, 
                         t.completed_at, t.created_at
                  FROM tasks t
                  JOIN task_types tt ON t.type_id = tt.id
@@ -287,7 +325,7 @@ class TaskController {
             $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 50;
             $offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0;
             
-            $sql = "SELECT t.id, tt.name as type, t.status, t.attempts, t.claimed_by, 
+            $sql = "SELECT t.id, tt.name as type, t.status, t.priority, t.attempts, t.claimed_by, 
                            t.created_at, t.completed_at
                     FROM tasks t
                     JOIN task_types tt ON t.type_id = tt.id
