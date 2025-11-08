@@ -55,7 +55,7 @@ INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action
 ('/tasks/claim', 'POST', 'Claim an available task for processing', 'custom',
 '{
     "handler": "task_claim",
-    "required_fields": ["worker_id"]
+    "required_fields": ["worker_id", "task_type_id"]
 }', TRUE);
 
 -- Complete Task
