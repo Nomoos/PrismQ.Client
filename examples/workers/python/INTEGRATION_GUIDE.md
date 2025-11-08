@@ -264,13 +264,13 @@ Tasks in TaskManager follow this structure:
 
 ### Task Claiming Details
 
-The claim endpoint requires specifying which task type to claim by its ID (not name).
+The claim endpoint **requires** specifying which task type to claim by its ID (not name). The `task_type_id` parameter is **mandatory** and must be a positive integer.
 
 **API Endpoint**: `POST /tasks/claim`
 
 **Required Parameters**:
-- `worker_id` (string): Unique identifier for this worker
-- `task_type_id` (integer): Specific task type ID to claim
+- `worker_id` (string): Unique identifier for this worker - **required**
+- `task_type_id` (integer): Specific task type ID to claim - **required, must be a positive integer**
 
 **Optional Parameters**:
 - `type_pattern` (string): Additional SQL LIKE filter (e.g., "PrismQ.%")

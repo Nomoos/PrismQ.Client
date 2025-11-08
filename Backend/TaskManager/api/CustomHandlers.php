@@ -304,7 +304,16 @@ class CustomHandlers {
         }
         
         $worker_id = trim($data['worker_id']);
+        
+        // task_type_id is required and must be a valid positive integer
+        if (!isset($data['task_type_id'])) {
+            throw new Exception('task_type_id is required', 400);
+        }
         $task_type_id = intval($data['task_type_id']);
+        if ($task_type_id <= 0) {
+            throw new Exception('task_type_id must be a positive integer', 400);
+        }
+        
         $type_pattern = isset($data['type_pattern']) ? trim($data['type_pattern']) : null;
         $sort_by = isset($data['sort_by']) ? trim($data['sort_by']) : 'created_at';
         $sort_order = isset($data['sort_order']) ? strtoupper(trim($data['sort_order'])) : 'ASC';
