@@ -396,17 +396,34 @@
                         "application/json": {
                             "schema": {
                                 "type": "object",
-                                "required": ["worker_id"],
+                                "required": ["worker_id", "task_type_id"],
                                 "properties": {
                                     "worker_id": {
                                         "type": "string",
                                         "description": "Unique worker identifier",
                                         "example": "worker-001"
                                     },
+                                    "task_type_id": {
+                                        "type": "integer",
+                                        "description": "Specific task type ID to claim",
+                                        "example": 1
+                                    },
                                     "type_pattern": {
                                         "type": "string",
                                         "description": "Optional: filter by type pattern (SQL LIKE syntax)",
                                         "example": "PrismQ.Script.%"
+                                    },
+                                    "sort_by": {
+                                        "type": "string",
+                                        "description": "Optional: field to sort by",
+                                        "enum": ["created_at", "priority", "id", "attempts"],
+                                        "default": "created_at"
+                                    },
+                                    "sort_order": {
+                                        "type": "string",
+                                        "description": "Optional: sort direction",
+                                        "enum": ["ASC", "DESC"],
+                                        "default": "ASC"
                                     }
                                 }
                             }
@@ -424,11 +441,15 @@
                                         "id": {"type": "integer", "example": 123},
                                         "type": {"type": "string", "example": "PrismQ.Script.Generate"},
                                         "params": {"type": "object"},
-                                        "attempts": {"type": "integer", "example": 1}
+                                        "attempts": {"type": "integer", "example": 1},
+                                        "priority": {"type": "integer", "example": 0}
                                     }
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Invalid request - Invalid sort_by or sort_order"
                     },
                     "401": {
                         "description": "Unauthorized - Invalid API key"

@@ -197,9 +197,12 @@ use OpenApi\Attributes as OA;
  *     @OA\RequestBody(
  *         required=true,
  *         @OA\JsonContent(
- *             required={"worker_id"},
+ *             required={"worker_id", "task_type_id"},
  *             @OA\Property(property="worker_id", type="string", example="worker-001", description="Unique worker identifier"),
- *             @OA\Property(property="type_pattern", type="string", example="PrismQ.Script.%", description="Optional: filter by type pattern (SQL LIKE syntax)")
+ *             @OA\Property(property="task_type_id", type="integer", example=1, description="Specific task type ID to claim"),
+ *             @OA\Property(property="type_pattern", type="string", example="PrismQ.Script.%", description="Optional: filter by type pattern (SQL LIKE syntax)"),
+ *             @OA\Property(property="sort_by", type="string", enum={"created_at", "priority", "id", "attempts"}, default="created_at", description="Optional: field to sort by"),
+ *             @OA\Property(property="sort_order", type="string", enum={"ASC", "DESC"}, default="ASC", description="Optional: sort direction")
  *         )
  *     ),
  *     @OA\Response(
@@ -209,9 +212,11 @@ use OpenApi\Attributes as OA;
  *             @OA\Property(property="id", type="integer", example=123),
  *             @OA\Property(property="type", type="string", example="PrismQ.Script.Generate"),
  *             @OA\Property(property="params", type="object"),
- *             @OA\Property(property="attempts", type="integer", example=1)
+ *             @OA\Property(property="attempts", type="integer", example=1),
+ *             @OA\Property(property="priority", type="integer", example=0)
  *         )
  *     ),
+ *     @OA\Response(response=400, description="Invalid request - Invalid sort_by or sort_order"),
  *     @OA\Response(response=401, description="Unauthorized - Invalid API key"),
  *     @OA\Response(response=404, description="No tasks available")
  * )
