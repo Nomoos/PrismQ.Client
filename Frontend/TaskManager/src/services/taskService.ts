@@ -1,4 +1,5 @@
 import api from './api'
+import { requestCache } from '../utils/cache'
 import type { 
   Task, 
   TaskType, 
@@ -23,7 +24,12 @@ export const taskService = {
 
   // Get task by ID
   async getTask(id: number): Promise<ApiResponse<Task>> {
-    return api.get<ApiResponse<Task>>(`/tasks/${id}`)
+    const cacheKey = `task:${id}`
+    return requestCache.get(
+      cacheKey,
+      () => api.get<ApiResponse<Task>>(`/tasks/${id}`),
+      { ttl: 30000 } // 30 seconds cache
+    )
   },
 
   // Create new task
@@ -41,6 +47,8 @@ export const taskService = {
     id: number,
     data: CompleteTaskRequest
   ): Promise<ApiResponse<void>> {
+    // Invalidate cache for this task
+    requestCache.invalidate(`task:${id}`)
     return api.post<ApiResponse<void>>(`/tasks/${id}/complete`, data)
   },
 
@@ -49,12 +57,19 @@ export const taskService = {
     id: number,
     data: UpdateProgressRequest
   ): Promise<ApiResponse<void>> {
+    // Invalidate cache for this task
+    requestCache.invalidate(`task:${id}`)
     return api.post<ApiResponse<void>>(`/tasks/${id}/progress`, data)
   },
 
   // Get all task types
   async getTaskTypes(activeOnly = true): Promise<PaginatedResponse<TaskType>> {
-    return api.get<PaginatedResponse<TaskType>>('/task-types', { active_only: activeOnly })
+    const cacheKey = `task-types:${activeOnly}`
+    return requestCache.get(
+      cacheKey,
+      () => api.get<PaginatedResponse<TaskType>>('/task-types', { active_only: activeOnly }),
+      { ttl: 300000 } // 5 minutes cache - task types don't change often
+    )
   },
 
   // Get task type by name
