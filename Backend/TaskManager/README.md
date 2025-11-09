@@ -449,6 +449,7 @@ Proprietary - All Rights Reserved - Copyright (c) 2025 PrismQ
 
 - [PrismQ.Client](../../) - Main client application
 - [Data-Driven Architecture](docs/DATA_DRIVEN_ARCHITECTURE.md) - **Complete guide to the data-driven API architecture**
+- [Custom Handlers Analysis](docs/CUSTOM_HANDLERS_ANALYSIS.md) - **Evaluation of custom handlers vs data-driven actions**
 - [Deployment Guide](DEPLOYMENT_GUIDE.md) - **Automated deployment script documentation**
 - [API Reference](docs/API_REFERENCE.md) - Detailed API documentation
 - [Hosting Information](docs/HOSTING_INFO.md) - Vedos/Wedos account details and resource allocation
@@ -459,3 +460,4 @@ Proprietary - All Rights Reserved - Copyright (c) 2025 PrismQ
 - [Issue Tracking](_meta/issues/INDEX.md) - All project issues organized by worker
 - [Parallelization Matrix](_meta/PARALLELIZATION_MATRIX.md) - Worker coordination and dependencies
 - [Organization Summary](_meta/ORGANIZATION_SUMMARY.md) - Project structure and implementation details
+- [Worker03 Implementation Summary](WORKER03_IMPLEMENTATION_SUMMARY.md) - Custom Handlers evaluation and approval
