@@ -127,7 +127,7 @@
             </button>
 
             <!-- Complete Button (for claimed tasks) -->
-            <div v-if="task.status === 'claimed' && task.claimed_by === workerId" class="space-y-2">
+            <div v-if="task.status === 'claimed' && task.claimed_by === workerStore.workerId" class="space-y-2">
               <button
                 @click="handleComplete(true)"
                 :disabled="actionLoading"
@@ -148,7 +148,7 @@
             </div>
 
             <!-- Info message for claimed tasks by other workers -->
-            <div v-if="task.status === 'claimed' && task.claimed_by !== workerId" class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <div v-if="task.status === 'claimed' && task.claimed_by !== workerStore.workerId" class="bg-blue-50 border border-blue-200 rounded-lg p-3">
               <p class="text-blue-800 text-sm">This task is claimed by another worker: {{ task.claimed_by }}</p>
             </div>
           </div>
@@ -162,18 +162,22 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useTaskStore } from '../stores/tasks'
+import { useWorkerStore } from '../stores/worker'
 import type { Task } from '../types'
 
 const route = useRoute()
 const router = useRouter()
 const taskStore = useTaskStore()
+const workerStore = useWorkerStore()
 
 const task = ref<Task | null>(null)
 const actionLoading = ref(false)
 const completingSuccess = ref(false)
 
-// Worker ID - load from localStorage, fallback to default
-const workerId = ref(localStorage.getItem('workerId') || 'frontend-worker-1')
+// Initialize worker if not already initialized
+if (!workerStore.isInitialized) {
+  workerStore.initializeWorker()
+}
 
 const loading = computed(() => taskStore.loading)
 const error = computed(() => taskStore.error)
@@ -196,11 +200,11 @@ async function loadTask() {
 }
 
 async function handleClaim() {
-  if (!task.value) return
+  if (!task.value || !workerStore.workerId) return
   
   actionLoading.value = true
   try {
-    const claimedTask = await taskStore.claimTask(workerId.value, task.value.type_id)
+    const claimedTask = await taskStore.claimTask(workerStore.workerId, task.value.type_id)
     if (claimedTask) {
       task.value = claimedTask
     }
@@ -213,7 +217,7 @@ async function handleClaim() {
 }
 
 async function handleComplete(success: boolean) {
-  if (!task.value) return
+  if (!task.value || !workerStore.workerId) return
   
   actionLoading.value = true
   completingSuccess.value = success
@@ -224,7 +228,7 @@ async function handleComplete(success: boolean) {
     
     const completedTask = await taskStore.completeTask(
       task.value.id,
-      workerId.value,
+      workerStore.workerId,
       success,
       result,
       errorMessage
