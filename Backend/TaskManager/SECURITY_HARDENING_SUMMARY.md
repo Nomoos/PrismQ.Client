@@ -94,30 +94,374 @@ php tests/security/SecurityHardeningTest.php
 
 ## Client Examples
 
-### Desktop Python Client
+The TaskManager API works with workers written in any programming language. All clients must include the `X-API-Key` header for authentication. The API uses standard HTTP/REST, so any language with HTTP client capabilities can interact with it.
+
+### Python Worker (Local or Server)
 
 ```python
 import requests
+import time
 
 API_URL = "https://your-domain.com/api"
 API_KEY = "your-api-key-here"
 
-headers = {
-    "X-API-Key": API_KEY,
-    "Content-Type": "application/json"
+class TaskWorker:
+    def __init__(self, api_url, api_key):
+        self.api_url = api_url
+        self.api_key = api_key
+        self.headers = {
+            "X-API-Key": self.api_key,
+            "Content-Type": "application/json"
+        }
+    
+    def claim_task(self, worker_id):
+        """Claim a task from the queue"""
+        response = requests.post(
+            f"{self.api_url}/tasks/claim",
+            headers=self.headers,
+            json={"worker_id": worker_id}
+        )
+        return response.json()
+    
+    def complete_task(self, task_id, result):
+        """Mark task as complete"""
+        response = requests.post(
+            f"{self.api_url}/tasks/{task_id}/complete",
+            headers=self.headers,
+            json={"result": result}
+        )
+        return response.json()
+    
+    def run(self, worker_id):
+        """Main worker loop"""
+        while True:
+            try:
+                # Claim a task
+                task = self.claim_task(worker_id)
+                
+                if task.get('id'):
+                    # Process the task
+                    result = self.process_task(task)
+                    
+                    # Complete the task
+                    self.complete_task(task['id'], result)
+                else:
+                    # No tasks available, wait
+                    time.sleep(5)
+                    
+            except requests.exceptions.HTTPError as e:
+                if e.response.status_code == 429:
+                    # Rate limited, wait and retry
+                    retry_after = e.response.json().get('retry_after', 60)
+                    time.sleep(retry_after)
+    
+    def process_task(self, task):
+        """Process the task - implement your logic here"""
+        # Your task processing logic
+        return {"status": "success"}
+
+# Usage
+worker = TaskWorker(API_URL, API_KEY)
+worker.run("python-worker-01")
+```
+
+### PHP Worker (Local or Server)
+
+```php
+<?php
+class TaskWorker {
+    private $apiUrl;
+    private $apiKey;
+    
+    public function __construct($apiUrl, $apiKey) {
+        $this->apiUrl = $apiUrl;
+        $this->apiKey = $apiKey;
+    }
+    
+    private function makeRequest($method, $endpoint, $data = null) {
+        $ch = curl_init($this->apiUrl . $endpoint);
+        
+        $headers = [
+            'X-API-Key: ' . $this->apiKey,
+            'Content-Type: application/json'
+        ];
+        
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        
+        if ($method === 'POST') {
+            curl_setopt($ch, CURLOPT_POST, true);
+            if ($data) {
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+            }
+        }
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        return [
+            'code' => $httpCode,
+            'data' => json_decode($response, true)
+        ];
+    }
+    
+    public function claimTask($workerId) {
+        return $this->makeRequest('POST', '/tasks/claim', [
+            'worker_id' => $workerId
+        ]);
+    }
+    
+    public function completeTask($taskId, $result) {
+        return $this->makeRequest('POST', "/tasks/{$taskId}/complete", [
+            'result' => $result
+        ]);
+    }
+    
+    public function run($workerId) {
+        while (true) {
+            $response = $this->claimTask($workerId);
+            
+            if ($response['code'] === 200 && isset($response['data']['id'])) {
+                $task = $response['data'];
+                
+                // Process the task
+                $result = $this->processTask($task);
+                
+                // Complete the task
+                $this->completeTask($task['id'], $result);
+            } elseif ($response['code'] === 429) {
+                // Rate limited
+                $retryAfter = $response['data']['retry_after'] ?? 60;
+                sleep($retryAfter);
+            } else {
+                // No tasks available
+                sleep(5);
+            }
+        }
+    }
+    
+    private function processTask($task) {
+        // Your task processing logic
+        return ['status' => 'success'];
+    }
 }
 
-# Create a task
-response = requests.post(
-    f"{API_URL}/tasks",
-    headers=headers,
-    json={
-        "type": "Task.Example",
-        "params": {"name": "test"}
-    }
-)
+// Usage
+$worker = new TaskWorker('https://your-domain.com/api', 'your-api-key-here');
+$worker->run('php-worker-01');
+?>
+```
 
-print(response.json())
+### Java Worker (Local or Server)
+
+```java
+import java.net.http.*;
+import java.net.URI;
+import java.time.Duration;
+import com.google.gson.*;
+
+public class TaskWorker {
+    private final String apiUrl;
+    private final String apiKey;
+    private final HttpClient client;
+    private final Gson gson;
+    
+    public TaskWorker(String apiUrl, String apiKey) {
+        this.apiUrl = apiUrl;
+        this.apiKey = apiKey;
+        this.client = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(10))
+            .build();
+        this.gson = new Gson();
+    }
+    
+    private JsonObject makeRequest(String method, String endpoint, JsonObject data) 
+            throws Exception {
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
+            .uri(URI.create(apiUrl + endpoint))
+            .header("X-API-Key", apiKey)
+            .header("Content-Type", "application/json");
+        
+        if ("POST".equals(method) && data != null) {
+            builder.POST(HttpRequest.BodyPublishers.ofString(gson.toJson(data)));
+        } else if ("POST".equals(method)) {
+            builder.POST(HttpRequest.BodyPublishers.noBody());
+        } else {
+            builder.GET();
+        }
+        
+        HttpRequest request = builder.build();
+        HttpResponse<String> response = client.send(request, 
+            HttpResponse.BodyHandlers.ofString());
+        
+        return gson.fromJson(response.body(), JsonObject.class);
+    }
+    
+    public JsonObject claimTask(String workerId) throws Exception {
+        JsonObject data = new JsonObject();
+        data.addProperty("worker_id", workerId);
+        return makeRequest("POST", "/tasks/claim", data);
+    }
+    
+    public JsonObject completeTask(String taskId, JsonObject result) throws Exception {
+        JsonObject data = new JsonObject();
+        data.add("result", result);
+        return makeRequest("POST", "/tasks/" + taskId + "/complete", data);
+    }
+    
+    public void run(String workerId) {
+        while (true) {
+            try {
+                JsonObject task = claimTask(workerId);
+                
+                if (task.has("id")) {
+                    // Process the task
+                    JsonObject result = processTask(task);
+                    
+                    // Complete the task
+                    completeTask(task.get("id").getAsString(), result);
+                } else {
+                    // No tasks available
+                    Thread.sleep(5000);
+                }
+                
+            } catch (Exception e) {
+                if (e.getMessage().contains("429")) {
+                    // Rate limited
+                    try {
+                        Thread.sleep(60000);
+                    } catch (InterruptedException ie) {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    
+    private JsonObject processTask(JsonObject task) {
+        // Your task processing logic
+        JsonObject result = new JsonObject();
+        result.addProperty("status", "success");
+        return result;
+    }
+    
+    public static void main(String[] args) {
+        TaskWorker worker = new TaskWorker(
+            "https://your-domain.com/api",
+            "your-api-key-here"
+        );
+        worker.run("java-worker-01");
+    }
+}
+```
+
+### C# Worker (Local or Server)
+
+```csharp
+using System;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+
+public class TaskWorker
+{
+    private readonly string apiUrl;
+    private readonly string apiKey;
+    private readonly HttpClient client;
+    
+    public TaskWorker(string apiUrl, string apiKey)
+    {
+        this.apiUrl = apiUrl;
+        this.apiKey = apiKey;
+        this.client = new HttpClient
+        {
+            BaseAddress = new Uri(apiUrl)
+        };
+        this.client.DefaultRequestHeaders.Add("X-API-Key", apiKey);
+    }
+    
+    public async Task<JsonDocument> ClaimTask(string workerId)
+    {
+        var data = new { worker_id = workerId };
+        var content = new StringContent(
+            JsonSerializer.Serialize(data),
+            Encoding.UTF8,
+            "application/json"
+        );
+        
+        var response = await client.PostAsync("/tasks/claim", content);
+        var responseBody = await response.Content.ReadAsStringAsync();
+        
+        return JsonDocument.Parse(responseBody);
+    }
+    
+    public async Task<JsonDocument> CompleteTask(string taskId, object result)
+    {
+        var data = new { result = result };
+        var content = new StringContent(
+            JsonSerializer.Serialize(data),
+            Encoding.UTF8,
+            "application/json"
+        );
+        
+        var response = await client.PostAsync($"/tasks/{taskId}/complete", content);
+        var responseBody = await response.Content.ReadAsStringAsync();
+        
+        return JsonDocument.Parse(responseBody);
+    }
+    
+    public async Task Run(string workerId)
+    {
+        while (true)
+        {
+            try
+            {
+                var taskDoc = await ClaimTask(workerId);
+                var task = taskDoc.RootElement;
+                
+                if (task.TryGetProperty("id", out var taskId))
+                {
+                    // Process the task
+                    var result = ProcessTask(task);
+                    
+                    // Complete the task
+                    await CompleteTask(taskId.GetString(), result);
+                }
+                else
+                {
+                    // No tasks available
+                    await Task.Delay(5000);
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                if (ex.Message.Contains("429"))
+                {
+                    // Rate limited
+                    await Task.Delay(60000);
+                }
+            }
+        }
+    }
+    
+    private object ProcessTask(JsonElement task)
+    {
+        // Your task processing logic
+        return new { status = "success" };
+    }
+    
+    public static async Task Main(string[] args)
+    {
+        var worker = new TaskWorker(
+            "https://your-domain.com/api",
+            "your-api-key-here"
+        );
+        await worker.Run("csharp-worker-01");
+    }
+}
 ```
 
 ### Mobile App (JavaScript/React Native)
@@ -164,9 +508,24 @@ fetch(`${API_URL}/tasks`, {
 .then(data => console.log(data));
 ```
 
-### Mobile Browser (Same as Web)
+## Language Compatibility
 
-Mobile browsers use the same JavaScript fetch API as desktop browsers.
+The TaskManager API is language-agnostic and works with any programming language that supports HTTP requests. Key requirements:
+
+✅ **Python**: Use `requests` or `urllib3` library  
+✅ **PHP**: Use `curl` extension or `Guzzle` library  
+✅ **Java**: Use `HttpClient` (Java 11+) or `Apache HttpClient`  
+✅ **C#**: Use `HttpClient` from `System.Net.Http`  
+✅ **JavaScript**: Use `fetch` API or `axios` library  
+✅ **Go**: Use `net/http` standard library  
+✅ **Ruby**: Use `net/http` or `httparty` gem  
+✅ **Rust**: Use `reqwest` crate
+
+**All clients must**:
+1. Include `X-API-Key` header with your API key
+2. Set `Content-Type: application/json` for POST requests
+3. Handle 429 (rate limit) responses with retry logic
+4. Handle 401 (unauthorized) responses (invalid API key)
 
 ## Rate Limiting Details
 
