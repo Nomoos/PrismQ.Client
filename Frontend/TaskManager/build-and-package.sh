@@ -101,6 +101,16 @@ cp public/deploy-deploy.php "$DEPLOY_PACKAGE_DIR/"
 cp public/.htaccess.example "$DEPLOY_PACKAGE_DIR/"
 print_info "Copied deployment scripts"
 
+# Copy health check files
+if [[ -f "public/health.json" ]]; then
+    cp public/health.json "$DEPLOY_PACKAGE_DIR/"
+    print_info "Copied health.json"
+fi
+if [[ -f "public/health.html" ]]; then
+    cp public/health.html "$DEPLOY_PACKAGE_DIR/"
+    print_info "Copied health.html"
+fi
+
 # Create .htaccess from example
 if [[ -f "$DEPLOY_PACKAGE_DIR/.htaccess.example" ]]; then
     cp "$DEPLOY_PACKAGE_DIR/.htaccess.example" "$DEPLOY_PACKAGE_DIR/.htaccess"

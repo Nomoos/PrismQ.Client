@@ -228,7 +228,11 @@ VITE_API_KEY=your-api-key
 - **[Contributing Guide](./_meta/docs/CONTRIBUTING.md)** ✅ - How to contribute
 
 ### Deployment Documentation
-- **[Deployment Guide](./_meta/docs/DEPLOYMENT_GUIDE.md)** ✅ - Step-by-step deployment to Vedos/Wedos
+- **[Deployment Guide](./docs/DEPLOYMENT.md)** ✅ - Step-by-step deployment to Vedos/Wedos
+- **[Quick Deploy FTP Guide](./QUICK_DEPLOY_FTP.md)** ✅ - Fast FTP deployment workflow
+- **[Deployment Runbook](./DEPLOYMENT_RUNBOOK.md)** ✅ - Operational procedures for staging and production
+- **[Staging Setup Guide](./STAGING_SETUP.md)** ✅ - Configure and maintain staging environment
+- **[Production Deployment Checklist](./PRODUCTION_DEPLOYMENT_CHECKLIST.md)** ✅ - Pre/post deployment checklist
 
 ### Planning & Architecture
 - **[Project Plan](./_meta/PROJECT_PLAN.md)** - Comprehensive project roadmap
