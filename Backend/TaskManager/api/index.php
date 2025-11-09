@@ -8,11 +8,26 @@
 
 // Load configuration first
 require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/SecurityMiddleware.php';
 
 // Set headers to prevent caching
 header('Cache-Control: ' . API_RESPONSE_CACHE_CONTROL);
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+
+// CORS Configuration
+$allowedOrigins = defined('CORS_ALLOWED_ORIGINS') ? CORS_ALLOWED_ORIGINS : '*';
+if ($allowedOrigins === '*') {
+    header('Access-Control-Allow-Origin: *');
+} else {
+    // Check if origin is allowed
+    $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    $allowedOriginsList = array_map('trim', explode(',', $allowedOrigins));
+    
+    if (in_array($origin, $allowedOriginsList)) {
+        header('Access-Control-Allow-Origin: ' . $origin);
+        header('Vary: Origin');
+    }
+}
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-API-Key');
 
@@ -91,6 +106,10 @@ if ($requestPath === '/docs' || preg_match('#^/docs/#', $requestPath)) {
     exit();
 }
 
+// Apply security middleware (rate limiting, request size, IP control, security headers)
+// Skip for public documentation endpoints
+SecurityMiddleware::apply($requestPath);
+
 // Skip authentication for health check endpoint
 if ($requestPath !== '/health') {
     // Get API key from header
@@ -109,6 +128,9 @@ if ($requestPath !== '/health') {
     }
     
     if (!hash_equals(API_KEY, $apiKey)) {
+        // Log failed authentication attempt
+        SecurityMiddleware::logAuthFailure('invalid_api_key', $apiKey);
+        
         header('HTTP/1.1 401 Unauthorized');
         echo json_encode([
             'error' => 'Unauthorized',

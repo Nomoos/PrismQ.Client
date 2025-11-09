@@ -4,6 +4,10 @@
 # Configuration with credentials (never commit!)
 config/config.php
 
+# Security data files
+.rate_limit_data
+.auth_failures.log
+
 # Database backups
 *.sql.gz
 *.sql.bak
