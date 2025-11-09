@@ -79,12 +79,17 @@ PrismQ.Client/
 │
 ├── Backend/                # BACKEND DEPLOYMENT CODE
 │   └── TaskManager/        # TaskManager API
-│       ├── api/            # API endpoints (deployment code)
-│       ├── config/         # Configuration (deployment code)
-│       ├── database/       # Database scripts (deployment code)
-│       ├── public/         # Public assets (deployment code)
-│       ├── *.php           # PHP files (deployment code)
 │       ├── README.md       # TaskManager documentation
+│       ├── composer.json   # PHP dependencies
+│       ├── composer.lock   # Locked dependencies
+│       ├── src/            # DEPLOYMENT CODE
+│       │   ├── api/        # API endpoints
+│       │   ├── config/     # Configuration
+│       │   ├── database/   # Database scripts
+│       │   ├── public/     # Public assets
+│       │   ├── *.php       # PHP deployment scripts
+│       │   ├── *.sh        # Shell scripts
+│       │   └── .gitignore  # Git ignore rules
 │       └── _meta/          # TaskManager meta-information
 │           ├── docs/       # TaskManager-specific docs
 │           ├── examples/   # TaskManager examples
