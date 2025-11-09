@@ -117,6 +117,7 @@ _meta/docs/
 └── screenshots/                   # Screenshots directory
     ├── README.md                  # Screenshot guidelines
     ├── task-list.png             # Task list view screenshot
+    ├── task-detail.png           # Task detail view screenshot
     ├── worker-dashboard.png      # Worker dashboard screenshot
     └── settings.png              # Settings view screenshot
 ```
@@ -200,7 +201,7 @@ _meta/docs/
 - ✅ Browser Support: Complete
 - ✅ Release Notes Template: Complete
 - ✅ Changelog: Complete
-- ✅ Screenshots: Complete (3 screenshots added)
+- ✅ Screenshots: Complete (4 screenshots added)
 
 ### Quality Metrics
 - Total documentation: ~6,500 lines
@@ -208,7 +209,7 @@ _meta/docs/
 - Number of files: 12 main docs + screenshots
 - Code examples: 120+
 - Command examples: 60+
-- Screenshots: 3 (task-list, worker-dashboard, settings)
+- Screenshots: 4 (task-list, task-detail, worker-dashboard, settings)
 
 ---
 
@@ -251,7 +252,7 @@ If you find errors or gaps in the documentation:
 ### Version 1.0 (2025-11-09)
 - ✅ Initial documentation suite created
 - ✅ All 12 main guides completed
-- ✅ Screenshots captured and added (3 screenshots)
+- ✅ Screenshots captured and added (4 screenshots)
 - ✅ Browser support guide created
 - ✅ Release notes template created
 - ✅ Changelog format established
