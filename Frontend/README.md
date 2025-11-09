@@ -6,6 +6,10 @@
 
 ## 📱 TaskManager - Mobile-First Task Management UI
 
+### Project Documentation
+- [Main README](../README.md)
+- [Release Management](../RELEASE.md)
+- [Deployment Checklist](../DEPLOYMENT_CHECKLIST.md)
 The main Frontend application for managing tasks from the Backend/TaskManager system.
 
 **👉 [Go to TaskManager Documentation](./TaskManager/README.md)**

@@ -54,11 +54,6 @@
    - **Why in root:** Testing framework looks for config at root
    - **Purpose:** Configuration for end-to-end tests
 
-7. **`sort_ClientOLD/`** - Archived old client files
-   - **Why in root:** Legacy files kept for reference
-   - **Purpose:** Old implementation, to be removed or archived
-   - **Note:** Should be moved to `_meta/archive/` or deleted
-
 ## Directory Structure
 
 ```
