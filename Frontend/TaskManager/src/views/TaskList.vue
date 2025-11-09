@@ -11,7 +11,7 @@
     <main class="max-w-7xl mx-auto px-4 py-6">
       <!-- Loading State -->
       <div v-if="loading" class="text-center py-8">
-        <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary-500 border-t-transparent"></div>
+        <LoadingSpinner size="lg" />
         <p class="mt-2 text-gray-600">Loading tasks...</p>
       </div>
 
@@ -46,9 +46,12 @@
         </div>
 
         <!-- Tasks -->
-        <div v-if="filteredTasks.length === 0" class="text-center py-8">
-          <p class="text-gray-500">No {{ currentFilter }} tasks</p>
-        </div>
+        <EmptyState
+          v-if="filteredTasks.length === 0"
+          icon="📋"
+          :title="`No ${currentFilter} tasks`"
+          message="There are no tasks matching this filter"
+        />
 
         <div v-else class="space-y-3">
           <div
@@ -88,14 +91,7 @@
               </div>
               
               <div class="ml-4 text-right flex-shrink-0">
-                <span
-                  :class="[
-                    'inline-block px-2 py-1 rounded text-xs font-medium',
-                    getStatusBadgeClass(task.status)
-                  ]"
-                >
-                  {{ task.status }}
-                </span>
+                <StatusBadge :status="task.status" />
                 <p class="text-xs text-gray-500 mt-2">
                   {{ formatDate(task.created_at) }}
                 </p>
@@ -137,6 +133,9 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useTaskStore } from '../stores/tasks'
 import { useTaskPolling } from '../composables/useTaskPolling'
+import LoadingSpinner from '../components/base/LoadingSpinner.vue'
+import EmptyState from '../components/base/EmptyState.vue'
+import StatusBadge from '../components/base/StatusBadge.vue'
 
 const router = useRouter()
 const taskStore = useTaskStore()
@@ -168,16 +167,6 @@ function getStatusColor(status: string): string {
     failed: 'bg-red-400'
   }
   return colors[status as keyof typeof colors] || 'bg-gray-400'
-}
-
-function getStatusBadgeClass(status: string): string {
-  const classes = {
-    pending: 'bg-yellow-100 text-yellow-800',
-    claimed: 'bg-blue-100 text-blue-800',
-    completed: 'bg-green-100 text-green-800',
-    failed: 'bg-red-100 text-red-800'
-  }
-  return classes[status as keyof typeof classes] || 'bg-gray-100 text-gray-800'
 }
 
 function formatDate(dateString: string): string {

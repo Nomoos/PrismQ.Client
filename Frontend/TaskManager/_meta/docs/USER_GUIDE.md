@@ -81,6 +81,8 @@ If not already configured, set up the API connection:
 
 The main view shows all available tasks:
 
+![Task List View](screenshots/task-list.png)
+
 - **Task Card**: Each task is displayed as a card with:
   - Task Type (e.g., "example", "data_processing")
   - Status Badge (Pending, In Progress, Completed, Failed)
@@ -163,20 +165,18 @@ The Task Detail view shows:
 
 ### Accessing the Dashboard
 
-Tap the **Dashboard** icon (📊) in the bottom navigation.
+Tap the **Workers** icon in the bottom navigation.
+
+![Worker Dashboard](screenshots/worker-dashboard.png)
 
 ### Dashboard Features
 
-The Worker Dashboard provides an overview of:
+The Worker Dashboard provides:
 
-- **Active Workers**: Number of workers currently processing tasks
-- **Task Statistics**: 
-  - Total tasks
-  - Pending tasks
-  - In-progress tasks
-  - Completed tasks
-  - Failed tasks
-- **Worker Activity**: Recent worker actions and updates
+- **Worker Information**: Your unique worker ID and current status
+- **Worker Status**: Toggle between Active and Idle states
+- **Task Actions**: Claim next available task from the queue
+- **Integration Example**: Sample code showing how to use worker functionality
 
 ### Monitoring Task Progress
 
@@ -191,6 +191,8 @@ The Worker Dashboard provides an overview of:
 ### Accessing Settings
 
 Tap the **Settings** icon (⚙️) in the bottom navigation.
+
+![Settings View](screenshots/settings.png)
 
 ### API Configuration
 
