@@ -18,6 +18,7 @@ This directory contains complete, runnable worker implementations in multiple pr
 
 - **[Python](./python/)** - Recommended for most use cases
 - **[PHP](./php/)** - Ideal for shared hosting environments
+- **[YouTube (Python)](./youtube/)** - Specific example for YouTube scraping tasks
 
 ### Run a Worker
 
@@ -90,6 +91,36 @@ php worker.php
 **Documentation:**
 - [README](./php/README.md) - Quick start guide
 - [Integration Guide](./php/INTEGRATION_GUIDE.md) - Deployment and configuration
+
+---
+
+### YouTube Worker (Python)
+
+**Directory**: [`./youtube/`](./youtube/)
+
+**Best For:**
+- YouTube shorts scraping tasks
+- Python-based projects
+- Learning worker implementation patterns
+
+**Features:**
+- ✅ Mock implementation with example data
+- ✅ Task claiming and processing
+- ✅ Error handling and retry logic
+- ✅ Graceful shutdown
+- ✅ Comprehensive logging
+- ✅ Production-ready deployment options
+
+**Quick Start:**
+```bash
+cd youtube/
+pip install -r requirements.txt
+python youtube_worker.py
+```
+
+**Documentation:**
+- [README](./youtube/README.md) - Quick start and overview
+- [Integration Guide](./youtube/INTEGRATION_GUIDE.md) - Complete implementation guide
 
 ## 🎯 Worker Architecture
 
