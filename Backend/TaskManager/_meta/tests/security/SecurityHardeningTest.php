@@ -11,7 +11,7 @@
  */
 
 require_once __DIR__ . '/../TestRunner.php';
-require_once __DIR__ . '/../../api/SecurityMiddleware.php';
+require_once __DIR__ . '/../../../src/api/SecurityMiddleware.php';
 
 function testSecurityHardening() {
     $runner = new TestRunner();

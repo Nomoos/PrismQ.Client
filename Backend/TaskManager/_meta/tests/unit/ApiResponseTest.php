@@ -4,7 +4,7 @@
  */
 
 require_once __DIR__ . '/../TestRunner.php';
-require_once __DIR__ . '/../../api/ApiResponse.php';
+require_once __DIR__ . '/../../../src/api/ApiResponse.php';
 
 function testApiResponse() {
     $runner = new TestRunner();
