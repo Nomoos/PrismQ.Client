@@ -13,15 +13,16 @@ When you deploy TaskManager to **`https://api.prismq.nomoos.cz/deploy.php`**, th
 The deployment creates the following structure:
 
 ```
-Root Directory (where deploy.php is located)
-├── deploy.php                          # Deployment script
-├── api/                                # API endpoints
-│   ├── index.php                      # Main API router
-│   └── ... (other API files)
-└── public/                            # Public documentation assets
-    ├── openapi.json                   # OpenAPI 3.0 specification
-    └── swagger-ui/                    # Swagger UI files
-        ├── index.html
+Root Directory (TaskManager module root)
+├── src/                                 # All deployment code
+│   ├── deploy.php                      # Deployment script
+│   ├── api/                            # API endpoints
+│   │   ├── index.php                  # Main API router
+│   │   └── ... (other API files)
+│   └── public/                        # Public documentation assets
+│       ├── openapi.json               # OpenAPI 3.0 specification
+│       └── swagger-ui/                # Swagger UI files
+│           ├── index.html
         ├── swagger-ui-bundle.js
         └── ... (other assets)
 ```
@@ -89,12 +90,12 @@ curl https://api.prismq.nomoos.cz/api/openapi.json
 
 ### Swagger UI shows "Failed to fetch"
 - Verify deployment completed successfully
-- Check that `public/openapi.json` exists
+- Check that `src/public/openapi.json` exists
 - Ensure Apache mod_rewrite is enabled
-- Check that `api/.htaccess` is present
+- Check that `src/api/.htaccess` is present
 
 ### OpenAPI spec not found (404)
-- Verify `public/openapi.json` was downloaded during deployment
+- Verify `src/public/openapi.json` was downloaded during deployment
 - Check file permissions (should be readable)
 - Review Apache error logs
 

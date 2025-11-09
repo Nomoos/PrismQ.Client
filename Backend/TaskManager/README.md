@@ -45,10 +45,10 @@ TaskManager provides a REST API for managing tasks with parameter validation, de
 
 ```bash
 # Upload check_setup.php to your server, then run:
-php check_setup.php
+php src/check_setup.php
 
 # Or access via web browser:
-https://your-domain.com/path/check_setup.php
+https://your-domain.com/path/src/check_setup.php
 ```
 
 The environment check will validate:
@@ -69,15 +69,15 @@ The environment check will validate:
 
 ```bash
 # Step 1: Update deploy.php to the latest version
-php deploy-deploy.php
+php src/deploy-deploy.php
 
 # Step 2: Run the updated deployment script
-php deploy.php
+php src/deploy.php
 ```
 
 **Web browser method:**
-1. Upload both `deploy-deploy.php` and `deploy.php` to your server
-2. Access `https://your-domain.com/path/deploy-deploy.php` in your browser
+1. Upload both `src/deploy-deploy.php` and `src/deploy.php` to your server
+2. Access `https://your-domain.com/path/src/deploy-deploy.php` in your browser
 3. Click "Continue to Deploy" after the update completes
 4. Follow the deployment wizard
 
@@ -108,18 +108,18 @@ If you prefer manual setup:
 
 ```bash
 # Import the database schema
-mysql -u username -p database_name < database/schema.sql
+mysql -u username -p database_name < src/database/schema.sql
 ```
 
 #### 2. Configuration
 
 ```bash
 # Copy the example config and edit with your database credentials
-cp config/config.example.php config/config.php
-nano config/config.php
+cp src/config/config.example.php src/config/config.php
+nano src/config/config.php
 ```
 
-Edit `config/config.php`:
+Edit `src/config/config.php`:
 ```php
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'your_database');
@@ -429,12 +429,12 @@ mysql> SELECT id, type_id, error_message, attempts
 ### Common Issues
 
 **Problem**: "Database connection failed"
-- Check database credentials in `config/config.php`
+- Check database credentials in `src/config/config.php`
 - Verify MySQL service is running
 - Check firewall/networking settings
 
 **Problem**: "Route not found" 
-- Verify `.htaccess` file is present in `/api/` directory
+- Verify `.htaccess` file is present in `src/api/` directory
 - Check that mod_rewrite is enabled on Apache
 - Review Apache error logs
 
@@ -449,7 +449,7 @@ mysql> SELECT id, type_id, error_message, attempts
 
 ## 📄 Configuration Options
 
-Edit `config/config.php`:
+Edit `src/config/config.php`:
 
 ```php
 // Task claim timeout (seconds) - how long before claimed task can be reclaimed
