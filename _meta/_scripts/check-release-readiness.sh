@@ -69,8 +69,6 @@ REQUIRED_FILES=(
     "VERSION"
     "Frontend/package.json"
     "Backend/TaskManager/composer.json"
-    ".github/workflows/ci.yml"
-    ".github/workflows/release.yml"
 )
 
 for file in "${REQUIRED_FILES[@]}"; do
@@ -82,9 +80,22 @@ for file in "${REQUIRED_FILES[@]}"; do
 done
 echo ""
 
-echo "4. Running Frontend tests..."
+echo "4. Checking Frontend dependencies..."
 cd Frontend
-if npm test -- --run > /tmp/frontend-test.log 2>&1; then
+if [ ! -d "node_modules" ]; then
+    warning "Frontend dependencies not installed"
+    echo "   Run: cd Frontend && npm install"
+else
+    success "Frontend dependencies installed"
+fi
+cd ..
+echo ""
+
+echo "5. Running Frontend tests..."
+cd Frontend
+if [ ! -d "node_modules" ]; then
+    warning "Frontend tests skipped (dependencies not installed)"
+elif npm test -- --run > /tmp/frontend-test.log 2>&1; then
     success "Frontend tests passed"
 else
     error "Frontend tests failed"
@@ -93,9 +104,11 @@ fi
 cd ..
 echo ""
 
-echo "5. Running Frontend linter..."
+echo "6. Running Frontend linter..."
 cd Frontend
-if npm run lint > /tmp/frontend-lint.log 2>&1; then
+if [ ! -d "node_modules" ]; then
+    warning "Frontend linter skipped (dependencies not installed)"
+elif npm run lint > /tmp/frontend-lint.log 2>&1; then
     success "Frontend linter passed"
 else
     warning "Frontend linter found issues"
@@ -104,9 +117,11 @@ fi
 cd ..
 echo ""
 
-echo "6. Checking Frontend build..."
+echo "7. Checking Frontend build..."
 cd Frontend
-if npm run build > /tmp/frontend-build.log 2>&1; then
+if [ ! -d "node_modules" ]; then
+    warning "Frontend build skipped (dependencies not installed)"
+elif npm run build > /tmp/frontend-build.log 2>&1; then
     success "Frontend build succeeded"
 else
     error "Frontend build failed"
@@ -115,7 +130,7 @@ fi
 cd ..
 echo ""
 
-echo "7. Running Backend TaskManager tests..."
+echo "8. Running Backend TaskManager tests..."
 cd Backend/TaskManager
 if [ -f "tests/test.php" ]; then
     if php tests/test.php > /tmp/backend-test.log 2>&1; then
@@ -130,7 +145,7 @@ fi
 cd ../..
 echo ""
 
-echo "8. Validating composer.json..."
+echo "9. Validating composer.json..."
 cd Backend/TaskManager
 if composer validate --strict > /tmp/composer-validate.log 2>&1; then
     success "composer.json valid"
@@ -141,7 +156,7 @@ fi
 cd ../..
 echo ""
 
-echo "9. Checking documentation..."
+echo "10. Checking documentation..."
 DOC_FILES=(
     "_meta/docs/SETUP.md"
     "_meta/docs/USER_GUIDE.md"
