@@ -1,9 +1,9 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-gray-50 dark:bg-dark-canvas-default">
     <!-- Header -->
-    <header class="bg-white shadow-sm sticky top-0 z-10">
+    <header class="bg-white dark:bg-dark-surface-default shadow-sm sticky top-0 z-10 dark:border-b dark:border-dark-border-default">
       <div class="max-w-7xl mx-auto px-4 py-4">
-        <h1 class="text-2xl font-bold text-gray-900">TaskManager</h1>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-dark-text-primary">TaskManager</h1>
       </div>
     </header>
 
@@ -12,12 +12,12 @@
       <!-- Loading State -->
       <div v-if="loading" class="text-center py-8">
         <LoadingSpinner size="lg" />
-        <p class="mt-2 text-gray-600">Loading tasks...</p>
+        <p class="mt-2 text-gray-600 dark:text-dark-text-secondary">Loading tasks...</p>
       </div>
 
       <!-- Error State -->
-      <div v-else-if="error" class="bg-red-50 border border-red-200 rounded-lg p-4">
-        <p class="text-red-800">{{ error }}</p>
+      <div v-else-if="error" class="bg-red-50 dark:bg-dark-error-subtle border border-red-200 dark:border-dark-error-border rounded-lg p-4">
+        <p class="text-red-800 dark:text-dark-error-text">{{ error }}</p>
         <button @click="taskStore.clearError" class="btn-primary mt-2">
           Retry
         </button>
@@ -34,8 +34,8 @@
             :class="[
               'px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors',
               currentFilter === status
-                ? 'bg-primary-500 text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-100'
+                ? 'bg-primary-500 text-white dark:bg-dark-primary-bg dark:text-white'
+                : 'bg-white text-gray-700 hover:bg-gray-100 dark:bg-dark-surface-default dark:text-dark-text-primary dark:hover:bg-dark-surface-overlay dark:border dark:border-dark-border-default'
             ]"
           >
             {{ status.charAt(0).toUpperCase() + status.slice(1) }}
@@ -58,7 +58,7 @@
             v-for="task in filteredTasks"
             :key="task.id"
             @click="goToTask(task.id)"
-            class="card cursor-pointer hover:shadow-md transition-shadow"
+            class="card cursor-pointer hover:shadow-md dark:hover:border-dark-border-strong transition-shadow"
           >
             <div class="flex items-start justify-between">
               <div class="flex-1 min-w-0">
@@ -69,30 +69,30 @@
                       getStatusColor(task.status)
                     ]"
                   ></span>
-                  <h3 class="font-semibold text-gray-900 truncate">
+                  <h3 class="font-semibold text-gray-900 dark:text-dark-text-primary truncate">
                     {{ task.type }}
                   </h3>
                 </div>
-                <p class="text-sm text-gray-500 mt-1">ID: {{ task.id }}</p>
-                <p class="text-sm text-gray-600 mt-1">
+                <p class="text-sm text-gray-500 dark:text-dark-text-secondary mt-1">ID: {{ task.id }}</p>
+                <p class="text-sm text-gray-600 dark:text-dark-text-secondary mt-1">
                   Priority: {{ task.priority }} | Attempts: {{ task.attempts }}/{{ task.max_attempts }}
                 </p>
                 
                 <!-- Progress Bar -->
                 <div v-if="task.status === 'claimed' && task.progress > 0" class="mt-2">
-                  <div class="w-full bg-gray-200 rounded-full h-2">
+                  <div class="w-full bg-gray-200 dark:bg-dark-neutral-bg rounded-full h-2">
                     <div
-                      class="bg-primary-500 h-2 rounded-full transition-all duration-300"
+                      class="bg-primary-500 dark:bg-dark-primary-bg h-2 rounded-full transition-all duration-300"
                       :style="{ width: `${task.progress}%` }"
                     ></div>
                   </div>
-                  <p class="text-xs text-gray-500 mt-1">{{ task.progress }}% complete</p>
+                  <p class="text-xs text-gray-500 dark:text-dark-text-tertiary mt-1">{{ task.progress }}% complete</p>
                 </div>
               </div>
               
               <div class="ml-4 text-right flex-shrink-0">
                 <StatusBadge :status="task.status" />
-                <p class="text-xs text-gray-500 mt-2">
+                <p class="text-xs text-gray-500 dark:text-dark-text-tertiary mt-2">
                   {{ formatDate(task.created_at) }}
                 </p>
               </div>
@@ -103,23 +103,23 @@
     </main>
 
     <!-- Bottom Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 safe-area-inset-bottom">
+    <nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-dark-surface-default border-t border-gray-200 dark:border-dark-border-default safe-area-inset-bottom">
       <div class="flex justify-around">
         <RouterLink
           to="/"
-          class="flex-1 flex flex-col items-center py-3 text-primary-600"
+          class="flex-1 flex flex-col items-center py-3 text-primary-600 dark:text-dark-primary-text"
         >
           <span class="text-xs font-medium">Tasks</span>
         </RouterLink>
         <RouterLink
           to="/workers"
-          class="flex-1 flex flex-col items-center py-3 text-gray-600 hover:text-primary-600"
+          class="flex-1 flex flex-col items-center py-3 text-gray-600 dark:text-dark-text-secondary hover:text-primary-600 dark:hover:text-dark-primary-text"
         >
           <span class="text-xs font-medium">Workers</span>
         </RouterLink>
         <RouterLink
           to="/settings"
-          class="flex-1 flex flex-col items-center py-3 text-gray-600 hover:text-primary-600"
+          class="flex-1 flex flex-col items-center py-3 text-gray-600 dark:text-dark-text-secondary hover:text-primary-600 dark:hover:text-dark-primary-text"
         >
           <span class="text-xs font-medium">Settings</span>
         </RouterLink>
