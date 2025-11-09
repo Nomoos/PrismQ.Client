@@ -42,7 +42,7 @@ test.describe('Mobile: Touch Interactions', () => {
     if (buttonExists) {
       // Take screenshot before tap
       await page.screenshot({ 
-        path: 'Frontend/_meta/tests/e2e-results/before-tap.png' 
+        path: 'Frontend/TaskManager/_meta/tests/e2e-results/before-tap.png' 
       })
       
       // Tap the button
@@ -53,7 +53,7 @@ test.describe('Mobile: Touch Interactions', () => {
       
       // Take screenshot during tap feedback
       await page.screenshot({ 
-        path: 'Frontend/_meta/tests/e2e-results/during-tap.png' 
+        path: 'Frontend/TaskManager/_meta/tests/e2e-results/during-tap.png' 
       })
     }
   })

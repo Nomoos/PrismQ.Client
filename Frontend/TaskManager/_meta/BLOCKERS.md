@@ -67,7 +67,7 @@ All 10 frontend issues (ISSUE-FRONTEND-001 through ISSUE-FRONTEND-010) need to b
 - [ ] ISSUE-FRONTEND-010: Senior Review
 
 **Progress**:
-- ✅ Issue templates copied from Frontend/_meta/issues/
+- ✅ Issue templates copied from Frontend/TaskManager/_meta/issues/
 - 🔴 Need to update for Frontend/TaskManager context
 - 🔴 Need to add missing issues
 

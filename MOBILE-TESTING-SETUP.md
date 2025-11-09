@@ -14,12 +14,12 @@ Worker12 mobile device testing infrastructure is now fully configured and ready 
    - iPad Pro tablet testing
    - Desktop responsive testing (Firefox, Safari)
 
-2. **Mobile Test Suite** (`Frontend/_meta/tests/e2e/mobile/`)
+2. **Mobile Test Suite** (`Frontend/TaskManager/_meta/tests/e2e/mobile/`)
    - `task-claiming.spec.ts` - Task claiming flow with touch interactions
    - `navigation.spec.ts` - Mobile navigation patterns
    - `touch-interactions.spec.ts` - Touch gestures and responsiveness
 
-3. **Accessibility Test Suite** (`Frontend/_meta/tests/e2e/accessibility/`)
+3. **Accessibility Test Suite** (`Frontend/TaskManager/_meta/tests/e2e/accessibility/`)
    - `wcag-compliance.spec.ts` - WCAG 2.1 AA compliance testing
    - Automated testing with @axe-core/playwright
    - Keyboard navigation testing
@@ -27,14 +27,14 @@ Worker12 mobile device testing infrastructure is now fully configured and ready 
    - Color contrast validation
    - Touch target size verification
 
-4. **Performance Test Suite** (`Frontend/_meta/tests/e2e/performance/`)
+4. **Performance Test Suite** (`Frontend/TaskManager/_meta/tests/e2e/performance/`)
    - `load-time.spec.ts` - Load time testing on 3G/4G/WiFi
    - Core Web Vitals measurement (LCP, FID, CLS)
    - Interaction responsiveness testing
    - Resource loading optimization checks
    - Memory leak detection
 
-5. **Smoke Tests** (`Frontend/_meta/tests/e2e/smoke.spec.ts`)
+5. **Smoke Tests** (`Frontend/TaskManager/_meta/tests/e2e/smoke.spec.ts`)
    - Basic functionality validation
    - Works with current implementation
    - No test data attributes required
@@ -218,7 +218,7 @@ For comprehensive UX review, also conduct manual testing:
 
 ## Test Results Location
 
-All test results are saved to `Frontend/_meta/tests/e2e-results/`:
+All test results are saved to `Frontend/TaskManager/_meta/tests/e2e-results/`:
 - HTML reports
 - Screenshots (on failure)
 - Videos (on failure)
@@ -245,9 +245,9 @@ All test results are saved to `Frontend/_meta/tests/e2e-results/`:
 ## Support
 
 For questions or issues with the mobile testing setup, refer to:
-- `Frontend/_meta/tests/e2e/README.md` - Detailed testing guide
-- `Frontend/_meta/tests/e2e/USABILITY-TESTING-GUIDE.md` - Manual testing procedures
-- `Frontend/_meta/tests/e2e/UX-REVIEW-REPORT-TEMPLATE.md` - Reporting format
+- `Frontend/TaskManager/_meta/tests/e2e/README.md` - Detailed testing guide
+- `Frontend/TaskManager/_meta/tests/e2e/USABILITY-TESTING-GUIDE.md` - Manual testing procedures
+- `Frontend/TaskManager/_meta/tests/e2e/UX-REVIEW-REPORT-TEMPLATE.md` - Reporting format
 
 ---
 

@@ -131,13 +131,13 @@ npm run test:e2e:ui
 
 ```bash
 # Mobile tests only
-npx playwright test Frontend/_meta/tests/e2e/mobile
+npx playwright test Frontend/TaskManager/_meta/tests/e2e/mobile
 
 # Accessibility tests only
-npx playwright test Frontend/_meta/tests/e2e/accessibility
+npx playwright test Frontend/TaskManager/_meta/tests/e2e/accessibility
 
 # Performance tests only
-npx playwright test Frontend/_meta/tests/e2e/performance
+npx playwright test Frontend/TaskManager/_meta/tests/e2e/performance
 ```
 
 ### Run on Specific Devices
@@ -160,15 +160,15 @@ npx playwright test --project=ipad
 
 ```bash
 # Task claiming flow
-npx playwright test Frontend/_meta/tests/e2e/mobile/task-claiming.spec.ts
+npx playwright test Frontend/TaskManager/_meta/tests/e2e/mobile/task-claiming.spec.ts
 
 # WCAG compliance
-npx playwright test Frontend/_meta/tests/e2e/accessibility/wcag-compliance.spec.ts
+npx playwright test Frontend/TaskManager/_meta/tests/e2e/accessibility/wcag-compliance.spec.ts
 ```
 
 ## Test Results
 
-Test results are saved to `Frontend/_meta/tests/e2e-results/`:
+Test results are saved to `Frontend/TaskManager/_meta/tests/e2e-results/`:
 - HTML report
 - Screenshots (on failure)
 - Videos (on failure)
@@ -176,7 +176,7 @@ Test results are saved to `Frontend/_meta/tests/e2e-results/`:
 
 View the HTML report:
 ```bash
-npx playwright show-report Frontend/_meta/tests/e2e-results
+npx playwright show-report Frontend/TaskManager/_meta/tests/e2e-results
 ```
 
 ## Accessibility Testing Tools

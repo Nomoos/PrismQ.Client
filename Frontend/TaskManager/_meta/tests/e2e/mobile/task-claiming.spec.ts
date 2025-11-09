@@ -99,7 +99,7 @@ test.describe('Mobile: Task Claiming Flow', () => {
     
     // Take screenshot to verify visual feedback
     await page.screenshot({ 
-      path: 'Frontend/_meta/tests/e2e-results/mobile-tap-feedback.png' 
+      path: 'Frontend/TaskManager/_meta/tests/e2e-results/mobile-tap-feedback.png' 
     })
   })
 
