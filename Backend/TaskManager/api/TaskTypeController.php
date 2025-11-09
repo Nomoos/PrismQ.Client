@@ -9,7 +9,7 @@ class TaskTypeController {
     private $db;
     
     public function __construct() {
-        $this->db = Database::getInstance()->getConnection();
+        $this->db = Database::getInstance();
     }
     
     /**
@@ -68,7 +68,7 @@ class TaskTypeController {
                 );
                 $stmt->execute([$name, $version, $param_schema_json]);
                 
-                $id = $this->db->lastInsertId();
+                $id = $this->db->getConnection()->lastInsertId();
                 
                 ApiResponse::success([
                     'id' => $id,
