@@ -2,26 +2,30 @@
 
 This directory contains screenshots for the user guide and documentation.
 
-## Required Screenshots
+## Available Screenshots
 
-The following screenshots should be added:
+The following screenshots have been added:
 
-1. **task-list.png** - Main task list view showing:
+1. **task-list.png** ✅ - Main task list view showing:
    - Filter tabs (All, Pending, Claimed, Completed, Failed)
    - Task cards with status indicators
    - Bottom navigation bar
 
-2. **task-detail.png** - Task detail view showing:
-   - Task information
-   - Claim/Complete buttons
-   - Progress indicator
+2. **task-detail.png** ✅ - Task detail view showing:
+   - Task information and type
+   - Status badge (claimed)
+   - Progress indicator (45%)
+   - Task metadata (ID, priority, attempts, created date)
+   - Worker information (claimed by, claimed at)
+   - Parameters JSON display
+   - Action buttons (Mark as Complete, Mark as Failed)
 
-3. **worker-dashboard.png** - Worker dashboard showing:
+3. **worker-dashboard.png** ✅ - Worker dashboard showing:
    - Worker ID
    - Worker status
    - Worker statistics
 
-4. **settings.png** - Settings view showing:
+4. **settings.png** ✅ - Settings view showing:
    - API configuration
    - Application preferences
 
