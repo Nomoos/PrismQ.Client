@@ -134,11 +134,11 @@ The staging environment serves as a **production-like environment** for:
 
 ### Environment Variables (Staging)
 
-Create `.env.staging` in local project:
+Create `.env.staging.example` in local project:
 
 ```bash
 # Staging Environment Configuration
-# File: Frontend/TaskManager/.env.staging
+# File: Frontend/TaskManager/.env.staging.example
 
 # API Configuration - Point to STAGING backend
 VITE_API_BASE_URL=https://api-staging.your-domain.com
@@ -250,7 +250,8 @@ echo "======================="
 
 # 1. Use staging environment
 echo "📝 Configuring for staging..."
-cp .env.staging .env
+cp .env.staging.example .env
+# Edit .env to set actual values if needed
 
 # 2. Build production bundle
 echo "🔨 Building..."
@@ -304,7 +305,7 @@ echo "Health: https://staging.your-domain.com/health.html"
 1. **Prepare Build:**
    ```bash
    cd Frontend/TaskManager
-   cp .env.staging .env
+   cp .env.staging.example .env
    ./build-and-package.sh
    ```
 
@@ -473,7 +474,7 @@ curl https://api-staging.your-domain.com/health
 ```
 
 **Solutions:**
-1. Verify VITE_API_BASE_URL in .env.staging
+1. Verify VITE_API_BASE_URL in .env.staging.example
 2. Rebuild with correct environment
 3. Check CORS on staging backend
 4. Verify staging backend is running
@@ -544,7 +545,7 @@ For additional security, restrict staging access:
 4. **Test on actual devices** not just emulators
 
 ### Configuration
-1. **Keep .env.staging** in version control (no secrets)
+1. **Keep .env.staging.example** in version control (no secrets)
 2. **Document environment differences**
 3. **Maintain parity** with production where possible
 4. **Version control .htaccess** modifications
@@ -566,10 +567,10 @@ For additional security, restrict staging access:
 .env.development  # Auto-used by Vite in dev mode
 
 # Staging
-.env.staging      # For staging builds
+.env.staging.example      # For staging builds
 
 # Production
-.env.production   # For production builds
+.env.production.example   # For production builds
 ```
 
 ### Deployment Commands

@@ -82,7 +82,7 @@ Test deployment process and validate application in production-like environment 
 cd Frontend/TaskManager
 
 # Ensure environment is set to staging
-cp .env.staging .env  # If using separate staging env file
+cp .env.staging.example .env  # If using separate staging env file
 
 # Verify configuration
 cat .env | grep VITE_API_BASE_URL
@@ -274,7 +274,7 @@ tar -czf ~/backups/production-backup-$(date +%Y%m%d_%H%M%S).tar.gz *
 
 ```bash
 # Use production environment variables
-cp .env.production .env
+cp .env.production.example .env
 
 # Verify production API URL
 cat .env | grep VITE_API_BASE_URL
