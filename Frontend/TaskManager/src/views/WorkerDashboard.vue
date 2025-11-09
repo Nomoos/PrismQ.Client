@@ -17,12 +17,7 @@
           </div>
           <div class="flex justify-between">
             <span class="text-gray-600">Status:</span>
-            <span :class="[
-              'px-2 py-1 rounded text-xs font-medium',
-              getStatusClass(workerStore.status)
-            ]">
-              {{ workerStore.status }}
-            </span>
+            <StatusBadge :status="workerStore.status" :uppercase="false" />
           </div>
         </div>
         
@@ -51,6 +46,29 @@
             >
               Set Idle
             </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Task Statistics Card -->
+      <div class="card">
+        <h2 class="text-lg font-semibold mb-4">Task Statistics</h2>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-yellow-50 rounded-lg p-4 text-center">
+            <p class="text-2xl font-bold text-yellow-800">{{ taskStore.pendingTasks.length }}</p>
+            <p class="text-xs text-yellow-600 mt-1">Pending</p>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <p class="text-2xl font-bold text-blue-800">{{ taskStore.claimedTasks.length }}</p>
+            <p class="text-xs text-blue-600 mt-1">Claimed</p>
+          </div>
+          <div class="bg-green-50 rounded-lg p-4 text-center">
+            <p class="text-2xl font-bold text-green-800">{{ taskStore.completedTasks.length }}</p>
+            <p class="text-xs text-green-600 mt-1">Completed</p>
+          </div>
+          <div class="bg-red-50 rounded-lg p-4 text-center">
+            <p class="text-2xl font-bold text-red-800">{{ taskStore.failedTasks.length }}</p>
+            <p class="text-xs text-red-600 mt-1">Failed</p>
           </div>
         </div>
       </div>
@@ -89,6 +107,39 @@
         </div>
       </div>
 
+      <!-- My Tasks Card -->
+      <div class="card" v-if="myClaimedTasks.length > 0">
+        <h2 class="text-lg font-semibold mb-4">My Tasks</h2>
+        <div class="space-y-2">
+          <div
+            v-for="task in myClaimedTasks"
+            :key="task.id"
+            @click="goToTask(task.id)"
+            class="p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex-1 min-w-0">
+                <p class="font-medium text-gray-900 truncate">{{ task.type }}</p>
+                <p class="text-xs text-gray-500 mt-1">ID: {{ task.id }}</p>
+              </div>
+              <div class="ml-4">
+                <StatusBadge :status="task.status" />
+              </div>
+            </div>
+            <!-- Progress bar -->
+            <div v-if="task.progress > 0" class="mt-2">
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  class="bg-primary-500 h-2 rounded-full transition-all duration-300"
+                  :style="{ width: `${task.progress}%` }"
+                ></div>
+              </div>
+              <p class="text-xs text-gray-500 mt-1">{{ task.progress }}% complete</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Integration Guide -->
       <div class="card bg-blue-50 border-blue-200">
         <h3 class="text-sm font-semibold text-blue-900 mb-2">Integration Example</h3>
@@ -117,11 +168,12 @@ const task = await taskStore.claimTask(
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useWorkerStore } from '../stores/worker'
 import { useTaskStore } from '../stores/tasks'
 import { taskService } from '../services/taskService'
+import StatusBadge from '../components/base/StatusBadge.vue'
 import type { TaskType } from '../types'
 
 const router = useRouter()
@@ -132,13 +184,16 @@ const availableTaskTypes = ref<TaskType[]>([])
 const claimingTask = ref(false)
 const claimError = ref<string | null>(null)
 
-function getStatusClass(status: string): string {
-  const classes = {
-    active: 'bg-green-100 text-green-800',
-    idle: 'bg-yellow-100 text-yellow-800',
-    offline: 'bg-gray-100 text-gray-800'
-  }
-  return classes[status as keyof typeof classes] || 'bg-gray-100 text-gray-800'
+// Computed property for tasks claimed by this worker
+const myClaimedTasks = computed(() => {
+  if (!workerStore.workerId) return []
+  return taskStore.tasks.filter(t => 
+    t.status === 'claimed' && t.claimed_by === workerStore.workerId
+  )
+})
+
+function goToTask(id: number) {
+  router.push(`/tasks/${id}`)
 }
 
 function initWorker() {
@@ -206,5 +261,8 @@ onMounted(async () => {
   
   // Load available task types
   await loadTaskTypes()
+  
+  // Load tasks to populate statistics
+  await taskStore.fetchTasks()
 })
 </script>
