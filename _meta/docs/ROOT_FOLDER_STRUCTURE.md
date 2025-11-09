@@ -40,14 +40,21 @@
      - `_meta/tests/` - Test documentation and load tests
      - `_meta/_scripts/` - Utility scripts
 
-4. **`src/`** - All deployment code
-   - **Why in root:** Standard location for source code
+4. **`Backend/`** - Backend deployment code
+   - **Why in root:** Main module for backend implementation
    - **Contents:**
-     - `src/Backend/` - Backend implementation
-     - `src/Frontend/` - Frontend implementation
-   - **Purpose:** Contains all code that gets deployed to production
+     - `Backend/TaskManager/` - TaskManager API implementation
+   - **Purpose:** Contains backend code that gets deployed to production
 
-5. **`sort_ClientOLD/`** - Archived old client files
+5. **`Frontend/`** - Frontend deployment code
+   - **Why in root:** Main module for frontend implementation
+   - **Purpose:** Contains frontend code that gets deployed to production
+
+6. **`playwright.config.ts`** - Playwright test configuration
+   - **Why in root:** Testing framework looks for config at root
+   - **Purpose:** Configuration for end-to-end tests
+
+7. **`sort_ClientOLD/`** - Archived old client files
    - **Why in root:** Legacy files kept for reference
    - **Purpose:** Old implementation, to be removed or archived
    - **Note:** Should be moved to `_meta/archive/` or deleted
@@ -61,6 +68,7 @@ PrismQ.Client/
 ├── .nvmrc                  # Node version specification
 ├── README.md               # Project overview (ESSENTIAL)
 ├── VERSION                 # Version metadata (ESSENTIAL)
+├── playwright.config.ts    # Playwright test configuration
 │
 ├── _meta/                  # ALL META-INFORMATION
 │   ├── docs/               # All documentation
@@ -69,25 +77,23 @@ PrismQ.Client/
 │   ├── tests/              # Test documentation
 │   └── _scripts/           # Utility scripts
 │
-└── src/                    # ALL DEPLOYMENT CODE
-    ├── Backend/            # Backend implementation
-    │   └── TaskManager/    # TaskManager API
-    │       ├── api/        # API endpoints (deployment code)
-    │       ├── config/     # Configuration (deployment code)
-    │       ├── database/   # Database scripts (deployment code)
-    │       ├── public/     # Public assets (deployment code)
-    │       ├── *.php       # PHP files (deployment code)
-    │       ├── README.md   # TaskManager documentation
-    │       └── _meta/      # TaskManager meta-information
-    │           ├── docs/   # TaskManager-specific docs
-    │           ├── examples/ # TaskManager examples
-    │           ├── tests/  # TaskManager tests
-    │           └── issues/ # TaskManager issues
-    │
-    └── Frontend/           # Frontend implementation
-        ├── playwright.config.ts # Test configuration
-        ├── README.md       # Frontend documentation
-        └── _meta/          # Frontend meta-information
+├── Backend/                # BACKEND DEPLOYMENT CODE
+│   └── TaskManager/        # TaskManager API
+│       ├── api/            # API endpoints (deployment code)
+│       ├── config/         # Configuration (deployment code)
+│       ├── database/       # Database scripts (deployment code)
+│       ├── public/         # Public assets (deployment code)
+│       ├── *.php           # PHP files (deployment code)
+│       ├── README.md       # TaskManager documentation
+│       └── _meta/          # TaskManager meta-information
+│           ├── docs/       # TaskManager-specific docs
+│           ├── examples/   # TaskManager examples
+│           ├── tests/      # TaskManager tests
+│           └── issues/     # TaskManager issues
+│
+└── Frontend/               # FRONTEND DEPLOYMENT CODE
+    ├── README.md           # Frontend documentation
+    └── _meta/              # Frontend meta-information
 ```
 
 ## Principles
@@ -104,32 +110,29 @@ PrismQ.Client/
 - **Test documentation**
 - **Utility scripts**
 
-### What Goes in `src/`
-- **All deployment code**
-- **Configuration for deployment**
-- **Database scripts**
-- **API endpoints**
-- **Public assets**
-- **Any code that runs in production**
+### What Goes at Root as Modules
+- **Backend/** - Backend deployment code (modules with Uppercase names)
+- **Frontend/** - Frontend deployment code (modules with Uppercase names)
+- **Module-specific _meta/** (e.g., `Backend/TaskManager/_meta/`) contains module-specific documentation and meta-information
 
 ## Benefits
 
 1. **Clear Separation**
-   - Code vs documentation clearly separated
-   - Easy to deploy only what's needed (src/)
-   - Easy to find documentation (_meta/)
+   - Deployment code (Backend/, Frontend/) vs documentation (_meta/) clearly separated
+   - Module-level organization with each module having its own _meta/
+   - Easy to deploy only what's needed
 
 2. **Clean Root**
-   - Minimal clutter
-   - Only essential files
+   - Minimal clutter at root level
+   - Only essential files and main modules
    - Easy to navigate
 
 3. **Scalable**
-   - New modules go in src/
-   - New docs go in _meta/
-   - Pattern is consistent
+   - New modules go at root level (e.g., Backend/, Frontend/)
+   - New module docs go in module's _meta/ folder
+   - Pattern is consistent across all modules
 
 4. **Deployment-Ready**
-   - `src/` contains everything needed for deployment
+   - Backend/ and Frontend/ contain everything needed for deployment
    - No accidental deployment of docs or examples
-   - CI/CD can easily target src/ directory
+   - Clear separation between code and meta-information
