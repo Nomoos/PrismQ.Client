@@ -3,27 +3,27 @@
     <Transition name="modal">
       <div
         v-if="modelValue"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 dark:bg-opacity-70"
         @click.self="handleCancel"
       >
         <div
-          class="bg-white rounded-lg shadow-xl max-w-md w-full p-6 animate-fade-in"
+          class="bg-white dark:bg-dark-surface-default rounded-lg shadow-xl max-w-md w-full p-6 animate-fade-in dark:border dark:border-dark-border-default"
           role="dialog"
           aria-modal="true"
           :aria-labelledby="`modal-title-${uniqueId}`"
         >
-          <h2 :id="`modal-title-${uniqueId}`" class="text-xl font-bold text-gray-900 mb-4">
+          <h2 :id="`modal-title-${uniqueId}`" class="text-xl font-bold text-gray-900 dark:text-dark-text-primary mb-4">
             {{ title }}
           </h2>
           
-          <p class="text-gray-700 mb-6">
+          <p class="text-gray-700 dark:text-dark-text-secondary mb-6">
             {{ message }}
           </p>
           
           <div class="flex gap-3 justify-end">
             <button
               @click="handleCancel"
-              class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg font-medium hover:bg-gray-300 min-h-[44px] min-w-[80px]"
+              class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg font-medium hover:bg-gray-300 min-h-[44px] min-w-[80px] dark:bg-dark-neutral-bg dark:text-dark-text-primary dark:hover:bg-dark-border-default"
             >
               {{ cancelText }}
             </button>
@@ -32,8 +32,8 @@
               :class="[
                 'px-4 py-2 rounded-lg font-medium min-h-[44px] min-w-[80px]',
                 dangerMode
-                  ? 'bg-red-600 text-white hover:bg-red-700'
-                  : 'bg-primary-600 text-white hover:bg-primary-700'
+                  ? 'bg-red-600 text-white hover:bg-red-700 dark:bg-dark-error-bg dark:hover:bg-dark-error-muted'
+                  : 'bg-primary-600 text-white hover:bg-primary-700 dark:bg-dark-primary-bg dark:hover:bg-dark-primary-hover'
               ]"
             >
               {{ confirmText }}

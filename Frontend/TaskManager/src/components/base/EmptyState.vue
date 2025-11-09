@@ -1,14 +1,14 @@
 <template>
   <div class="text-center py-8 px-4">
     <div v-if="icon" class="mb-4 flex justify-center">
-      <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
+      <div class="w-16 h-16 rounded-full bg-gray-100 dark:bg-dark-neutral-subtle flex items-center justify-center">
         <span class="text-3xl">{{ icon }}</span>
       </div>
     </div>
-    <h3 v-if="title" class="text-lg font-medium text-gray-900 mb-2">
+    <h3 v-if="title" class="text-lg font-medium text-gray-900 dark:text-dark-text-primary mb-2">
       {{ title }}
     </h3>
-    <p v-if="message" class="text-sm text-gray-500 mb-4">
+    <p v-if="message" class="text-sm text-gray-500 dark:text-dark-text-secondary mb-4">
       {{ message }}
     </p>
     <slot name="action">

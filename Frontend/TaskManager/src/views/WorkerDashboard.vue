@@ -1,27 +1,27 @@
 <template>
-  <div class="min-h-screen bg-gray-50 pb-20">
-    <header class="bg-white shadow-sm sticky top-0 z-10">
+  <div class="min-h-screen bg-gray-50 dark:bg-dark-canvas-default pb-20">
+    <header class="bg-white dark:bg-dark-surface-default shadow-sm sticky top-0 z-10 dark:border-b dark:border-dark-border-default">
       <div class="max-w-7xl mx-auto px-4 py-4">
-        <h1 class="text-xl font-bold text-gray-900">Worker Dashboard</h1>
+        <h1 class="text-xl font-bold text-gray-900 dark:text-dark-text-primary">Worker Dashboard</h1>
       </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-4 py-6 space-y-4">
       <!-- Worker Info Card -->
       <div class="card">
-        <h2 class="text-lg font-semibold mb-4">Worker Information</h2>
+        <h2 class="text-lg font-semibold mb-4 dark:text-dark-text-primary">Worker Information</h2>
         <div class="space-y-2">
           <div class="flex justify-between">
-            <span class="text-gray-600">Worker ID:</span>
-            <span class="font-mono text-sm">{{ workerStore.workerId || 'Not initialized' }}</span>
+            <span class="text-gray-600 dark:text-dark-text-secondary">Worker ID:</span>
+            <span class="font-mono text-sm dark:text-dark-text-primary">{{ workerStore.workerId || 'Not initialized' }}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-gray-600">Status:</span>
+            <span class="text-gray-600 dark:text-dark-text-secondary">Status:</span>
             <StatusBadge :status="workerStore.status" :uppercase="false" />
           </div>
         </div>
         
-        <div class="mt-4 pt-4 border-t">
+        <div class="mt-4 pt-4 border-t dark:border-dark-border-default">
           <button 
             v-if="!workerStore.isInitialized"
             @click="initWorker"
@@ -52,31 +52,31 @@
 
       <!-- Task Statistics Card -->
       <div class="card">
-        <h2 class="text-lg font-semibold mb-4">Task Statistics</h2>
+        <h2 class="text-lg font-semibold mb-4 dark:text-dark-text-primary">Task Statistics</h2>
         <div class="grid grid-cols-2 gap-4">
-          <div class="bg-yellow-50 rounded-lg p-4 text-center">
-            <p class="text-2xl font-bold text-yellow-800">{{ taskStore.pendingTasks.length }}</p>
-            <p class="text-xs text-yellow-600 mt-1">Pending</p>
+          <div class="bg-yellow-50 dark:bg-dark-warning-subtle rounded-lg p-4 text-center dark:border dark:border-dark-warning-border">
+            <p class="text-2xl font-bold text-yellow-800 dark:text-dark-warning-text">{{ taskStore.pendingTasks.length }}</p>
+            <p class="text-xs text-yellow-600 dark:text-dark-warning-text mt-1">Pending</p>
           </div>
-          <div class="bg-blue-50 rounded-lg p-4 text-center">
-            <p class="text-2xl font-bold text-blue-800">{{ taskStore.claimedTasks.length }}</p>
-            <p class="text-xs text-blue-600 mt-1">Claimed</p>
+          <div class="bg-blue-50 dark:bg-dark-info-subtle rounded-lg p-4 text-center dark:border dark:border-dark-info-border">
+            <p class="text-2xl font-bold text-blue-800 dark:text-dark-info-text">{{ taskStore.claimedTasks.length }}</p>
+            <p class="text-xs text-blue-600 dark:text-dark-info-text mt-1">Claimed</p>
           </div>
-          <div class="bg-green-50 rounded-lg p-4 text-center">
-            <p class="text-2xl font-bold text-green-800">{{ taskStore.completedTasks.length }}</p>
-            <p class="text-xs text-green-600 mt-1">Completed</p>
+          <div class="bg-green-50 dark:bg-dark-success-subtle rounded-lg p-4 text-center dark:border dark:border-dark-success-border">
+            <p class="text-2xl font-bold text-green-800 dark:text-dark-success-text">{{ taskStore.completedTasks.length }}</p>
+            <p class="text-xs text-green-600 dark:text-dark-success-text mt-1">Completed</p>
           </div>
-          <div class="bg-red-50 rounded-lg p-4 text-center">
-            <p class="text-2xl font-bold text-red-800">{{ taskStore.failedTasks.length }}</p>
-            <p class="text-xs text-red-600 mt-1">Failed</p>
+          <div class="bg-red-50 dark:bg-dark-error-subtle rounded-lg p-4 text-center dark:border dark:border-dark-error-border">
+            <p class="text-2xl font-bold text-red-800 dark:text-dark-error-text">{{ taskStore.failedTasks.length }}</p>
+            <p class="text-xs text-red-600 dark:text-dark-error-text mt-1">Failed</p>
           </div>
         </div>
       </div>
 
       <!-- Task Actions Card -->
       <div class="card">
-        <h2 class="text-lg font-semibold mb-4">Task Actions</h2>
-        <p class="text-gray-600 text-sm mb-4">
+        <h2 class="text-lg font-semibold mb-4 dark:text-dark-text-primary">Task Actions</h2>
+        <p class="text-gray-600 dark:text-dark-text-secondary text-sm mb-4">
           Claim and process the next available task from the queue
         </p>
         <div class="space-y-3">
@@ -91,16 +91,16 @@
           </button>
           
           <!-- Error message -->
-          <div v-if="claimError" class="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
+          <div v-if="claimError" class="p-3 bg-red-50 dark:bg-dark-error-subtle border border-red-200 dark:border-dark-error-border rounded-lg text-sm text-red-800 dark:text-dark-error-text">
             {{ claimError }}
           </div>
           
           <!-- Info -->
-          <div class="text-xs text-gray-500 space-y-1">
+          <div class="text-xs text-gray-500 dark:text-dark-text-tertiary space-y-1">
             <p v-if="availableTaskTypes.length > 0">
               {{ availableTaskTypes.length }} task type(s) available
             </p>
-            <p v-else class="text-yellow-600">
+            <p v-else class="text-yellow-600 dark:text-dark-warning-text">
               No task types registered yet
             </p>
           </div>
@@ -109,18 +109,18 @@
 
       <!-- My Tasks Card -->
       <div class="card" v-if="myClaimedTasks.length > 0">
-        <h2 class="text-lg font-semibold mb-4">My Tasks</h2>
+        <h2 class="text-lg font-semibold mb-4 dark:text-dark-text-primary">My Tasks</h2>
         <div class="space-y-2">
           <div
             v-for="task in myClaimedTasks"
             :key="task.id"
             @click="goToTask(task.id)"
-            class="p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+            class="p-3 bg-gray-50 dark:bg-dark-surface-overlay rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-dark-border-muted transition-colors"
           >
             <div class="flex items-center justify-between">
               <div class="flex-1 min-w-0">
-                <p class="font-medium text-gray-900 truncate">{{ task.type }}</p>
-                <p class="text-xs text-gray-500 mt-1">ID: {{ task.id }}</p>
+                <p class="font-medium text-gray-900 dark:text-dark-text-primary truncate">{{ task.type }}</p>
+                <p class="text-xs text-gray-500 dark:text-dark-text-tertiary mt-1">ID: {{ task.id }}</p>
               </div>
               <div class="ml-4">
                 <StatusBadge :status="task.status" />
@@ -128,22 +128,22 @@
             </div>
             <!-- Progress bar -->
             <div v-if="task.progress > 0" class="mt-2">
-              <div class="w-full bg-gray-200 rounded-full h-2">
+              <div class="w-full bg-gray-200 dark:bg-dark-neutral-bg rounded-full h-2">
                 <div
-                  class="bg-primary-500 h-2 rounded-full transition-all duration-300"
+                  class="bg-primary-500 dark:bg-dark-primary-bg h-2 rounded-full transition-all duration-300"
                   :style="{ width: `${task.progress}%` }"
                 ></div>
               </div>
-              <p class="text-xs text-gray-500 mt-1">{{ task.progress }}% complete</p>
+              <p class="text-xs text-gray-500 dark:text-dark-text-tertiary mt-1">{{ task.progress }}% complete</p>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Integration Guide -->
-      <div class="card bg-blue-50 border-blue-200">
-        <h3 class="text-sm font-semibold text-blue-900 mb-2">Integration Example</h3>
-        <pre class="text-xs text-blue-800 overflow-x-auto"><code>// Use worker store in components
+      <div class="card bg-blue-50 dark:bg-dark-info-subtle border-blue-200 dark:border-dark-info-border">
+        <h3 class="text-sm font-semibold text-blue-900 dark:text-dark-info-text mb-2">Integration Example</h3>
+        <pre class="text-xs text-blue-800 dark:text-dark-info-text overflow-x-auto"><code>// Use worker store in components
 import { useWorkerStore } from '@/stores/worker'
 import { useTaskStore } from '@/stores/tasks'
 import { taskService } from '@/services/taskService'

@@ -1,31 +1,31 @@
 <template>
-  <div class="min-h-screen bg-gray-50 pb-20">
-    <header class="bg-white shadow-sm sticky top-0 z-10">
+  <div class="min-h-screen bg-gray-50 dark:bg-dark-canvas-default pb-20">
+    <header class="bg-white dark:bg-dark-surface-default shadow-sm sticky top-0 z-10 dark:border-b dark:border-dark-border-default">
       <div class="max-w-7xl mx-auto px-4 py-4">
-        <h1 class="text-xl font-bold text-gray-900">Settings</h1>
+        <h1 class="text-xl font-bold text-gray-900 dark:text-dark-text-primary">Settings</h1>
       </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-4 py-6 space-y-4">
       <!-- Worker Configuration -->
       <div class="card">
-        <h2 class="text-lg font-semibold mb-4">Worker Configuration</h2>
-        <p class="text-sm text-gray-600 mb-4">
+        <h2 class="text-lg font-semibold mb-4 dark:text-dark-text-primary">Worker Configuration</h2>
+        <p class="text-sm text-gray-600 dark:text-dark-text-secondary mb-4">
           Set your worker ID for claiming and completing tasks
         </p>
         
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1">
               Worker ID
             </label>
             <input
               v-model="workerIdInput"
               type="text"
               placeholder="e.g., frontend-worker-1"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-dark-border-default rounded-lg focus:ring-2 focus:ring-primary-500 dark:focus:ring-dark-primary-border focus:border-transparent bg-white dark:bg-dark-canvas-inset text-gray-900 dark:text-dark-text-primary"
             />
-            <p class="text-xs text-gray-500 mt-1">
+            <p class="text-xs text-gray-500 dark:text-dark-text-tertiary mt-1">
               This ID will be used when claiming and completing tasks
             </p>
           </div>
@@ -37,7 +37,7 @@
             Save Worker ID
           </button>
           
-          <div v-if="saveMessage" class="p-3 rounded-lg" :class="saveSuccess ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'">
+          <div v-if="saveMessage" class="p-3 rounded-lg" :class="saveSuccess ? 'bg-green-50 dark:bg-dark-success-subtle text-green-800 dark:text-dark-success-text dark:border dark:border-dark-success-border' : 'bg-red-50 dark:bg-dark-error-subtle text-red-800 dark:text-dark-error-text dark:border dark:border-dark-error-border'">
             {{ saveMessage }}
           </div>
         </div>
@@ -45,37 +45,37 @@
 
       <!-- API Configuration -->
       <div class="card">
-        <h2 class="text-lg font-semibold mb-4">API Configuration</h2>
-        <p class="text-sm text-gray-600 mb-4">
+        <h2 class="text-lg font-semibold mb-4 dark:text-dark-text-primary">API Configuration</h2>
+        <p class="text-sm text-gray-600 dark:text-dark-text-secondary mb-4">
           Configure connection to Backend/TaskManager API
         </p>
         
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1">
               API Base URL
             </label>
             <input
               type="text"
               :value="apiBaseUrl"
               readonly
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-dark-border-default rounded-lg bg-gray-50 dark:bg-dark-neutral-subtle text-gray-900 dark:text-dark-text-primary"
             />
           </div>
           
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary mb-1">
               API Key
             </label>
             <input
               type="password"
               :value="apiKey"
               readonly
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-dark-border-default rounded-lg bg-gray-50 dark:bg-dark-neutral-subtle text-gray-900 dark:text-dark-text-primary"
             />
           </div>
           
-          <p class="text-xs text-gray-500">
+          <p class="text-xs text-gray-500 dark:text-dark-text-tertiary">
             Settings are configured via environment variables (.env file)
           </p>
         </div>
@@ -83,15 +83,15 @@
 
       <!-- App Information -->
       <div class="card">
-        <h2 class="text-lg font-semibold mb-4">Application Info</h2>
+        <h2 class="text-lg font-semibold mb-4 dark:text-dark-text-primary">Application Info</h2>
         <div class="space-y-2 text-sm">
           <div class="flex justify-between">
-            <span class="text-gray-600">Version:</span>
-            <span class="font-medium">0.1.0</span>
+            <span class="text-gray-600 dark:text-dark-text-secondary">Version:</span>
+            <span class="font-medium dark:text-dark-text-primary">0.1.0</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-gray-600">Environment:</span>
-            <span class="font-medium">{{ environment }}</span>
+            <span class="text-gray-600 dark:text-dark-text-secondary">Environment:</span>
+            <span class="font-medium dark:text-dark-text-primary">{{ environment }}</span>
           </div>
         </div>
       </div>
