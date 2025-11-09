@@ -37,4 +37,5 @@ playwright-report
 
 # Build
 .vite
+tsconfig.tsbuildinfo
 *.tsbuildinfo
