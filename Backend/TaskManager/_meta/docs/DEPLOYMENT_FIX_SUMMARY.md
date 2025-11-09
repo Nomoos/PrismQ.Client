@@ -14,25 +14,25 @@ Fatal error: Failed opening required '/data/web/virtuals/193148/virtual/www/doma
 The deployment script (`deploy.php`) was downloading files for the **old controller-based architecture** but the codebase has been refactored to use a **new data-driven architecture**. The following critical files were missing from the deployment:
 
 **Missing Files:**
-1. `api/EndpointRouter.php` - Dynamic routing based on database-defined endpoints
-2. `api/ActionExecutor.php` - Executes actions based on JSON configuration
-3. `api/CustomHandlers.php` - Custom business logic handlers
-4. `database/seed_endpoints.sql` - Initial endpoint definitions for the API
+1. `src/api/EndpointRouter.php` - Dynamic routing based on database-defined endpoints
+2. `src/api/ActionExecutor.php` - Executes actions based on JSON configuration
+3. `src/api/CustomHandlers.php` - Custom business logic handlers
+4. `src/database/seed_endpoints.sql` - Initial endpoint definitions for the API
 
 ## Changes Made
 
 ### 1. Updated deploy.php File List
 
-Added the missing files to the download list in `deploy.php`:
+Added the missing files to the download list in `src/deploy.php`:
 
 ```php
 $files = [
     // ... existing files ...
-    'api/EndpointRouter.php' => API_PATH . '/EndpointRouter.php',
-    'api/ActionExecutor.php' => API_PATH . '/ActionExecutor.php',
-    'api/CustomHandlers.php' => API_PATH . '/CustomHandlers.php',
+    'src/api/EndpointRouter.php' => API_PATH . '/EndpointRouter.php',
+    'src/api/ActionExecutor.php' => API_PATH . '/ActionExecutor.php',
+    'src/api/CustomHandlers.php' => API_PATH . '/CustomHandlers.php',
     // ... existing files ...
-    'database/seed_endpoints.sql' => DATABASE_PATH . '/seed_endpoints.sql',
+    'src/database/seed_endpoints.sql' => DATABASE_PATH . '/seed_endpoints.sql',
     // ... existing files ...
 ];
 ```
@@ -76,12 +76,12 @@ Updated `DEPLOYMENT_GUIDE.md` to reflect:
    ```bash
    # On server, backup database and files
    mysqldump -u user -p d193148_prismtm > backup_$(date +%Y%m%d).sql
-   tar -czf backup_files_$(date +%Y%m%d).tar.gz api/ config/ database/
+   tar -czf backup_files_$(date +%Y%m%d).tar.gz src/
    ```
 
 2. **Re-run deployment script:**
-   - Upload the updated `deploy.php` from this PR
-   - Access via browser: `https://api.prismq.nomoos.cz/deploy.php`
+   - Upload the updated `src/deploy.php` from this PR
+   - Access via browser: `https://api.prismq.nomoos.cz/src/deploy.php`
    - Enter credentials and deploy
    - The script will download all 13 files and seed the database
 
@@ -167,15 +167,15 @@ After fixing:
 
 ### Old Architecture (Controller-Based)
 ```
-api/index.php → TaskController.php → Database
-                TaskTypeController.php
+src/api/index.php → TaskController.php → Database
+                     TaskTypeController.php
 ```
 
 ### New Architecture (Data-Driven)
 ```
-api/index.php → EndpointRouter.php → ActionExecutor.php → CustomHandlers.php
-                     ↓                       ↓
-                 api_endpoints          Database
+src/api/index.php → EndpointRouter.php → ActionExecutor.php → CustomHandlers.php
+                         ↓                       ↓
+                     api_endpoints          Database
                  (database)
 ```
 

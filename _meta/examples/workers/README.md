@@ -1,52 +1,109 @@
 # Worker Implementation Examples
 
-Complete examples and guidelines for implementing distributed workers that integrate with the PrismQ TaskManager system.
+Production-ready worker examples for integrating with the PrismQ TaskManager system. These examples demonstrate how to build distributed workers that process tasks from the TaskManager queue.
 
 ## 📖 Overview
 
-This directory contains production-ready worker examples that demonstrate how to:
-- Integrate with the TaskManager API
-- Process different types of tasks
-- Handle errors and edge cases
-- Deploy workers in production
-- Scale workers for higher throughput
+This directory contains complete, runnable worker implementations in multiple programming languages. Each example demonstrates:
+
+- Task claiming from TaskManager API
+- Extensible task processing handlers
+- Error handling and retry logic
+- Graceful shutdown
+- Production deployment configurations
 
 ## 🚀 Quick Start
 
-### 1. Choose Your Language
+### Choose Your Language
 
-We provide worker examples in multiple languages:
+- **[Python](./python/)** - Recommended for most use cases
+- **[PHP](./php/)** - Ideal for shared hosting environments
+- **[YouTube (Python)](./youtube/)** - Specific example for YouTube scraping tasks
 
-- **[Python (YouTube Scraper)](./youtube/)** - Recommended for Python developers
-- **[PHP](./php/)** - For PHP developers or PHP hosting environments
+### Run a Worker
 
-### 2. Review Documentation
+```bash
+# Python worker
+cd python/
+pip install -r requirements.txt
+python worker.py --debug
 
-Before implementing a worker, review these key documents:
+# PHP worker
+cd php/
+php worker.php --debug
+```
 
-1. **[Worker Implementation Plan](../../_meta/docs/WORKER_IMPLEMENTATION_PLAN.md)** 📋
-   - Strategic plan for implementing workers
-   - Implementation phases and timeline
-   - Success criteria and checklist
+## 📁 Available Workers
 
-2. **[Worker Implementation Guidelines](../../_meta/docs/WORKER_IMPLEMENTATION_GUIDELINES.md)** 📚
-   - Best practices and design patterns
-   - Code examples and anti-patterns
-   - Security, performance, and monitoring guidelines
+### Python Worker
 
-3. **Example-specific documentation**
-   - Each example has its own README and integration guide
-   - Review the example that matches your use case
+**Directory**: [`./python/`](./python/)
 
-## 📁 Available Examples
+**Best For:**
+- General purpose task processing
+- Data processing and analysis
+- API integrations
+- Machine learning tasks
 
-### YouTube Shorts Scraper (Python)
+**Features:**
+- ✅ Modern Python 3.7+ code
+- ✅ Type hints and clean architecture
+- ✅ Extensible task handlers
+- ✅ Async support ready
+- ✅ Docker and systemd configs
+
+**Quick Start:**
+```bash
+cd python/
+pip install -r requirements.txt
+python worker.py
+```
+
+**Documentation:**
+- [README](./python/README.md) - Quick start guide
+- [Integration Guide](./python/INTEGRATION_GUIDE.md) - Complete documentation
+
+---
+
+### PHP Worker
+
+**Directory**: [`./php/`](./php/)
+
+**Best For:**
+- Shared hosting environments
+- PHP projects
+- When you can't run background processes
+- WordPress/Laravel integrations
+
+**Features:**
+- ✅ Pure PHP implementation
+- ✅ No background process requirements
+- ✅ Extensive error handling
+- ✅ Systemd and Supervisor configs
+- ✅ Multiple example task types
+
+**Quick Start:**
+```bash
+cd php/
+php worker.php
+```
+
+**Documentation:**
+- [README](./php/README.md) - Quick start guide
+- [Integration Guide](./php/INTEGRATION_GUIDE.md) - Deployment and configuration
+
+---
+
+### YouTube Worker (Python)
 
 **Directory**: [`./youtube/`](./youtube/)
 
-**Description**: Complete Python worker implementation for scraping YouTube shorts from the [PrismQ.IdeaInspiration.Sources.Content.Shorts.YouTube](https://github.com/Nomoos/PrismQ.IdeaInspiration.Sources.Content.Shorts.YouTube) repository.
+**Best For:**
+- YouTube shorts scraping tasks
+- Python-based projects
+- Learning worker implementation patterns
 
-**Features**:
+**Features:**
 - ✅ Mock implementation with example data
 - ✅ Task claiming and processing
 - ✅ Error handling and retry logic
@@ -54,292 +111,309 @@ Before implementing a worker, review these key documents:
 - ✅ Comprehensive logging
 - ✅ Production-ready deployment options
 
-**Quick Start**:
+**Quick Start:**
 ```bash
 cd youtube/
 pip install -r requirements.txt
 python youtube_worker.py
 ```
 
-**Documentation**:
+**Documentation:**
 - [README](./youtube/README.md) - Quick start and overview
 - [Integration Guide](./youtube/INTEGRATION_GUIDE.md) - Complete implementation guide
 
-**Best For**:
-- YouTube scraping tasks
-- Python-based projects
-- Learning worker implementation patterns
+## 🎯 Worker Architecture
 
----
+All workers follow this standard architecture:
 
-### TaskManager PHP Worker
+```
+┌──────────────────────────────────────────────────────┐
+│                  TaskManager API                     │
+│                 (FastAPI + MySQL)                    │
+│                                                      │
+│  - Task Queue Management                            │
+│  - Task Status Tracking                             │
+│  - Worker Coordination                              │
+└──────────────┬──────────────────────────┬───────────┘
+               │                          │
+               │ HTTP REST API            │
+               │                          │
+    ┌──────────▼─────────┐   ┌───────────▼──────────┐
+    │  Worker 1          │   │  Worker 2            │
+    │  (Python/PHP/etc)  │   │  (Python/PHP/etc)    │
+    │                    │   │                      │
+    │  1. Claim Task     │   │  1. Claim Task       │
+    │  2. Process Task   │   │  2. Process Task     │
+    │  3. Report Result  │   │  3. Report Result    │
+    └────────────────────┘   └──────────────────────┘
+```
 
-**Directory**: [`./php/`](./php/)
+### Worker Lifecycle
 
-**Description**: Production-ready PHP worker for processing tasks from TaskManager API, ideal for shared hosting environments.
+```
+1. Initialize
+   - Load configuration
+   - Setup logging
+   - Register signal handlers
 
-**Features**:
-- ✅ Pure PHP implementation (no background processes needed)
-- ✅ Extensible task handlers
-- ✅ Comprehensive error handling
-- ✅ Systemd and Supervisor configs included
-- ✅ Multiple example task types
+2. Health Check
+   - Verify API connectivity
+   - Check dependencies
 
-**Quick Start**:
+3. Main Loop
+   a. Claim task from queue
+   b. Process task
+   c. Report result (complete/fail)
+   d. Repeat
+
+4. Graceful Shutdown
+   - Complete current task
+   - Report statistics
+   - Exit cleanly
+```
+
+## 🔧 Configuration
+
+All workers support similar configuration options:
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `api-url` | TaskManager API base URL | `http://localhost:8000/api` |
+| `worker-id` | Unique worker identifier | Auto-generated |
+| `task-types` | Task types to process | All types |
+| `poll-interval` | Seconds between polls | 10 |
+| `max-runs` | Max tasks before exit | Unlimited |
+| `debug` | Enable debug logging | false |
+
+## 📚 Implementation Guide
+
+### Step 1: Choose a Language
+
+Pick the language that best fits your project:
+- Python for most cases
+- PHP for shared hosting or PHP projects
+
+### Step 2: Copy Example
+
+Copy the appropriate worker example to your project:
+
 ```bash
-cd php/
-php worker.php --api-url=http://localhost/api
+# Copy Python worker
+cp -r examples/workers/python/ /path/to/your/project/worker/
+
+# Copy PHP worker
+cp -r examples/workers/php/ /path/to/your/project/worker/
 ```
 
-**Documentation**:
-- [README](./php/README.md) - Quick start guide
-- [Integration Guide](./php/INTEGRATION_GUIDE.md) - Deployment and configuration
+### Step 3: Customize Task Handlers
 
-**Best For**:
-- PHP projects
-- Shared hosting environments
-- When background processes aren't available
+Edit the worker file and add your custom task handlers:
 
-## 🎯 Implementation Steps
-
-Follow these steps to implement a worker in your repository:
-
-### Step 1: Plan Your Implementation
-
-1. Review the [Worker Implementation Plan](../../_meta/docs/WORKER_IMPLEMENTATION_PLAN.md)
-2. Define your task types and parameters
-3. Choose your implementation language
-4. Estimate timeline and resources
-
-### Step 2: Setup Repository
-
-1. Create worker directory in your repository
-2. Copy example worker code as starting point
-3. Install dependencies
-4. Configure environment variables
-
-### Step 3: Implement Task Processing
-
-1. Implement `process_task()` method
-2. Add parameter validation
-3. Integrate with external services (APIs, databases, etc.)
-4. Format and return results
-
-### Step 4: Test Thoroughly
-
-1. Write unit tests for components
-2. Write integration tests with TaskManager
-3. Test error scenarios
-4. Perform load testing
-
-### Step 5: Deploy to Production
-
-1. Setup deployment configuration (systemd/Docker/etc.)
-2. Configure monitoring and alerting
-3. Deploy workers
-4. Monitor performance and errors
-
-## 📚 Documentation Index
-
-### Core Documentation
-
-| Document | Description |
-|----------|-------------|
-| [Worker Implementation Plan](../../_meta/docs/WORKER_IMPLEMENTATION_PLAN.md) | Strategic implementation plan |
-| [Worker Implementation Guidelines](../../_meta/docs/WORKER_IMPLEMENTATION_GUIDELINES.md) | Best practices and patterns |
-| [TaskManager API Reference](../../../Backend/TaskManager/docs/API_REFERENCE.md) | Complete API documentation |
-
-### Example Documentation
-
-| Example | Quick Start | Integration Guide |
-|---------|-------------|-------------------|
-| YouTube (Python) | [README](./youtube/README.md) | [Integration Guide](./youtube/INTEGRATION_GUIDE.md) |
-| TaskManager (PHP) | [README](./php/README.md) | [Integration Guide](./php/INTEGRATION_GUIDE.md) |
-
-## 🔄 Worker Lifecycle
-
-All workers follow this standard lifecycle:
-
-```
-┌─────────────────────────────────────────────────────┐
-│ 1. Initialize                                       │
-│    - Load configuration                             │
-│    - Setup logging                                  │
-│    - Register signal handlers                       │
-└────────────────┬────────────────────────────────────┘
-                 │
-┌────────────────▼────────────────────────────────────┐
-│ 2. Health Check                                     │
-│    - Verify API connectivity                        │
-│    - Check external service availability            │
-└────────────────┬────────────────────────────────────┘
-                 │
-┌────────────────▼────────────────────────────────────┐
-│ 3. Main Loop                                        │
-│    ┌─────────────────────────────────────┐          │
-│    │ a. Claim task from queue            │          │
-│    └──────────┬──────────────────────────┘          │
-│               │                                      │
-│    ┌──────────▼──────────────────────────┐          │
-│    │ b. Process task                     │          │
-│    └──────────┬──────────────────────────┘          │
-│               │                                      │
-│    ┌──────────▼──────────────────────────┐          │
-│    │ c. Report result (complete/fail)    │          │
-│    └──────────┬──────────────────────────┘          │
-│               │                                      │
-│    └──────────┘ (repeat)                            │
-└────────────────┬────────────────────────────────────┘
-                 │
-┌────────────────▼────────────────────────────────────┐
-│ 4. Graceful Shutdown                                │
-│    - Complete current task                          │
-│    - Report statistics                              │
-│    - Exit cleanly                                   │
-└─────────────────────────────────────────────────────┘
+**Python:**
+```python
+def process_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
+    task_type = task.get('type', 'unknown')
+    params = task.get('params', {})
+    
+    if task_type == 'your.custom.task':
+        return self._handle_custom_task(params)
 ```
 
-## 🎓 Learning Resources
+**PHP:**
+```php
+function processTask($task) {
+    switch ($task['type']) {
+        case 'your.custom.task':
+            return handleCustomTask($task['params']);
+    }
+}
+```
 
-### For Beginners
+### Step 4: Test
 
-Start here if you're new to distributed workers:
+Create test tasks and run the worker:
 
-1. Read the [YouTube Worker README](./youtube/README.md)
-2. Run the example worker with test tasks
-3. Review the code and understand the workflow
-4. Modify the example for your use case
+```bash
+# Python
+python test_worker.py --num-tasks=10
+python worker.py --debug
 
-### For Intermediate Developers
+# PHP
+php test_worker.php --num-tasks=10
+php worker.php --debug
+```
 
-Ready to implement a custom worker:
+### Step 5: Deploy
 
-1. Review the [Worker Implementation Guidelines](../../_meta/docs/WORKER_IMPLEMENTATION_GUIDELINES.md)
-2. Study the [Worker Implementation Plan](../../_meta/docs/WORKER_IMPLEMENTATION_PLAN.md)
-3. Copy an example worker as a template
-4. Implement your task processing logic
-5. Test thoroughly before deploying
+Deploy to production using systemd, Docker, or other methods. See language-specific integration guides for details.
 
-### For Advanced Developers
+## 🎓 Example Task Types
 
-Optimizing and scaling workers:
+All workers include example handlers for testing:
 
-1. Implement connection pooling and caching
-2. Add custom metrics and monitoring
-3. Setup horizontal scaling with multiple workers
-4. Implement advanced error handling and retry strategies
-5. Optimize for specific workload patterns
+| Task Type | Description | Parameters |
+|-----------|-------------|------------|
+| `example.echo` | Echo back a message | `message` |
+| `example.uppercase` | Convert text to uppercase | `text` |
+| `example.math.add` | Add two numbers | `a`, `b` |
+| `example.sleep` | Simulate long-running task | `duration` |
+| `example.error` | Test error handling | `message` |
 
-## 🔗 Related Resources
+### Creating Test Tasks
 
-### TaskManager System
+```bash
+# Using curl
+curl -X POST http://localhost:8000/api/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "example.echo",
+    "params": {"message": "Hello, World!"}
+  }'
 
-- [TaskManager README](../../../Backend/TaskManager/README.md) - System overview
-- [TaskManager API Reference](../../../Backend/TaskManager/docs/API_REFERENCE.md) - API documentation
-- [Data-Driven Architecture](../../../Backend/TaskManager/docs/DATA_DRIVEN_ARCHITECTURE.md) - Architecture details
+# Using test scripts
+python python/test_worker.py --num-tasks=10
+php php/test_worker.php --num-tasks=10
+```
 
-### PrismQ.Client
+## 🔍 Troubleshooting
 
-- [Main README](../../../README.md) - Client overview
-- [Architecture Guide](../../docs/ARCHITECTURE.md) - System architecture
-- [Integration Guide](../../docs/INTEGRATION_GUIDE.md) - Integration patterns
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-#### Worker Can't Connect to API
+### Worker Can't Connect to API
 
 ```bash
 # Check API is running
 curl http://localhost:8000/api/health
 
-# Verify API URL in configuration
+# Verify API URL
 echo $TASKMANAGER_API_URL
 
 # Test with explicit URL
 python worker.py --api-url=http://localhost:8000/api --debug
 ```
 
-#### Worker Not Claiming Tasks
+### Worker Not Claiming Tasks
 
 ```bash
 # Check for pending tasks
 curl http://localhost:8000/api/tasks?status=pending
 
+# Check task types match
+python worker.py --task-types="example.echo" --debug
+
 # Create test tasks
 python test_worker.py --num-tasks=5
-
-# Verify task type matches worker configuration
 ```
 
-#### Worker Exits with Errors
+### Worker Exits with Errors
 
 ```bash
 # Enable debug logging
 python worker.py --debug
 
 # Check dependencies
-pip install -r requirements.txt
+pip install -r requirements.txt  # Python
+php -v  # PHP
 
-# Verify Python version
-python --version  # Should be 3.7+
+# Check for syntax errors
+python -m py_compile worker.py  # Python
+php -l worker.php  # PHP
 ```
-
-### Getting Help
-
-If you encounter issues:
-
-1. Check the example-specific README and troubleshooting section
-2. Review the [Worker Implementation Guidelines](../../_meta/docs/WORKER_IMPLEMENTATION_GUIDELINES.md)
-3. Enable debug logging to get more information
-4. Check TaskManager logs for API-side errors
 
 ## 📊 Worker Comparison
 
-| Feature | Python (YouTube) | PHP (TaskManager) |
-|---------|------------------|-------------------|
-| **Language** | Python 3.7+ | PHP 7.4+ |
-| **Task Type** | YouTube scraping | General purpose |
-| **Dependencies** | requests | cURL extension |
-| **Deployment** | systemd, Docker, Kubernetes | systemd, supervisor, cron |
-| **Async Support** | Native (asyncio available) | Via multiple processes |
-| **Best For** | Data scraping, API integration | Web hosting, shared hosting |
-| **Example Complexity** | Medium | Low-Medium |
+| Feature | Python | PHP |
+|---------|--------|-----|
+| **Language Version** | Python 3.7+ | PHP 8.0+ (8.1+ recommended) |
+| **Dependencies** | requests | cURL |
+| **Async Support** | Native (asyncio) | Via processes |
+| **Deployment** | systemd, Docker, K8s | systemd, supervisor, cron |
+| **Best For** | General purpose | Web hosting |
+| **Complexity** | Medium | Low |
 
-## 🎯 Choosing the Right Example
+## 🚀 Production Deployment
 
-### Choose Python (YouTube) if:
-- You're implementing a YouTube scraping worker
-- Your project is Python-based
-- You need async/await support
-- You want modern Python patterns
-- You're deploying to containers or VMs
+### Systemd (Linux)
 
-### Choose PHP if:
-- Your project is PHP-based
-- You're on shared hosting
-- You can't run background processes
-- You need lightweight workers
-- You're familiar with PHP ecosystem
+All workers include systemd service file examples. See language-specific guides:
 
-### Implementing from Scratch?
+- [Python systemd guide](./python/INTEGRATION_GUIDE.md#production-deployment)
+- [PHP systemd guide](./php/INTEGRATION_GUIDE.md#production-deployment)
 
-If neither example fits your needs:
-1. Review the [Worker Implementation Guidelines](../../_meta/docs/WORKER_IMPLEMENTATION_GUIDELINES.md)
-2. Use the closest example as a reference
-3. Follow the standard worker lifecycle
-4. Implement TaskManager API integration
-5. Test thoroughly before deploying
+### Docker
+
+All workers include Dockerfile examples:
+
+```bash
+# Build Python worker
+cd python/
+docker build -t python-worker .
+docker run -d --name worker-01 -e TASKMANAGER_API_URL=https://api.example.com/api python-worker
+
+# Build PHP worker
+cd php/
+docker build -t php-worker .
+docker run -d --name worker-01 -e TASKMANAGER_API_URL=https://api.example.com/api php-worker
+```
+
+### Multiple Workers
+
+Run multiple workers for higher throughput:
+
+```bash
+# Python workers
+python worker.py --worker-id=worker-01 &
+python worker.py --worker-id=worker-02 &
+python worker.py --worker-id=worker-03 &
+
+# PHP workers
+php worker.php --worker-id=worker-01 &
+php worker.php --worker-id=worker-02 &
+php worker.php --worker-id=worker-03 &
+```
+
+## 📖 Documentation
+
+### Core Documentation
+
+- [Worker Integration Guide](./INTEGRATION_GUIDE.md) - Unified integration guide
+- [TaskManager API Reference](../../Backend/TaskManager/docs/API_REFERENCE.md) - Complete API docs
+- [TaskManager README](../../Backend/TaskManager/README.md) - System overview
+
+### Language-Specific Documentation
+
+| Worker | Quick Start | Integration Guide |
+|--------|-------------|-------------------|
+| Python | [README](./python/README.md) | [Integration Guide](./python/INTEGRATION_GUIDE.md) |
+| PHP | [README](./php/README.md) | [Integration Guide](./php/INTEGRATION_GUIDE.md) |
+
+## 🤝 Contributing
+
+To add a new worker example:
+
+1. Create a new directory (e.g., `nodejs/`, `go/`, etc.)
+2. Include these files:
+   - `worker.*` - Main worker implementation
+   - `test_worker.*` - Test script for creating tasks
+   - `requirements.*` or `package.json` - Dependencies
+   - `README.md` - Quick start guide
+   - `INTEGRATION_GUIDE.md` - Complete documentation
+3. Follow the existing patterns and architecture
+4. Include example task handlers
+5. Add deployment configuration examples
+
+## 🔗 Related Resources
+
+- [PrismQ Client README](../../README.md) - Main project overview
+- [Backend README](../../Backend/README.md) - Backend documentation
+- [TaskManager README](../../Backend/TaskManager/README.md) - Queue system details
 
 ## 📄 License
 
 Proprietary - All Rights Reserved - Copyright (c) 2025 PrismQ
 
-## 🤝 Contributing
+## 📞 Support
 
-These examples are part of the PrismQ.Client project. For contributions:
-1. Follow the patterns established in existing examples
-2. Include comprehensive documentation
-3. Add tests for new functionality
-4. Update this README if adding new examples
+For issues or questions:
+1. Check the language-specific documentation
+2. Review the [Integration Guide](./INTEGRATION_GUIDE.md)
+3. Enable debug logging to get more information
+4. Check TaskManager logs for API-side errors
