@@ -19,6 +19,9 @@
     "format": "prettier --write src/",
     "bundle:size": "node scripts/bundle-size.js",
     "bundle:check": "npm run build && npm run bundle:size",
+    "baseline:capture": "node scripts/baseline.js capture",
+    "baseline:compare": "node scripts/baseline.js compare",
+    "baseline:report": "node scripts/baseline.js report",
     "lighthouse": "npm run build && npm run preview & lhci autorun --config=lighthouserc.js",
     "lighthouse:ci": "lhci autorun --config=lighthouserc.js",
     "perf:test": "npm run bundle:check && npm run lighthouse"

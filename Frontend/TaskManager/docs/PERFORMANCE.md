@@ -418,7 +418,335 @@ Before deploying:
 - [Vite Performance](https://vitejs.dev/guide/features.html#build-optimizations)
 - [Vue Performance](https://vuejs.org/guide/best-practices/performance.html)
 
+## Performance Baseline Analysis
+
+### Overview
+
+Performance baseline analysis allows you to track and compare build metrics over time. This helps detect performance regressions early and ensures the application stays within budget as features are added.
+
+### Baseline Commands
+
+Three commands are available for baseline analysis:
+
+```bash
+# Capture current build metrics as baseline
+npm run baseline:capture
+
+# Compare current build against baseline
+npm run baseline:compare
+
+# Generate detailed baseline report
+npm run baseline:report
+```
+
+### Workflow
+
+#### 1. Capture Initial Baseline
+
+After completing a major feature or release:
+
+```bash
+npm run build
+npm run baseline:capture
+```
+
+This captures:
+- Bundle sizes (total, JS, CSS, HTML, assets)
+- File counts by type
+- Largest chunks with sizes
+- Git commit information
+- Timestamp
+
+The baseline is saved to `.baselines/performance-baseline.json` and tracked in git.
+
+#### 2. Compare Against Baseline
+
+Before committing changes that may affect bundle size:
+
+```bash
+npm run build
+npm run baseline:compare
+```
+
+This shows:
+- Delta from baseline (bytes and percentage)
+- Size increase/decrease for each category
+- Budget status (total, JS, CSS)
+- File count changes
+- Regression warnings
+
+**Exit codes:**
+- `0` - No significant changes or improvements
+- `1` - Performance regression detected (size increased significantly)
+
+#### 3. View Baseline Report
+
+To see detailed information about the current baseline:
+
+```bash
+npm run baseline:report
+```
+
+This displays:
+- Current baseline metrics
+- Git information (commit, branch, author)
+- File counts and sizes
+- Largest chunks
+- Historical trend (if multiple baselines captured)
+
+### Understanding Results
+
+#### Baseline Comparison Output
+
+```
+📊 Comparing Against Baseline
+
+Baseline Information:
+  Created:  11/9/2025, 9:14:07 PM
+  Commit:   abc1234
+  Branch:   main
+
+Current Build:
+  Commit:   def5678
+  Branch:   feature/new-component
+
+📏 Size Comparison:
+
+Total Size:
+  Baseline: 201.06 KB
+  Current:  215.30 KB
+  Delta:    +14.24 KB (+7.1%)  ← Red indicates increase
+
+JavaScript:
+  Baseline: 176.66 KB
+  Current:  188.90 KB
+  Delta:    +12.24 KB (+6.9%)
+
+CSS:
+  Baseline: 17.50 KB
+  Current:  19.50 KB
+  Delta:    +2.00 KB (+11.4%)
+```
+
+#### What is Significant?
+
+A change is considered significant if:
+- **Total size** changes by more than 10 KB
+- **JavaScript** changes by more than 5 KB
+- **CSS** changes by more than 1 KB
+
+#### Performance Regression
+
+A regression is flagged when:
+- Any category size increases (total, JS, or CSS)
+- AND the change is significant
+
+Regressions should be investigated before merging.
+
+### Best Practices
+
+#### When to Capture Baseline
+
+1. **After major releases** - Set new baseline for next development cycle
+2. **Before refactoring** - Track if refactoring improves performance
+3. **After optimization work** - Document improvements
+4. **Weekly/Sprint boundaries** - Regular checkpoint for trends
+
+#### When to Compare
+
+1. **Before committing** - Catch regressions early
+2. **During code review** - Include comparison in PR
+3. **In CI/CD** - Automated regression detection
+4. **After adding dependencies** - Verify bundle impact
+
+#### Handling Regressions
+
+If baseline comparison shows regression:
+
+1. **Investigate** - Run `npm run build:analyze` to see what changed
+2. **Justify** - Document why the increase is necessary
+3. **Optimize** - Look for ways to reduce impact:
+   - Use dynamic imports for new features
+   - Check for duplicate dependencies
+   - Review tree shaking effectiveness
+4. **Update baseline** - If increase is justified and optimized
+
+#### Historical Tracking
+
+Baselines are tracked in `.baselines/baseline-history.json`:
+- Last 50 builds recorded
+- Useful for trend analysis
+- Shows size evolution over time
+
+### Integration with CI/CD
+
+Add to your CI pipeline:
+
+```yaml
+# Example GitHub Actions workflow
+- name: Build
+  run: npm run build
+
+- name: Check Performance
+  run: npm run baseline:compare
+
+# This will fail if regression is detected
+```
+
+Or make it informational:
+
+```yaml
+- name: Performance Report
+  run: npm run baseline:compare || true
+
+- name: Upload Baseline Report
+  # Save comparison for review
+```
+
+### Example Scenarios
+
+#### Scenario 1: Adding New Feature
+
+```bash
+# Before starting
+git checkout -b feature/new-dashboard
+
+# Develop feature
+# ...
+
+# Before committing
+npm run build
+npm run baseline:compare
+
+# Output shows +25 KB increase
+# Investigate and optimize
+npm run build:analyze
+
+# After optimization, down to +8 KB
+npm run baseline:compare
+# ✅ Acceptable increase
+
+# Commit changes
+git commit -am "Add dashboard feature (+8KB)"
+```
+
+#### Scenario 2: Performance Optimization
+
+```bash
+# Baseline before optimization
+npm run baseline:capture
+
+# Perform optimizations
+# - Remove unused dependencies
+# - Add code splitting
+# - Optimize imports
+
+# Check improvement
+npm run build
+npm run baseline:compare
+
+# Output shows -40 KB decrease
+# ✅ Success! Document the improvement
+
+# Update baseline with new optimized values
+npm run baseline:capture
+```
+
+#### Scenario 3: Dependency Update
+
+```bash
+# Check current baseline
+npm run baseline:report
+
+# Update dependency
+npm update vue
+
+# Check impact
+npm run build
+npm run baseline:compare
+
+# Output shows +2 KB increase
+# ✅ Minimal impact, acceptable
+```
+
+### Baseline File Format
+
+`.baselines/performance-baseline.json`:
+```json
+{
+  "timestamp": "2025-11-09T21:14:07.845Z",
+  "date": "11/9/2025, 9:14:07 PM",
+  "git": {
+    "commit": "1193cf3",
+    "branch": "main",
+    "author": "developer",
+    "message": "Optimize bundle size"
+  },
+  "metrics": {
+    "totalSize": 205882,
+    "jsSize": 180896,
+    "cssSize": 17918,
+    "htmlSize": 904,
+    "assetSize": 6164,
+    "fileCount": {
+      "total": 14,
+      "js": 9,
+      "css": 2,
+      "html": 1,
+      "assets": 2
+    },
+    "largestChunks": [
+      {
+        "name": "vue-vendor-CiE07igK.js",
+        "size": 100873
+      }
+    ]
+  },
+  "budgets": {
+    "totalSize": 1048576,
+    "jsSize": 512000,
+    "cssSize": 51200,
+    "chunkSize": 102400
+  }
+}
+```
+
+### Troubleshooting
+
+#### No baseline found
+
+```bash
+❌ No baseline found. Run "npm run baseline:capture" first.
+```
+
+**Solution:** Capture an initial baseline:
+```bash
+npm run build
+npm run baseline:capture
+```
+
+#### Build not found
+
+```bash
+❌ Current build not found. Run "npm run build" first.
+```
+
+**Solution:** Run build before comparing:
+```bash
+npm run build
+npm run baseline:compare
+```
+
+#### Unexpected large increase
+
+If you see an unexpected large increase:
+
+1. Check git status - uncommitted changes?
+2. Run `npm run build:analyze` - what changed?
+3. Check `node_modules` - dependency update?
+4. Review recent commits - which change caused it?
+
 ---
 
 **Last Updated**: Phase 1 - 2025-11-09
-**Status**: Runtime optimizations implemented, monitoring active
+**Status**: Runtime optimizations implemented, monitoring active, baseline analysis enabled
