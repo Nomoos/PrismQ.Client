@@ -1,7 +1,10 @@
-import axios, { type AxiosInstance, type AxiosError } from 'axios'
+import axios, { type AxiosInstance, type AxiosError, type InternalAxiosRequestConfig } from 'axios'
+import { APIError, NetworkError } from '../types'
 
 class ApiClient {
   private client: AxiosInstance
+  private maxRetries = 3
+  private retryDelay = 1000
 
   constructor() {
     this.client = axios.create({
@@ -13,12 +16,47 @@ class ApiClient {
       }
     })
 
+    // Request interceptor for logging
+    this.client.interceptors.request.use(
+      (config: InternalAxiosRequestConfig) => {
+        if (import.meta.env.DEV) {
+          console.log(`[API] ${config.method?.toUpperCase()} ${config.url}`, config.data)
+        }
+        return config
+      },
+      (error) => {
+        return Promise.reject(error)
+      }
+    )
+
     // Response interceptor for error handling
     this.client.interceptors.response.use(
       (response) => response,
-      (error: AxiosError) => {
-        console.error('API Error:', error.message)
-        return Promise.reject(error)
+      async (error: AxiosError) => {
+        const config = error.config as InternalAxiosRequestConfig & { _retry?: number }
+        
+        // Handle network errors with retry
+        if (!error.response && config && (!config._retry || config._retry < this.maxRetries)) {
+          config._retry = (config._retry || 0) + 1
+          console.log(`[API] Retrying request (${config._retry}/${this.maxRetries})...`)
+          
+          await new Promise(resolve => setTimeout(resolve, this.retryDelay * config._retry!))
+          return this.client.request(config)
+        }
+        
+        // Transform error
+        if (error.response) {
+          // Server responded with error
+          const message = (error.response.data as any)?.message || 
+                         (error.response.data as any)?.error || 
+                         'API Error'
+          throw new APIError(message, error.response.status, error.response.data)
+        } else if (error.request) {
+          // Network error
+          throw new NetworkError('Network error - please check your connection')
+        } else {
+          throw new Error(error.message)
+        }
       }
     )
   }
