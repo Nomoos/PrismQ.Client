@@ -258,10 +258,6 @@ npm run coverage
 - [Backend API Documentation](../Backend/TaskManager/api/)
 - [OpenAPI Specification](../Backend/TaskManager/public/openapi.json)
 
-### Historic Reference
-- [Old Frontend](../sort_ClientOLD/Frontend/)
-- [Old Frontend Docs](../sort_ClientOLD/Frontend/_meta/docs/FRONTEND.md)
-
 ### Project Documentation
 - [Main README](../README.md)
 - [Release Management](../RELEASE.md)

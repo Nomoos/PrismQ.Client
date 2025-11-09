@@ -14,9 +14,7 @@ This document outlines the comprehensive plan for implementing the PrismQ.Client
 
 ### Reference Implementation
 
-Historic reference: [sort_ClientOLD/Frontend](https://github.com/Nomoos/PrismQ.Client/tree/main/sort_ClientOLD/Frontend)
-
-The new implementation will modernize and optimize this design while maintaining compatibility with the current TaskManager backend.
+The frontend provides a modern, mobile-first web interface for managing tasks from the Backend/TaskManager system, optimized for Vedos deployment and mobile devices.
 
 ---
 
@@ -905,10 +903,6 @@ eventSource.onmessage = (event) => {
 - [Backend Issues](../../Backend/TaskManager/_meta/issues/)
 - [Worker01 Backend Work](../../Backend/TaskManager/_meta/issues/new/Worker01/)
 - [Deployment Scripts](../../Backend/TaskManager/deploy.php)
-
-### Frontend Reference
-- [Old Frontend](../../sort_ClientOLD/Frontend/)
-- [Old Frontend Docs](../../sort_ClientOLD/Frontend/_meta/docs/FRONTEND.md)
 
 ### Documentation
 - [Project README](../../../README.md)
