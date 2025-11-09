@@ -26,6 +26,36 @@ This document outlines how work can be parallelized for the **Mobile-First TaskM
 
 **Legend**: ✅ Complete | 🟢 Active | 🔴 Not Started | ⏳ Pending
 
+## MVP Strategy Integration
+
+**See**: [MVP_PLAN.md](./MVP_PLAN.md) for complete MVP strategy
+
+This matrix now incorporates a **phased MVP approach**:
+
+### Phase 0: MVP (Week 1) - Quick Win
+- **Goal**: Minimal but functional task management
+- **Workers**: Worker01, Worker03, Worker02 (core only)
+- **Scope**: View tasks, claim tasks, complete tasks
+- **Delivery**: 5-7 days
+
+### Phase 1: Core Features (Week 2)
+- **Goal**: Feature-complete task management
+- **Workers**: All workers engaged
+- **Scope**: Full features, quality improvements
+- **Delivery**: 5-7 days
+
+### Phase 2: Enhanced & Polish (Week 3-4)
+- **Goal**: Production-ready with excellent UX
+- **Workers**: Full team, maximum parallelization
+- **Scope**: Advanced features, testing, optimization
+- **Delivery**: 1-2 weeks
+
+### Phase 3: Advanced (Ongoing)
+- **Goal**: Nice-to-have features
+- **Workers**: Based on priorities
+- **Scope**: User feedback-driven
+- **Delivery**: Post-launch iterations
+
 ## Dependency Graph
 
 ```
