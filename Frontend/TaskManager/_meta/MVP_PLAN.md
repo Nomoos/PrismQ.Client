@@ -106,11 +106,12 @@ This document outlines the **Minimum Viable Product (MVP)** strategy for Fronten
 
 #### Day 3-4: Core Features
 - [x] Task detail view (basic structure)
-- [ ] Task detail view (full implementation with claim/complete actions)
-- [ ] Claim task functionality (API exists, UI integration needed)
-- [ ] Complete task functionality (API exists, UI integration needed)
+- [x] Task detail view (full implementation with claim/complete actions)
+- [x] Claim task functionality (API exists, UI integration complete)
+- [x] Complete task functionality (API exists, UI integration complete)
 - [x] Status filtering (implemented in TaskList)
 - [x] Basic error handling (implemented in TaskList and store)
+- [x] Worker ID configuration (Settings view)
 
 #### Day 5-6: Polish & Deploy
 - [x] Mobile responsive fixes (Tailwind mobile-first configured)

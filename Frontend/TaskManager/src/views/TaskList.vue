@@ -133,12 +133,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useTaskStore } from '../stores/tasks'
+import { useTaskPolling } from '../composables/useTaskPolling'
 
 const router = useRouter()
 const taskStore = useTaskStore()
+
+// Enable real-time polling (fetches tasks every 5 seconds)
+useTaskPolling(5000, true)
 
 const currentFilter = ref('all')
 const loading = computed(() => taskStore.loading)
@@ -190,8 +194,4 @@ function formatDate(dateString: string): string {
 function goToTask(id: number) {
   router.push(`/tasks/${id}`)
 }
-
-onMounted(async () => {
-  await taskStore.fetchTasks()
-})
 </script>
