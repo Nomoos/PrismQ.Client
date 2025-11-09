@@ -2,7 +2,28 @@
 
 ## Overview
 
-This guide explains how to deploy TaskManager to a server using the automated deployment script (`deploy.php`).
+This guide explains how to deploy TaskManager to a server using the automated deployment scripts.
+
+## Step -1: Update Deploy Script (Optional but Recommended)
+
+Before running the deployment, ensure you have the latest version of `deploy.php`:
+
+### Using deploy-deploy.php
+
+The `deploy-deploy.php` script has a single responsibility: download the latest `deploy.php` from GitHub.
+
+#### Web Browser Method
+1. Upload `deploy-deploy.php` to your server
+2. Access it via browser: `https://yourdomain.com/deploy-deploy.php`
+3. The script will automatically download the latest `deploy.php`
+4. Click "Continue to Deploy" to proceed with deployment
+
+#### Command Line Method
+```bash
+php deploy-deploy.php
+```
+
+This ensures you always have the latest deployment script with all bug fixes and improvements.
 
 ## Step 0: Check Your Environment
 
