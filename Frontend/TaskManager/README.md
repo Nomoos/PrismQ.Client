@@ -45,8 +45,29 @@ npm run dev
 
 ### Build for Production
 
+**Automated Build & Package (Recommended):**
+
 ```bash
-# Build static files
+# Linux/Mac - Creates ready-to-upload package
+./build-and-package.sh
+
+# Windows - Creates ready-to-upload package
+build-and-package.bat
+
+# Clean rebuild
+./build-and-package.sh --clean
+```
+
+This creates:
+- `deploy-package/` - Ready-to-upload directory with all files
+- `deploy-package-YYYYMMDD_HHMMSS.tar.gz` - Archive for easy transfer
+- `deploy-package-YYYYMMDD_HHMMSS.zip` - Windows-compatible archive
+- `deploy-package-latest.tar.gz` - Symlink to latest build
+
+**Manual Build:**
+
+```bash
+# Build static files only
 npm run build
 
 # Preview production build
@@ -54,6 +75,35 @@ npm run preview
 ```
 
 ### Deploy to Vedos/Wedos
+
+**Method 1: FTP Upload (Easiest)**
+
+```bash
+# 1. Build package
+./build-and-package.sh
+
+# 2. Upload deploy-package/ contents via FTP/FileZilla
+#    to your web root (e.g., /www/ or /public_html/)
+
+# 3. Open in browser
+https://your-domain.com/deploy.php
+
+# 4. Follow wizard to configure .htaccess
+```
+
+**Method 2: Automated CLI (If you have SSH access)**
+
+```bash
+# On local machine
+./build-and-package.sh
+scp deploy-package-latest.tar.gz user@server:/path/to/web/
+
+# On server via SSH
+cd /path/to/web
+php deploy-auto.php --source=deploy-package-latest.tar.gz
+```
+
+**Method 3: Legacy deploy-deploy.php**
 
 ```bash
 # 1. Build locally
@@ -66,10 +116,6 @@ npm run build
 https://your-domain.com/taskmanager/deploy-deploy.php
 
 # 4. Follow the deployment wizard
-# - Downloads deploy.php
-# - Uploads dist/ files
-# - Configures .htaccess
-# - Validates installation
 ```
 
 ## 📁 Project Structure
