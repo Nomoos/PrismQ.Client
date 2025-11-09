@@ -6,7 +6,7 @@
  */
 
 require_once __DIR__ . '/../TestRunner.php';
-require_once __DIR__ . '/../../api/JsonSchemaValidator.php';
+require_once __DIR__ . '/../../../src/api/JsonSchemaValidator.php';
 
 function testSecurity() {
     $runner = new TestRunner();

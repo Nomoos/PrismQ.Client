@@ -37,7 +37,7 @@ class ApiTestHelper {
      * Setup test database connection
      */
     private function setupDatabase() {
-        require_once __DIR__ . '/../../config/config.php';
+        require_once __DIR__ . '/../config/test_config.php';
         
         try {
             $this->db = new PDO(
