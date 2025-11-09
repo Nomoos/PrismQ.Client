@@ -59,20 +59,33 @@
       <div class="card">
         <h2 class="text-lg font-semibold mb-4">Task Actions</h2>
         <p class="text-gray-600 text-sm mb-4">
-          Demo: Use the worker ID to claim and manage tasks
+          Claim and process the next available task from the queue
         </p>
-        <div class="space-y-2">
+        <div class="space-y-3">
           <button 
-            @click="claimDemoTask"
-            :disabled="!workerStore.isInitialized"
+            @click="claimNextTask"
+            :disabled="!workerStore.isInitialized || claimingTask || availableTaskTypes.length === 0"
             class="btn-primary w-full"
-            :class="{ 'opacity-50 cursor-not-allowed': !workerStore.isInitialized }"
+            :class="{ 'opacity-50 cursor-not-allowed': !workerStore.isInitialized || claimingTask || availableTaskTypes.length === 0 }"
           >
-            Claim Next Task
+            <span v-if="claimingTask">Claiming...</span>
+            <span v-else>Claim Next Task</span>
           </button>
-          <p class="text-xs text-gray-500">
-            Worker ID will be used for claiming tasks from the queue
-          </p>
+          
+          <!-- Error message -->
+          <div v-if="claimError" class="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
+            {{ claimError }}
+          </div>
+          
+          <!-- Info -->
+          <div class="text-xs text-gray-500 space-y-1">
+            <p v-if="availableTaskTypes.length > 0">
+              {{ availableTaskTypes.length }} task type(s) available
+            </p>
+            <p v-else class="text-yellow-600">
+              No task types registered yet
+            </p>
+          </div>
         </div>
       </div>
 
@@ -82,6 +95,7 @@
         <pre class="text-xs text-blue-800 overflow-x-auto"><code>// Use worker store in components
 import { useWorkerStore } from '@/stores/worker'
 import { useTaskStore } from '@/stores/tasks'
+import { taskService } from '@/services/taskService'
 
 const workerStore = useWorkerStore()
 const taskStore = useTaskStore()
@@ -89,18 +103,34 @@ const taskStore = useTaskStore()
 // Initialize worker
 workerStore.initializeWorker()
 
-// Claim a task
-await taskStore.claimTask(taskTypeId, workerStore.workerId!)</code></pre>
+// Load available task types
+const taskTypes = await taskService.getTaskTypes()
+
+// Claim next available task
+const task = await taskStore.claimTask(
+  workerStore.workerId!, 
+  taskTypes.data[0].id
+)</code></pre>
       </div>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useWorkerStore } from '../stores/worker'
+import { useTaskStore } from '../stores/tasks'
+import { taskService } from '../services/taskService'
+import type { TaskType } from '../types'
 
+const router = useRouter()
 const workerStore = useWorkerStore()
+const taskStore = useTaskStore()
+
+const availableTaskTypes = ref<TaskType[]>([])
+const claimingTask = ref(false)
+const claimError = ref<string | null>(null)
 
 function getStatusClass(status: string): string {
   const classes = {
@@ -123,26 +153,58 @@ function setIdle() {
   workerStore.setStatus('idle')
 }
 
-async function claimDemoTask() {
+async function loadTaskTypes() {
+  try {
+    const response = await taskService.getTaskTypes(true)
+    if (response.success && response.data) {
+      availableTaskTypes.value = response.data
+    }
+  } catch (error) {
+    console.error('Failed to load task types:', error)
+  }
+}
+
+async function claimNextTask() {
   if (!workerStore.workerId) {
     alert('Please initialize worker first')
     return
   }
   
+  if (availableTaskTypes.value.length === 0) {
+    alert('No task types available. Please register a task type first.')
+    return
+  }
+  
+  claimingTask.value = true
+  claimError.value = null
+  
   try {
-    // This is a demo - would need actual task type ID from backend
-    alert('Demo: Would claim task with worker ID: ' + workerStore.workerId)
-    // await taskStore.claimTask(1, workerStore.workerId)
+    // Try to claim a task from the first available task type
+    const taskType = availableTaskTypes.value[0]
+    const task = await taskStore.claimTask(workerStore.workerId, taskType.id)
+    
+    if (task) {
+      // Successfully claimed a task - navigate to task detail
+      await router.push(`/tasks/${task.id}`)
+    } else {
+      // No tasks available for this type
+      claimError.value = 'No pending tasks available at the moment'
+    }
   } catch (error) {
     console.error('Failed to claim task:', error)
-    alert('Failed to claim task. Check console for details.')
+    claimError.value = error instanceof Error ? error.message : 'Failed to claim task'
+  } finally {
+    claimingTask.value = false
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   // Auto-initialize worker on mount
   if (!workerStore.isInitialized) {
     workerStore.initializeWorker()
   }
+  
+  // Load available task types
+  await loadTaskTypes()
 })
 </script>
