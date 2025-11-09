@@ -149,15 +149,20 @@ After finishing work on a task:
 
 The Task Detail view shows:
 
+![Task Detail View](screenshots/task-detail.png)
+
 - **Task Type**: The category of task
 - **Status**: Current task state with color-coded badge
+- **Progress Bar**: Visual indicator of task completion (for claimed tasks)
 - **Task ID**: Unique identifier
 - **Priority**: Task priority level
 - **Created At**: When the task was created
-- **Updated At**: Last modification time
+- **Attempts**: Current attempt count vs maximum allowed
+- **Worker Information**: Details about who claimed the task and when
 - **Parameters**: Task-specific data and configuration
 - **Result**: Task output (if completed)
 - **Error Message**: Error details (if failed)
+- **Action Buttons**: Mark as Complete or Mark as Failed
 
 ---
 
