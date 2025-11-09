@@ -172,8 +172,8 @@ const task = ref<Task | null>(null)
 const actionLoading = ref(false)
 const completingSuccess = ref(false)
 
-// Worker ID - in a real app, this would come from auth/settings
-const workerId = ref('frontend-worker-1')
+// Worker ID - load from localStorage, fallback to default
+const workerId = ref(localStorage.getItem('workerId') || 'frontend-worker-1')
 
 const loading = computed(() => taskStore.loading)
 const error = computed(() => taskStore.error)
