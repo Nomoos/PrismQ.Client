@@ -38,15 +38,43 @@ $duration = (microtime(true) - $start) * 1000;
 PerformanceMonitor::time('get_tasks', $duration);
 ```
 
+### QueryProfiler Class
+
+Located: `Backend/TaskManager/api/QueryProfiler.php`
+
+**Features**:
+- Automatic database query profiling
+- Tracks query execution time and parameters
+- Logs slow queries automatically
+- Provides detailed query statistics
+- Minimal overhead (< 0.1ms per query)
+
+**Usage Example**:
+```php
+// Queries are automatically profiled when using Database class
+$db = Database::getInstance();
+$stmt = $db->prepare("SELECT * FROM tasks WHERE id = ?");
+$stmt->execute([123]);
+
+// Get query statistics
+$stats = QueryProfiler::getSummary();
+echo "Average query time: {$stats['average_time']}ms\n";
+echo "Slow queries: {$stats['slow_queries']}\n";
+```
+
+**See**: [QUERY_PROFILER_GUIDE.md](QUERY_PROFILER_GUIDE.md) for complete documentation.
+
 ### Configuration
 
 **Environment Variables**:
 ```bash
-# Set threshold (default: 200ms)
+# PerformanceMonitor - Set threshold (default: 200ms)
 PERFORMANCE_MONITOR_THRESHOLD=200
-
-# Enable/disable monitoring (default: enabled)
 PERFORMANCE_MONITOR_ENABLED=true
+
+# QueryProfiler - Set slow query threshold (default: 100ms)
+QUERY_PROFILER_SLOW_THRESHOLD=100
+QUERY_PROFILER_ENABLED=true
 ```
 
 **In Code**:

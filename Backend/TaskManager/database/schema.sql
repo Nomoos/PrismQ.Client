@@ -41,7 +41,8 @@ CREATE TABLE IF NOT EXISTS tasks (
     INDEX idx_dedupe (dedupe_key),
     INDEX idx_created (created_at),
     INDEX idx_priority (priority),
-    INDEX idx_progress (progress)
+    INDEX idx_progress (progress),
+    INDEX idx_claimed_at (claimed_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Task execution history (optional, for audit trail)
