@@ -136,7 +136,6 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useTaskStore } from '../stores/tasks'
-import type { Task } from '../types'
 
 const router = useRouter()
 const taskStore = useTaskStore()

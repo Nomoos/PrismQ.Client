@@ -101,27 +101,28 @@ This document outlines the **Minimum Viable Product (MVP)** strategy for Fronten
 - [x] API client configured
 - [x] Basic task store
 - [x] Router setup
-- [ ] TaskList view enhanced
-- [ ] TaskCard component minimal version
+- [x] TaskList view enhanced
+- [x] TaskCard component minimal version (inline in TaskList)
 
 #### Day 3-4: Core Features
-- [ ] Task detail view
-- [ ] Claim task functionality
-- [ ] Complete task functionality
-- [ ] Status filtering
-- [ ] Basic error handling
+- [x] Task detail view (basic structure)
+- [ ] Task detail view (full implementation with claim/complete actions)
+- [ ] Claim task functionality (API exists, UI integration needed)
+- [ ] Complete task functionality (API exists, UI integration needed)
+- [x] Status filtering (implemented in TaskList)
+- [x] Basic error handling (implemented in TaskList and store)
 
 #### Day 5-6: Polish & Deploy
-- [ ] Mobile responsive fixes
-- [ ] Loading states
-- [ ] Error states
+- [x] Mobile responsive fixes (Tailwind mobile-first configured)
+- [x] Loading states (implemented in TaskList)
+- [x] Error states (implemented in TaskList)
 - [ ] Manual testing on Redmi
 - [ ] Deploy to Vedos staging
 - [ ] Final validation
 
 #### Day 7: Buffer & Launch
-- [ ] Fix critical bugs
-- [ ] Performance check
+- [ ] Fix critical bugs (if any)
+- [x] Performance check (build successful, bundle < 155KB total JS)
 - [ ] Deploy to production
 - [ ] Demo to stakeholders
 
