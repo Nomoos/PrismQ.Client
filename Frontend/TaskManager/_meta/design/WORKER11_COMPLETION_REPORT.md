@@ -423,7 +423,7 @@ Component specs ready for Vue implementation:
 ## Files Created
 
 ```
-Frontend/_meta/design/
+Frontend/TaskManager/_meta/design/
 ├── README.md                              # Main overview (576 lines)
 ├── DESIGN_SYSTEM.md                       # Complete design system (772 lines)
 ├── ACCESSIBILITY_GUIDELINES.md            # WCAG 2.1 AA guidelines (610 lines)

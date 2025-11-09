@@ -1,6 +1,6 @@
 # Frontend TaskManager - Parallelization Matrix
 
-**Primary Location**: `Frontend/_meta/issues/FRONTEND_PARALLELIZATION_MATRIX.md`  
+**Primary Location**: `Frontend/TaskManager/_meta/issues/FRONTEND_PARALLELIZATION_MATRIX.md`  
 **Component**: PrismQ.Client (Frontend)  
 **Created**: 2025-11-09  
 **Updated**: 2025-11-09  

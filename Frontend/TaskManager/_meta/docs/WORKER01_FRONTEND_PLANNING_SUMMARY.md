@@ -279,13 +279,13 @@ Created README files for new workers:
 
 ### Created Files (8 total)
 
-1. `Frontend/_meta/docs/FRONTEND_IMPLEMENTATION_PLAN.md` (24,154 chars)
-2. `Frontend/_meta/issues/INDEX.md` (10,740 chars)
-3. `Frontend/_meta/issues/wip/Worker01/ISSUE-FRONTEND-001-project-setup.md` (5,985 chars)
-4. `Frontend/_meta/issues/new/Worker11/ISSUE-FRONTEND-002-ux-design.md` (7,332 chars)
-5. `Frontend/_meta/issues/new/Worker08/ISSUE-FRONTEND-009-deployment.md` (10,012 chars)
-6. `Frontend/_meta/issues/new/Worker11/README.md` (4,044 chars)
-7. `Frontend/_meta/issues/new/Worker12/README.md` (6,935 chars)
+1. `Frontend/TaskManager/_meta/docs/FRONTEND_IMPLEMENTATION_PLAN.md` (24,154 chars)
+2. `Frontend/TaskManager/_meta/issues/INDEX.md` (10,740 chars)
+3. `Frontend/TaskManager/_meta/issues/wip/Worker01/ISSUE-FRONTEND-001-project-setup.md` (5,985 chars)
+4. `Frontend/TaskManager/_meta/issues/new/Worker11/ISSUE-FRONTEND-002-ux-design.md` (7,332 chars)
+5. `Frontend/TaskManager/_meta/issues/new/Worker08/ISSUE-FRONTEND-009-deployment.md` (10,012 chars)
+6. `Frontend/TaskManager/_meta/issues/new/Worker11/README.md` (4,044 chars)
+7. `Frontend/TaskManager/_meta/issues/new/Worker12/README.md` (6,935 chars)
 8. `Frontend/README.md` (9,220 chars)
 
 **Total**: 78,422 characters of documentation
