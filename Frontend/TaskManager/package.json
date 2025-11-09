@@ -18,16 +18,21 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
     "bundle:size": "node scripts/bundle-size.js",
-    "bundle:check": "npm run build && npm run bundle:size"
+    "bundle:check": "npm run build && npm run bundle:size",
+    "lighthouse": "npm run build && npm run preview & lhci autorun --config=lighthouserc.js",
+    "lighthouse:ci": "lhci autorun --config=lighthouserc.js",
+    "perf:test": "npm run bundle:check && npm run lighthouse"
   },
   "dependencies": {
     "axios": "^1.6.0",
     "pinia": "^2.1.0",
     "vue": "^3.4.0",
-    "vue-router": "^4.2.0"
+    "vue-router": "^4.2.0",
+    "web-vitals": "^5.1.0"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
+    "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.40.0",
     "@types/node": "^20.10.0",
     "@vitejs/plugin-vue": "^5.0.0",
