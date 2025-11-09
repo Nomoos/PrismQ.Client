@@ -1,5 +1,14 @@
 import api from './api'
-import type { Task, TaskType, ApiResponse, PaginatedResponse } from '../types'
+import type { 
+  Task, 
+  TaskType, 
+  ApiResponse, 
+  PaginatedResponse,
+  CreateTaskRequest,
+  ClaimTaskRequest,
+  CompleteTaskRequest,
+  UpdateProgressRequest
+} from '../types'
 
 export const taskService = {
   // Get all tasks with optional filters
@@ -18,50 +27,29 @@ export const taskService = {
   },
 
   // Create new task
-  async createTask(data: {
-    type: string
-    params: Record<string, any>
-    priority?: number
-  }): Promise<ApiResponse<Task>> {
+  async createTask(data: CreateTaskRequest): Promise<ApiResponse<Task>> {
     return api.post<ApiResponse<Task>>('/tasks', data)
   },
 
   // Claim task for processing
-  async claimTask(workerId: string, taskTypeId: number): Promise<ApiResponse<Task>> {
-    return api.post<ApiResponse<Task>>('/tasks/claim', {
-      worker_id: workerId,
-      task_type_id: taskTypeId
-    })
+  async claimTask(data: ClaimTaskRequest): Promise<ApiResponse<Task>> {
+    return api.post<ApiResponse<Task>>('/tasks/claim', data)
   },
 
-  // Complete task
+  // Complete task (success or failure)
   async completeTask(
     id: number,
-    workerId: string,
-    success: boolean,
-    result?: Record<string, any>,
-    error?: string
-  ): Promise<ApiResponse<Task>> {
-    return api.post<ApiResponse<Task>>(`/tasks/${id}/complete`, {
-      worker_id: workerId,
-      success,
-      result,
-      error
-    })
+    data: CompleteTaskRequest
+  ): Promise<ApiResponse<void>> {
+    return api.post<ApiResponse<void>>(`/tasks/${id}/complete`, data)
   },
 
   // Update task progress
   async updateProgress(
     id: number,
-    workerId: string,
-    progress: number,
-    message?: string
+    data: UpdateProgressRequest
   ): Promise<ApiResponse<void>> {
-    return api.post<ApiResponse<void>>(`/tasks/${id}/progress`, {
-      worker_id: workerId,
-      progress,
-      message
-    })
+    return api.post<ApiResponse<void>>(`/tasks/${id}/progress`, data)
   },
 
   // Get all task types
