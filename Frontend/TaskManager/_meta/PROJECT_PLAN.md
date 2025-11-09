@@ -511,7 +511,6 @@ All issues documented in `Frontend/TaskManager/_meta/issues/`:
 ### C. Reference
 
 - **Backend/TaskManager**: API provider
-- **sort_ClientOLD/Frontend**: Historic reference (don't copy, inspire only)
 
 ---
 
