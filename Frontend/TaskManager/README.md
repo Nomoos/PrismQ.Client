@@ -170,22 +170,24 @@ VITE_API_KEY=your-api-key
 
 ## 📚 Documentation
 
+### User Documentation
+- **[User Guide](./_meta/docs/USER_GUIDE.md)** ✅ - Complete guide for end users
+- **[Troubleshooting](./_meta/docs/TROUBLESHOOTING.md)** ✅ - Common issues and solutions
+
+### Developer Documentation
+- **[Developer Guide](./_meta/docs/DEVELOPER_GUIDE.md)** ✅ - Development setup and best practices
+- **[API Integration Guide](./_meta/docs/API_INTEGRATION.md)** ✅ - Backend API integration
+- **[Component Library](./_meta/docs/COMPONENT_LIBRARY.md)** ✅ - Component documentation
+- **[Performance Guide](./_meta/docs/PERFORMANCE_GUIDE.md)** ✅ - Performance optimization
+- **[Contributing Guide](./_meta/docs/CONTRIBUTING.md)** ✅ - How to contribute
+
+### Deployment Documentation
+- **[Deployment Guide](./_meta/docs/DEPLOYMENT_GUIDE.md)** ✅ - Step-by-step deployment to Vedos/Wedos
+
 ### Planning & Architecture
 - **[Project Plan](./_meta/PROJECT_PLAN.md)** - Comprehensive project roadmap
 - **[Parallelization Matrix](./_meta/PARALLELIZATION_MATRIX.md)** - Worker coordination strategy
 - **[Blockers Tracking](./_meta/BLOCKERS.md)** - Current blockers and risks
-- **[Issue Index](./_meta/issues/INDEX.md)** - All issues and progress
-
-### Development
-- **[API Integration Guide](./_meta/docs/API_INTEGRATION.md)** - Backend API integration
-- **[Component Guide](./_meta/docs/COMPONENTS.md)** - Component development
-- **[Testing Guide](./_meta/docs/TESTING.md)** - Testing strategies
-- **[Performance Guide](./_meta/docs/PERFORMANCE.md)** - Performance optimization
-
-### Deployment
-- **[Deployment Guide](./_meta/docs/DEPLOYMENT.md)** - Step-by-step deployment
-- **[Vedos Setup](./_meta/docs/VEDOS_SETUP.md)** - Vedos-specific instructions
-- **[Troubleshooting](./_meta/docs/TROUBLESHOOTING.md)** - Common issues
 
 ## 🧪 Testing
 
