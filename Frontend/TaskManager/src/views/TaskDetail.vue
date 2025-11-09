@@ -12,7 +12,7 @@
     <main class="max-w-7xl mx-auto px-4 py-6 space-y-4">
       <!-- Loading State -->
       <div v-if="loading" class="card text-center py-8">
-        <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary-500 border-t-transparent"></div>
+        <LoadingSpinner size="lg" />
         <p class="mt-2 text-gray-600">Loading task...</p>
       </div>
 
@@ -30,14 +30,7 @@
         <div class="card">
           <div class="flex items-center justify-between mb-4">
             <h2 class="text-2xl font-bold text-gray-900">{{ task.type }}</h2>
-            <span
-              :class="[
-                'inline-block px-3 py-1 rounded-full text-sm font-medium',
-                getStatusBadgeClass(task.status)
-              ]"
-            >
-              {{ task.status.toUpperCase() }}
-            </span>
+            <StatusBadge :status="task.status" />
           </div>
           
           <!-- Progress Bar for claimed tasks -->
@@ -122,7 +115,7 @@
               :disabled="actionLoading"
               class="w-full btn-primary flex items-center justify-center min-h-[44px]"
             >
-              <span v-if="actionLoading" class="inline-block animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2"></span>
+              <LoadingSpinner v-if="actionLoading" size="sm" color="white" class="mr-2" />
               {{ actionLoading ? 'Claiming...' : 'Claim Task' }}
             </button>
 
@@ -133,7 +126,7 @@
                 :disabled="actionLoading"
                 class="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-green-700 disabled:bg-gray-300 flex items-center justify-center min-h-[44px]"
               >
-                <span v-if="actionLoading && completingSuccess" class="inline-block animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2"></span>
+                <LoadingSpinner v-if="actionLoading && completingSuccess" size="sm" color="white" class="mr-2" />
                 {{ actionLoading && completingSuccess ? 'Completing...' : 'Mark as Complete' }}
               </button>
               
@@ -175,6 +168,8 @@ import { useTaskStore } from '../stores/tasks'
 import { useWorkerStore } from '../stores/worker'
 import { useToast } from '../composables/useToast'
 import ConfirmDialog from '../components/base/ConfirmDialog.vue'
+import LoadingSpinner from '../components/base/LoadingSpinner.vue'
+import StatusBadge from '../components/base/StatusBadge.vue'
 import type { Task } from '../types'
 
 const route = useRoute()
@@ -263,16 +258,6 @@ async function handleComplete(success: boolean) {
   } finally {
     actionLoading.value = false
   }
-}
-
-function getStatusBadgeClass(status: string): string {
-  const classes = {
-    pending: 'bg-yellow-100 text-yellow-800',
-    claimed: 'bg-blue-100 text-blue-800',
-    completed: 'bg-green-100 text-green-800',
-    failed: 'bg-red-100 text-red-800'
-  }
-  return classes[status as keyof typeof classes] || 'bg-gray-100 text-gray-800'
 }
 
 function formatDate(dateString: string): string {
