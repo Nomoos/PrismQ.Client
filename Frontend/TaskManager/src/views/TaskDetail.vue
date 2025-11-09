@@ -138,12 +138,11 @@
               </button>
               
               <button
-                @click="handleComplete(false)"
+                @click="showFailConfirmation = true"
                 :disabled="actionLoading"
                 class="w-full bg-red-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-red-700 disabled:bg-gray-300 flex items-center justify-center min-h-[44px]"
               >
-                <span v-if="actionLoading && !completingSuccess" class="inline-block animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2"></span>
-                {{ actionLoading && !completingSuccess ? 'Marking as Failed...' : 'Mark as Failed' }}
+                Mark as Failed
               </button>
             </div>
 
@@ -155,6 +154,17 @@
         </div>
       </div>
     </main>
+
+    <!-- Confirmation Dialog -->
+    <ConfirmDialog
+      v-model="showFailConfirmation"
+      title="Mark Task as Failed"
+      message="Are you sure you want to mark this task as failed? This action cannot be undone."
+      confirm-text="Mark as Failed"
+      cancel-text="Cancel"
+      danger-mode
+      @confirm="handleComplete(false)"
+    />
   </div>
 </template>
 
@@ -163,16 +173,20 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useTaskStore } from '../stores/tasks'
 import { useWorkerStore } from '../stores/worker'
+import { useToast } from '../composables/useToast'
+import ConfirmDialog from '../components/base/ConfirmDialog.vue'
 import type { Task } from '../types'
 
 const route = useRoute()
 const router = useRouter()
 const taskStore = useTaskStore()
 const workerStore = useWorkerStore()
+const toast = useToast()
 
 const task = ref<Task | null>(null)
 const actionLoading = ref(false)
 const completingSuccess = ref(false)
+const showFailConfirmation = ref(false)
 
 // Initialize worker if not already initialized
 if (!workerStore.isInitialized) {
@@ -207,10 +221,11 @@ async function handleClaim() {
     const claimedTask = await taskStore.claimTask(workerStore.workerId, task.value.type_id)
     if (claimedTask) {
       task.value = claimedTask
+      toast.success('Task claimed successfully!')
     }
   } catch (e) {
     console.error('Failed to claim task:', e)
-    alert('Failed to claim task. Please try again.')
+    toast.error('Failed to claim task. Please try again.')
   } finally {
     actionLoading.value = false
   }
@@ -236,6 +251,7 @@ async function handleComplete(success: boolean) {
     
     if (completedTask) {
       task.value = completedTask
+      toast.success(success ? 'Task completed successfully!' : 'Task marked as failed')
       // Navigate back to task list after a short delay
       setTimeout(() => {
         router.push('/')
@@ -243,7 +259,7 @@ async function handleComplete(success: boolean) {
     }
   } catch (e) {
     console.error('Failed to complete task:', e)
-    alert('Failed to complete task. Please try again.')
+    toast.error('Failed to complete task. Please try again.')
   } finally {
     actionLoading.value = false
   }
