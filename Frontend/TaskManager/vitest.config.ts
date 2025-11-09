@@ -20,8 +20,16 @@ export default mergeConfig(
           '**/*.test.ts',
           'src/vite-env.d.ts',
           'vite.config.ts',
-          'vitest.config.ts'
+          'vitest.config.ts',
+          'playwright.config.ts',
+          'postcss.config.js',
+          'tailwind.config.js',
+          'lighthouserc.js',
+          'scripts/**',
+          '*.config.js',
+          '*.config.ts'
         ],
+        include: ['src/**/*.{ts,vue}'],
         statements: 80,
         branches: 80,
         functions: 80,
