@@ -33,6 +33,7 @@ dist-ssr
 coverage
 test-results
 playwright-report
+_meta/tests/e2e-results
 .nyc_output
 
 # Build
