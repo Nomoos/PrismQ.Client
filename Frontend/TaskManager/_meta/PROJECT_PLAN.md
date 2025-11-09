@@ -7,7 +7,8 @@ The Frontend/TaskManager is a **lightweight, mobile-first web interface** for th
 **Timeline**: 2-3 weeks (10-15 days with parallelization)  
 **Team Size**: 10 specialized workers  
 **Current Status**: Planning Phase  
-**Architecture**: Mobile-first, static deployment, API-driven
+**Architecture**: Mobile-first, static deployment, API-driven  
+**Strategy**: Phased MVP approach (see [MVP_PLAN.md](./MVP_PLAN.md))
 
 ## Key Differentiators
 
@@ -34,8 +35,11 @@ The Frontend/TaskManager is a **lightweight, mobile-first web interface** for th
 
 ## Project Goals
 
+**📌 See [MVP_PLAN.md](./MVP_PLAN.md) for phased delivery strategy**
+
 1. **Primary Goal**: Create a mobile-first UI for TaskManager that deploys to Vedos like the backend
-2. **Key Requirements**:
+2. **MVP Strategy**: Deliver working software in phases (Week 1: MVP, Week 2: Core, Week 3-4: Enhanced)
+3. **Key Requirements**:
    - Vue 3 + TypeScript frontend
    - Static build deployment (no Node.js on server)
    - PHP deployment scripts (deploy.php, deploy-deploy.php)
