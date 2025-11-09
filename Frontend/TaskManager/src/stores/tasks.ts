@@ -36,7 +36,7 @@ export const useTaskStore = defineStore('tasks', () => {
         tasks.value = response.data
       }
     } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Failed to fetch tasks'
+      error.value = e instanceof Error ? e.message : 'Failed to fetch tasks. Please check your connection and try again.'
     } finally {
       loading.value = false
     }
@@ -52,7 +52,7 @@ export const useTaskStore = defineStore('tasks', () => {
       }
       return response
     } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Failed to create task'
+      error.value = e instanceof Error ? e.message : 'Failed to create task. Please verify your input and try again.'
       throw e
     } finally {
       loading.value = false
@@ -76,7 +76,7 @@ export const useTaskStore = defineStore('tasks', () => {
       }
       return undefined
     } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Failed to fetch task'
+      error.value = e instanceof Error ? e.message : 'Failed to fetch task details. Please try again.'
       throw e
     } finally {
       loading.value = false
@@ -98,7 +98,7 @@ export const useTaskStore = defineStore('tasks', () => {
       }
       return undefined
     } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Failed to claim task'
+      error.value = e instanceof Error ? e.message : 'Failed to claim task. Please try again.'
       throw e
     } finally {
       loading.value = false
@@ -112,6 +112,27 @@ export const useTaskStore = defineStore('tasks', () => {
     result?: Record<string, any>, 
     errorMessage?: string
   ): Promise<Task | undefined> {
+    // Find the task for optimistic update
+    const task = tasks.value.find(t => t.id === id)
+    if (!task) {
+      error.value = 'Task not found in local state'
+      throw new Error('Task not found')
+    }
+
+    // Store original state for rollback
+    const originalStatus = task.status
+    const originalResult = task.result
+    const originalError = task.error_message
+    
+    // Optimistic update - immediately update UI
+    task.status = success ? 'completed' : 'failed'
+    if (success && result) {
+      task.result = result
+    }
+    if (!success && errorMessage) {
+      task.error_message = errorMessage
+    }
+    
     loading.value = true
     error.value = null
     try {
@@ -122,7 +143,7 @@ export const useTaskStore = defineStore('tasks', () => {
         error: errorMessage
       })
       if (response.success) {
-        // Refresh the specific task to get updated state
+        // Refresh the specific task to get updated state from server
         const taskResponse = await taskService.getTask(id)
         if (taskResponse.success && taskResponse.data) {
           const index = tasks.value.findIndex(t => t.id === id)
@@ -132,9 +153,13 @@ export const useTaskStore = defineStore('tasks', () => {
           return taskResponse.data
         }
       }
-      return undefined
+      return task
     } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Failed to complete task'
+      // Rollback optimistic update on error
+      task.status = originalStatus
+      task.result = originalResult
+      task.error_message = originalError
+      error.value = e instanceof Error ? e.message : 'Failed to complete task. Changes have been reverted.'
       throw e
     } finally {
       loading.value = false
@@ -142,6 +167,21 @@ export const useTaskStore = defineStore('tasks', () => {
   }
 
   async function failTask(taskId: number, workerId: string, errorMessage: string) {
+    // Find task for optimistic update
+    const task = tasks.value.find(t => t.id === taskId)
+    if (!task) {
+      error.value = 'Task not found in local state'
+      throw new Error('Task not found')
+    }
+
+    // Store original state for rollback
+    const originalStatus = task.status
+    const originalError = task.error_message
+
+    // Optimistic update
+    task.status = 'failed'
+    task.error_message = errorMessage
+    
     loading.value = true
     error.value = null
     try {
@@ -150,14 +190,12 @@ export const useTaskStore = defineStore('tasks', () => {
         success: false,
         error: errorMessage
       })
-      // Update local task
-      const task = tasks.value.find(t => t.id === taskId)
-      if (task) {
-        task.status = 'failed'
-        task.error_message = errorMessage
-      }
+      // Success - optimistic update is already applied
     } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Failed to mark task as failed'
+      // Rollback optimistic update on error
+      task.status = originalStatus
+      task.error_message = originalError
+      error.value = e instanceof Error ? e.message : 'Failed to mark task as failed. Changes have been reverted.'
       throw e
     } finally {
       loading.value = false
@@ -165,6 +203,19 @@ export const useTaskStore = defineStore('tasks', () => {
   }
 
   async function updateProgress(taskId: number, workerId: string, progress: number, message?: string) {
+    // Find task for optimistic update
+    const task = tasks.value.find(t => t.id === taskId)
+    if (!task) {
+      error.value = 'Task not found in local state'
+      throw new Error('Task not found')
+    }
+
+    // Store original progress for rollback
+    const originalProgress = task.progress
+
+    // Optimistic update - immediately show progress
+    task.progress = progress
+    
     loading.value = true
     error.value = null
     try {
@@ -173,13 +224,11 @@ export const useTaskStore = defineStore('tasks', () => {
         progress,
         message
       })
-      // Update local task
-      const task = tasks.value.find(t => t.id === taskId)
-      if (task) {
-        task.progress = progress
-      }
+      // Success - optimistic update is already applied
     } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Failed to update progress'
+      // Rollback optimistic update on error
+      task.progress = originalProgress
+      error.value = e instanceof Error ? e.message : 'Failed to update progress. Progress has been reverted.'
       throw e
     } finally {
       loading.value = false
