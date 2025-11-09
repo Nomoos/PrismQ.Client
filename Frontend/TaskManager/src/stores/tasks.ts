@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { Task } from '../types'
+import type { Task, CreateTaskRequest } from '../types'
 import { taskService } from '../services/taskService'
 
 export const useTaskStore = defineStore('tasks', () => {
@@ -42,11 +42,11 @@ export const useTaskStore = defineStore('tasks', () => {
     }
   }
   
-  async function createTask(type: string, params: Record<string, any>, priority = 0) {
+  async function createTask(data: CreateTaskRequest) {
     loading.value = true
     error.value = null
     try {
-      const response = await taskService.createTask({ type, params, priority })
+      const response = await taskService.createTask(data)
       if (response.success && response.data) {
         tasks.value.unshift(response.data)
       }
@@ -59,9 +59,69 @@ export const useTaskStore = defineStore('tasks', () => {
     }
   }
   
+  async function claimTask(taskTypeId: number, workerId: string): Promise<Task | undefined> {
+    try {
+      const response = await taskService.claimTask({
+        worker_id: workerId,
+        task_type_id: taskTypeId
+      })
+      if (response.success && response.data) {
+        updateTask(response.data)
+        return response.data
+      }
+      return undefined
+    } catch (e) {
+      console.error('Failed to claim task:', e)
+      throw e
+    }
+  }
+  
+  async function completeTask(taskId: number, workerId: string, result: Record<string, any>) {
+    try {
+      await taskService.completeTask(taskId, {
+        worker_id: workerId,
+        success: true,
+        result
+      })
+      // Update local task
+      const task = tasks.value.find(t => t.id === taskId)
+      if (task) {
+        task.status = 'completed'
+        task.result = result
+        task.completed_at = new Date().toISOString()
+      }
+    } catch (e) {
+      console.error('Failed to complete task:', e)
+      throw e
+    }
+  }
+  
+  async function failTask(taskId: number, workerId: string, errorMessage: string) {
+    try {
+      await taskService.completeTask(taskId, {
+        worker_id: workerId,
+        success: false,
+        error: errorMessage
+      })
+      // Update local task
+      const task = tasks.value.find(t => t.id === taskId)
+      if (task) {
+        task.status = 'failed'
+        task.error_message = errorMessage
+      }
+    } catch (e) {
+      console.error('Failed to mark task as failed:', e)
+      throw e
+    }
+  }
+  
   async function updateProgress(taskId: number, workerId: string, progress: number, message?: string) {
     try {
-      await taskService.updateProgress(taskId, workerId, progress, message)
+      await taskService.updateProgress(taskId, {
+        worker_id: workerId,
+        progress,
+        message
+      })
       // Update local task
       const task = tasks.value.find(t => t.id === taskId)
       if (task) {
@@ -70,6 +130,16 @@ export const useTaskStore = defineStore('tasks', () => {
     } catch (e) {
       console.error('Failed to update progress:', e)
       throw e
+    }
+  }
+  
+  function updateTask(updatedTask: Task) {
+    const index = tasks.value.findIndex(t => t.id === updatedTask.id)
+    if (index !== -1) {
+      tasks.value[index] = updatedTask
+    } else {
+      // Task not in list, add it
+      tasks.value.push(updatedTask)
     }
   }
   
@@ -87,7 +157,11 @@ export const useTaskStore = defineStore('tasks', () => {
     failedTasks,
     fetchTasks,
     createTask,
+    claimTask,
+    completeTask,
+    failTask,
     updateProgress,
+    updateTask,
     clearError
   }
 })

@@ -51,3 +51,52 @@ export interface PaginatedResponse<T> {
     total_pages: number
   }
 }
+
+// Request types
+export interface CreateTaskRequest {
+  type: string
+  params: Record<string, any>
+  priority?: number
+}
+
+export interface ClaimTaskRequest {
+  worker_id: string
+  task_type_id: number
+  type_pattern?: string
+  sort_by?: 'created_at' | 'priority' | 'id' | 'attempts'
+  sort_order?: 'ASC' | 'DESC'
+}
+
+export interface CompleteTaskRequest {
+  worker_id: string
+  success: boolean
+  result?: Record<string, any>
+  error?: string
+}
+
+export interface UpdateProgressRequest {
+  worker_id: string
+  progress: number
+  message?: string
+}
+
+// Error types
+export class APIError extends Error {
+  constructor(
+    message: string,
+    public statusCode: number,
+    public response?: any
+  ) {
+    super(message)
+    this.name = 'APIError'
+    Object.setPrototypeOf(this, APIError.prototype)
+  }
+}
+
+export class NetworkError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'NetworkError'
+    Object.setPrototypeOf(this, NetworkError.prototype)
+  }
+}
