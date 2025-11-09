@@ -41,7 +41,7 @@ cd Frontend && npm run dev
 ### Architecture & Design
 - **[On-Demand Architecture](./_meta/docs/ONDEMAND_ARCHITECTURE.md)** - Client architecture principles
 - **[System Architecture](./_meta/docs/ARCHITECTURE.md)** - Complete system design
-- **[API Reference](./Backend/_meta/docs/API_REFERENCE.md)** - REST API documentation
+- **[API Reference](./Backend/TaskManager/_meta/docs/API_REFERENCE.md)** - REST API documentation
 - **[Integration Guide](./_meta/docs/INTEGRATION_GUIDE.md)** - Integration with PrismQ modules
 
 ### Development
@@ -49,28 +49,25 @@ cd Frontend && npm run dev
 - **[Testing Guide](./_meta/docs/TESTING.md)** - Test coverage and commands
 - **[Configuration](./_meta/docs/CONFIGURATION.md)** - Configuration options
 - **[Modules Guide](./_meta/docs/MODULES.md)** - How to add new modules
-- **[Log Streaming Guide](./Backend/_meta/docs/LOG_STREAMING_GUIDE.md)** - Real-time log streaming
 
 ### Operations & Deployment
-- **[Release Management Guide](./RELEASE.md)** - Version control and release process (Worker01)
-- **[Deployment Checklist](./DEPLOYMENT_CHECKLIST.md)** - Production deployment procedures
-- **[Changelog](./CHANGELOG.md)** - Version history and changes
-- **[Windows Setup](./Backend/_meta/docs/WINDOWS_SETUP.md)** - Windows-specific setup instructions
+- **[Release Management Guide](./_meta/docs/RELEASE.md)** - Version control and release process
+- **[Deployment Checklist](./_meta/docs/DEPLOYMENT_CHECKLIST.md)** - Production deployment procedures
+- **[Changelog](./_meta/docs/CHANGELOG.md)** - Version history and changes
 - **[Data Directory Rationale](./_meta/docs/DATA_DIRECTORY_RATIONALE.md)** - Data storage design decisions
 - **[Security Fixes](./_meta/docs/SECURITY_FIXES.md)** - Security updates and patches
 
 ### Worker Implementation
 - **[Worker Implementation Plan](./_meta/docs/WORKER_IMPLEMENTATION_PLAN.md)** - Strategic implementation plan
 - **[Worker Implementation Guidelines](./_meta/docs/WORKER_IMPLEMENTATION_GUIDELINES.md)** - Best practices and patterns
-- **[Worker Examples](./examples/workers/README.md)** - Production-ready worker examples (Python, PHP)
-- **[Worker Integration Guide](./examples/workers/INTEGRATION_GUIDE.md)** - Complete integration documentation
+- **[Worker Examples](./_meta/examples/workers/README.md)** - Production-ready worker examples (Python, PHP)
+- **[Worker Integration Guide](./_meta/examples/workers/INTEGRATION_GUIDE.md)** - Complete integration documentation
 
 ### Additional Resources
 - **[Documentation Templates](./_meta/templates/README.md)** - Standard templates for creating documentation
 - **[Screenshots Guide](./_meta/docs/SCREENSHOTS_GUIDE.md)** - UI screenshot capture
 - **[Postman Collection](./_meta/docs/POSTMAN_COLLECTION.md)** - API testing guide
 - **[Implementation Summary](./_meta/docs/IMPLEMENTATION_SUMMARY.md)** - Development history
-- **[Issue Organization](./_meta/docs/ISSUE_ORGANIZATION.md)** - Issue tracking structure
 - **[Documentation Index](./_meta/docs/README.md)** - Complete documentation overview
 
 ## 🔗 Related
