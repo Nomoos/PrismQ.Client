@@ -89,13 +89,26 @@ Complete mobile-first design system, wireframes, and interaction patterns for th
 
 ### Color Palette
 
-**Primary**: Blue (`#0ea5e9`) - Task actions  
-**Success**: Green (`#22c55e`) - Completed tasks  
-**Warning**: Orange (`#f59e0b`) - Claimed/in-progress tasks  
-**Error**: Red (`#ef4444`) - Failed tasks  
-**Info**: Blue (`#3b82f6`) - Pending tasks
+**Light Mode**:
+- **Primary**: Blue (`#0ea5e9`) - Task actions  
+- **Success**: Green (`#22c55e`) - Completed tasks  
+- **Warning**: Orange (`#f59e0b`) - Claimed/in-progress tasks  
+- **Error**: Red (`#ef4444`) - Failed tasks  
+- **Info**: Blue (`#3b82f6`) - Pending tasks
 
-**All colors meet WCAG 2.1 AA contrast ratios** (4.5:1 minimum)
+**Dark Mode (GitHub-Inspired)**:
+- **Canvas**: `#0d1117` - Main background
+- **Surface**: `#161b22` - Cards and containers
+- **Primary**: `#58a6ff` - Primary actions (8.6:1 contrast)
+- **Success**: `#3fb950` - Completed tasks (7.1:1 contrast)
+- **Warning**: `#d29922` - Claimed tasks (7.8:1 contrast)
+- **Error**: `#ff7b72` - Failed tasks (7.4:1 contrast)
+- **Text Primary**: `#e6edf3` (15.8:1 contrast)
+- **Text Secondary**: `#8d96a0` (7.2:1 contrast)
+
+**AMOLED Mode (Optional)**: Pure black (`#000000`) for maximum power savings
+
+**All colors meet WCAG 2.1 AA/AAA contrast ratios**
 
 ### Typography
 

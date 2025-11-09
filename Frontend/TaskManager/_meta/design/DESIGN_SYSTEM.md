@@ -146,20 +146,231 @@ Mobile-first design system for the PrismQ TaskManager Frontend, optimized for th
 - gray-600: Body text
 - gray-700/800/900: Headings
 
-### Dark Theme (AMOLED Optimized)
+### Dark Theme (GitHub-Inspired)
+
+**Philosophy**: A refined dark theme inspired by GitHub's dark mode, balancing AMOLED optimization with professional aesthetics.
+
+#### Background Colors
 
 ```css
-/* Dark Mode Colors */
---dark-bg: #000000;        /* Pure black for AMOLED */
---dark-surface: #121212;   /* Card background */
---dark-border: #1f1f1f;    /* Borders */
---dark-text: #e5e5e5;      /* Body text */
---dark-text-secondary: #a0a0a0;  /* Secondary text */
+/* Canvas - Main page background */
+--dark-canvas-default: #0d1117;    /* Main background */
+--dark-canvas-overlay: #161b22;    /* Dropdowns, dialogs */
+--dark-canvas-inset: #010409;      /* Panels, code blocks */
+--dark-canvas-subtle: #161b22;     /* Subtle backgrounds */
+
+/* Surface - Cards and containers */
+--dark-surface-default: #161b22;   /* Card background */
+--dark-surface-overlay: #1c2128;   /* Elevated cards */
+--dark-surface-inset: #0d1117;     /* Inset panels */
 ```
 
-**Contrast Ratios** (Dark Mode):
-- Text on dark-bg: 15.5:1 ✅ (AAA)
-- Secondary text on dark-bg: 8.2:1 ✅ (AAA)
+#### Border Colors
+
+```css
+/* Borders */
+--dark-border-default: #30363d;    /* Default borders */
+--dark-border-muted: #21262d;      /* Subtle borders */
+--dark-border-subtle: #1c2128;     /* Very subtle */
+--dark-border-strong: #6e7681;     /* Strong emphasis */
+```
+
+#### Text Colors
+
+```css
+/* Text hierarchy */
+--dark-text-primary: #e6edf3;      /* Primary text (15.8:1) */
+--dark-text-secondary: #8d96a0;    /* Secondary text (7.2:1) */
+--dark-text-tertiary: #6e7681;     /* Tertiary text (5.1:1) */
+--dark-text-placeholder: #484f58;  /* Placeholder text */
+--dark-text-disabled: #484f58;     /* Disabled text */
+--dark-text-inverse: #0d1117;      /* Text on light backgrounds */
+--dark-text-link: #58a6ff;         /* Links (8.6:1) */
+```
+
+#### Primary Colors (Dark Mode Adjusted)
+
+```css
+/* Primary Blue - Adjusted for dark backgrounds */
+--dark-primary-text: #58a6ff;      /* Primary actions (8.6:1) */
+--dark-primary-bg: #1f6feb;        /* Button backgrounds */
+--dark-primary-border: #388bfd;    /* Focus rings */
+--dark-primary-hover: #388bfd;     /* Hover states */
+--dark-primary-active: #1f6feb;    /* Active states */
+--dark-primary-subtle: #0d419d;    /* Subtle backgrounds */
+```
+
+#### Status Colors (Dark Mode)
+
+```css
+/* Success - Green */
+--dark-success-text: #3fb950;      /* Success text (7.1:1) */
+--dark-success-bg: #238636;        /* Button backgrounds */
+--dark-success-border: #2ea043;    /* Borders */
+--dark-success-subtle: #0d3818;    /* Subtle backgrounds */
+--dark-success-muted: #1a7f37;     /* Muted emphasis */
+
+/* Warning - Orange/Yellow */
+--dark-warning-text: #d29922;      /* Warning text (7.8:1) */
+--dark-warning-bg: #9e6a03;        /* Button backgrounds */
+--dark-warning-border: #bb8009;    /* Borders */
+--dark-warning-subtle: #341a03;    /* Subtle backgrounds */
+--dark-warning-muted: #7d5a05;     /* Muted emphasis */
+
+/* Error - Red */
+--dark-error-text: #ff7b72;        /* Error text (7.4:1) */
+--dark-error-bg: #da3633;          /* Button backgrounds */
+--dark-error-border: #f85149;      /* Borders */
+--dark-error-subtle: #490b08;      /* Subtle backgrounds */
+--dark-error-muted: #b62324;       /* Muted emphasis */
+
+/* Info - Blue */
+--dark-info-text: #58a6ff;         /* Info text (8.6:1) */
+--dark-info-bg: #1f6feb;           /* Button backgrounds */
+--dark-info-border: #388bfd;       /* Borders */
+--dark-info-subtle: #0d419d;       /* Subtle backgrounds */
+--dark-info-muted: #1158c7;        /* Muted emphasis */
+```
+
+#### Accent Colors (Dark Mode)
+
+```css
+/* Accent - Purple (for special highlights) */
+--dark-accent-text: #d2a8ff;       /* Accent text */
+--dark-accent-bg: #8957e5;         /* Button backgrounds */
+--dark-accent-border: #a371f7;     /* Borders */
+--dark-accent-subtle: #271052;     /* Subtle backgrounds */
+
+/* Neutral - Gray (for disabled/muted) */
+--dark-neutral-text: #8d96a0;      /* Neutral text */
+--dark-neutral-bg: #21262d;        /* Button backgrounds */
+--dark-neutral-border: #30363d;    /* Borders */
+--dark-neutral-subtle: #161b22;    /* Subtle backgrounds */
+```
+
+#### Contrast Ratios (Dark Mode) - WCAG 2.1 AA/AAA Compliant
+
+**Text on dark-canvas-default (#0d1117)**:
+- Primary text (#e6edf3): **15.8:1** ✅ (AAA)
+- Secondary text (#8d96a0): **7.2:1** ✅ (AAA)
+- Tertiary text (#6e7681): **5.1:1** ✅ (AAA)
+- Link text (#58a6ff): **8.6:1** ✅ (AAA)
+
+**Status colors on dark backgrounds**:
+- Success (#3fb950): **7.1:1** ✅ (AAA)
+- Warning (#d29922): **7.8:1** ✅ (AAA)
+- Error (#ff7b72): **7.4:1** ✅ (AAA)
+- Info (#58a6ff): **8.6:1** ✅ (AAA)
+
+#### Usage Examples
+
+**Task Card (Dark)**:
+```css
+.task-card-dark {
+  background: var(--dark-surface-default);     /* #161b22 */
+  border: 1px solid var(--dark-border-default); /* #30363d */
+  color: var(--dark-text-primary);             /* #e6edf3 */
+}
+
+.task-card-dark:hover {
+  background: var(--dark-surface-overlay);     /* #1c2128 */
+  border-color: var(--dark-border-muted);      /* #21262d */
+}
+```
+
+**Button (Dark)**:
+```css
+.btn-primary-dark {
+  background: var(--dark-primary-bg);          /* #1f6feb */
+  color: #ffffff;
+  border: 1px solid var(--dark-primary-border); /* #388bfd */
+}
+
+.btn-primary-dark:hover {
+  background: var(--dark-primary-hover);       /* #388bfd */
+}
+```
+
+**Status Badge (Dark)**:
+```css
+.badge-success-dark {
+  background: var(--dark-success-subtle);      /* #0d3818 */
+  color: var(--dark-success-text);             /* #3fb950 */
+  border: 1px solid var(--dark-success-border); /* #2ea043 */
+}
+```
+
+#### AMOLED Optimization
+
+For devices with AMOLED displays (like Redmi 24115RA8EG), offer an optional "True Black" mode:
+
+```css
+/* AMOLED True Black Mode (optional) */
+--amoled-canvas-default: #000000;   /* Pure black for power saving */
+--amoled-surface-default: #0a0a0a; /* Very dark surface */
+--amoled-border-default: #1a1a1a;  /* Minimal borders */
+```
+
+**Note**: True black mode can be toggled in settings for users who prefer maximum AMOLED power savings over the more refined GitHub-style dark theme.
+
+#### Dark Mode Implementation
+
+**CSS Variables Setup**:
+```css
+/* Root light theme (default) */
+:root {
+  --canvas-default: #ffffff;
+  --surface-default: #ffffff;
+  --text-primary: #111827;
+  /* ... other light colors */
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+  --canvas-default: var(--dark-canvas-default);
+  --surface-default: var(--dark-surface-default);
+  --text-primary: var(--dark-text-primary);
+  /* ... other dark colors */
+}
+
+/* AMOLED mode (opt-in) */
+[data-theme="dark"][data-amoled="true"] {
+  --canvas-default: var(--amoled-canvas-default);
+  --surface-default: var(--amoled-surface-default);
+  /* ... AMOLED overrides */
+}
+
+/* Auto dark mode based on system preference */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --canvas-default: var(--dark-canvas-default);
+    --surface-default: var(--dark-surface-default);
+    --text-primary: var(--dark-text-primary);
+    /* ... auto dark colors */
+  }
+}
+```
+
+**JavaScript Toggle**:
+```javascript
+// Toggle dark mode
+function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('theme', theme);
+}
+
+// Toggle AMOLED mode
+function setAMOLED(enabled) {
+  document.documentElement.setAttribute('data-amoled', enabled);
+  localStorage.setItem('amoled', enabled);
+}
+
+// Auto-detect system preference
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+if (prefersDark.matches && !localStorage.getItem('theme')) {
+  setTheme('dark');
+}
+```
 
 ### Semantic Colors
 

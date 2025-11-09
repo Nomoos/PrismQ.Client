@@ -970,6 +970,375 @@ Brief, non-blocking feedback messages
 
 ---
 
+## Dark Mode Component Specifications
+
+### Overview
+
+All components have dark mode variants that follow the GitHub-inspired dark theme from the design system. Dark mode uses higher contrast and adjusted colors for optimal readability on dark backgrounds.
+
+### Task Card (Dark Mode)
+
+**Background & Borders**:
+```css
+[data-theme="dark"] .task-card {
+  background: #161b22; /* dark-surface-default */
+  border: 1px solid #30363d; /* dark-border-default */
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  color: #e6edf3; /* dark-text-primary */
+}
+
+[data-theme="dark"] .task-card:hover {
+  background: #1c2128; /* dark-surface-overlay */
+  border-color: #30363d;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+}
+
+[data-theme="dark"] .task-card.claimed {
+  background: #341a03; /* dark-warning-subtle */
+  border-color: #bb8009; /* dark-warning-border */
+}
+
+[data-theme="dark"] .task-card.completed {
+  background: #0d3818; /* dark-success-subtle */
+  border-color: #2ea043; /* dark-success-border */
+}
+
+[data-theme="dark"] .task-card.failed {
+  background: #490b08; /* dark-error-subtle */
+  border-color: #f85149; /* dark-error-border */
+}
+```
+
+**Text Colors**:
+```css
+[data-theme="dark"] .task-type {
+  color: #e6edf3; /* dark-text-primary */
+}
+
+[data-theme="dark"] .task-id {
+  color: #8d96a0; /* dark-text-secondary */
+}
+
+[data-theme="dark"] .task-metadata {
+  color: #8d96a0; /* dark-text-secondary */
+}
+
+[data-theme="dark"] .task-timestamp {
+  color: #6e7681; /* dark-text-tertiary */
+}
+```
+
+**Status Badge (Dark)**:
+```css
+[data-theme="dark"] .badge-pending {
+  background: #0d419d; /* dark-info-subtle */
+  color: #58a6ff; /* dark-info-text */
+  border: 1px solid #388bfd; /* dark-info-border */
+}
+
+[data-theme="dark"] .badge-claimed {
+  background: #341a03; /* dark-warning-subtle */
+  color: #d29922; /* dark-warning-text */
+  border: 1px solid #bb8009; /* dark-warning-border */
+}
+
+[data-theme="dark"] .badge-completed {
+  background: #0d3818; /* dark-success-subtle */
+  color: #3fb950; /* dark-success-text */
+  border: 1px solid #2ea043; /* dark-success-border */
+}
+
+[data-theme="dark"] .badge-failed {
+  background: #490b08; /* dark-error-subtle */
+  color: #ff7b72; /* dark-error-text */
+  border: 1px solid #f85149; /* dark-error-border */
+}
+```
+
+**Progress Bar (Dark)**:
+```css
+[data-theme="dark"] .progress-bar {
+  background: #21262d; /* dark-border-muted */
+}
+
+[data-theme="dark"] .progress-fill {
+  background: #58a6ff; /* dark-primary-text */
+}
+```
+
+### Buttons (Dark Mode)
+
+**Primary Button**:
+```css
+[data-theme="dark"] .btn-primary {
+  background: #1f6feb; /* dark-primary-bg */
+  color: #ffffff;
+  border: 1px solid #388bfd; /* dark-primary-border */
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  background: #388bfd; /* dark-primary-hover */
+  border-color: #58a6ff;
+}
+
+[data-theme="dark"] .btn-primary:active {
+  background: #1f6feb; /* dark-primary-active */
+}
+
+[data-theme="dark"] .btn-primary:disabled {
+  background: #21262d; /* dark-neutral-bg */
+  color: #6e7681; /* dark-text-tertiary */
+  border-color: #30363d;
+}
+```
+
+**Secondary Button**:
+```css
+[data-theme="dark"] .btn-secondary {
+  background: transparent;
+  color: #e6edf3; /* dark-text-primary */
+  border: 1px solid #30363d; /* dark-border-default */
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+  background: #21262d; /* dark-neutral-bg */
+  border-color: #6e7681; /* dark-border-strong */
+}
+```
+
+**Danger Button**:
+```css
+[data-theme="dark"] .btn-danger {
+  background: #da3633; /* dark-error-bg */
+  color: #ffffff;
+  border: 1px solid #f85149; /* dark-error-border */
+}
+
+[data-theme="dark"] .btn-danger:hover {
+  background: #f85149;
+}
+```
+
+**Icon Button**:
+```css
+[data-theme="dark"] .btn-icon {
+  color: #8d96a0; /* dark-text-secondary */
+}
+
+[data-theme="dark"] .btn-icon:hover {
+  background: #21262d; /* dark-neutral-bg */
+  color: #e6edf3; /* dark-text-primary */
+}
+```
+
+### Form Inputs (Dark Mode)
+
+**Text Input**:
+```css
+[data-theme="dark"] .input-text {
+  background: #0d1117; /* dark-canvas-default */
+  border: 1px solid #30363d; /* dark-border-default */
+  color: #e6edf3; /* dark-text-primary */
+}
+
+[data-theme="dark"] .input-text:focus {
+  border-color: #388bfd; /* dark-primary-border */
+  box-shadow: 0 0 0 3px rgba(56, 139, 253, 0.3);
+}
+
+[data-theme="dark"] .input-text::placeholder {
+  color: #484f58; /* dark-text-placeholder */
+}
+
+[data-theme="dark"] .input-text:disabled {
+  background: #161b22; /* dark-surface-default */
+  color: #6e7681; /* dark-text-tertiary */
+  border-color: #21262d;
+}
+```
+
+**Input Label**:
+```css
+[data-theme="dark"] .input-label {
+  color: #e6edf3; /* dark-text-primary */
+}
+```
+
+**Error Message**:
+```css
+[data-theme="dark"] .input-error-message {
+  color: #ff7b72; /* dark-error-text */
+}
+```
+
+### Navigation (Dark Mode)
+
+**Bottom Tab Bar**:
+```css
+[data-theme="dark"] .bottom-nav {
+  background: #161b22; /* dark-surface-default */
+  border-top: 1px solid #30363d; /* dark-border-default */
+  box-shadow: 0 -4px 6px -1px rgb(0 0 0 / 0.3);
+}
+
+[data-theme="dark"] .nav-item {
+  color: #8d96a0; /* dark-text-secondary */
+}
+
+[data-theme="dark"] .nav-item.active {
+  color: #58a6ff; /* dark-primary-text */
+}
+
+[data-theme="dark"] .nav-item:hover {
+  color: #e6edf3; /* dark-text-primary */
+}
+```
+
+**Header**:
+```css
+[data-theme="dark"] .header {
+  background: #161b22; /* dark-surface-default */
+  border-bottom: 1px solid #30363d; /* dark-border-default */
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+}
+
+[data-theme="dark"] .header-title {
+  color: #e6edf3; /* dark-text-primary */
+}
+```
+
+### Modals & Bottom Sheets (Dark Mode)
+
+**Bottom Sheet**:
+```css
+[data-theme="dark"] .bottom-sheet {
+  background: #161b22; /* dark-surface-default */
+  border-top: 1px solid #30363d;
+}
+
+[data-theme="dark"] .sheet-handle {
+  background: #6e7681; /* dark-border-strong */
+}
+
+[data-theme="dark"] .sheet-backdrop {
+  background: rgba(1, 4, 9, 0.8); /* Darker backdrop */
+}
+```
+
+**Modal**:
+```css
+[data-theme="dark"] .modal {
+  background: #161b22; /* dark-surface-default */
+  border: 1px solid #30363d; /* dark-border-default */
+}
+```
+
+### Loading States (Dark Mode)
+
+**Spinner**:
+```css
+[data-theme="dark"] .spinner {
+  border-color: #30363d; /* dark-border-default */
+  border-top-color: #58a6ff; /* dark-primary-text */
+}
+```
+
+**Skeleton**:
+```css
+[data-theme="dark"] .skeleton {
+  background: linear-gradient(
+    90deg,
+    #161b22 25%,
+    #1c2128 50%,
+    #161b22 75%
+  );
+}
+```
+
+### Empty States (Dark Mode)
+
+```css
+[data-theme="dark"] .empty-icon {
+  color: #484f58; /* dark-text-placeholder */
+}
+
+[data-theme="dark"] .empty-title {
+  color: #e6edf3; /* dark-text-primary */
+}
+
+[data-theme="dark"] .empty-description {
+  color: #8d96a0; /* dark-text-secondary */
+}
+```
+
+### Toast Notifications (Dark Mode)
+
+```css
+[data-theme="dark"] .toast-success {
+  background: #238636; /* dark-success-bg */
+  color: #ffffff;
+  border: 1px solid #2ea043; /* dark-success-border */
+}
+
+[data-theme="dark"] .toast-error {
+  background: #da3633; /* dark-error-bg */
+  color: #ffffff;
+  border: 1px solid #f85149; /* dark-error-border */
+}
+
+[data-theme="dark"] .toast-warning {
+  background: #9e6a03; /* dark-warning-bg */
+  color: #ffffff;
+  border: 1px solid #bb8009; /* dark-warning-border */
+}
+
+[data-theme="dark"] .toast-info {
+  background: #1f6feb; /* dark-info-bg */
+  color: #ffffff;
+  border: 1px solid #388bfd; /* dark-info-border */
+}
+```
+
+### Implementation Notes
+
+1. **CSS Custom Properties**: Use CSS variables for theme switching
+2. **Data Attribute**: Use `[data-theme="dark"]` selector
+3. **System Preference**: Respect `@media (prefers-color-scheme: dark)`
+4. **Smooth Transition**: Add `transition: background-color 200ms, color 200ms, border-color 200ms` to all themeable elements
+5. **AMOLED Mode**: Optional `[data-amoled="true"]` for pure black backgrounds
+
+**Example Implementation**:
+```css
+/* Apply transition to all themeable elements */
+* {
+  transition: background-color 200ms ease-out,
+              color 200ms ease-out,
+              border-color 200ms ease-out;
+}
+
+/* Light theme (default) */
+.card {
+  background: var(--surface-default);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+}
+
+/* Dark theme applied via data attribute */
+[data-theme="dark"] {
+  --surface-default: #161b22;
+  --text-primary: #e6edf3;
+  --border-default: #30363d;
+}
+
+/* AMOLED override */
+[data-theme="dark"][data-amoled="true"] {
+  --surface-default: #000000;
+}
+```
+
+---
+
 ## Version History
 
 - v1.0.0 (2025-11-09): Initial component specifications for Worker11
+- v1.1.0 (2025-11-09): Added comprehensive GitHub-inspired dark mode specifications

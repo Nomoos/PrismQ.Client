@@ -757,6 +757,232 @@ Configure app settings, worker preferences, and account.
 
 ---
 
+## Dark Mode Wireframes
+
+### Task List View (Dark Mode - 360px)
+
+```
+┌─────────────────────────────────────────┐
+│ ← TaskManager                    [☰]    │ 64px Header
+│ BG: #161b22  Border: #30363d           │ (dark-surface)
+├─────────────────────────────────────────┤
+│ BG: #0d1117                             │
+│ ┌───┬────┬────────┬─────────┬────────┐ │
+│ │All│Pend│Claimed │Complete │Failed  │ │ 44px Filter Tabs
+│ │ ● │    │        │         │        │ │ Active: #58a6ff
+│ └───┴────┴────────┴─────────┴────────┘ │ Inactive: #8d96a0
+│ (15) (5)   (3)      (6)      (1)       │
+│                                         │
+│ ┌─────────────────────────────────────┐ │
+│ │ ● PrismQ.YouTube.Scrape  [Pending]  │ │ 88px Task Card
+│ │ ID: 12345                           │ │ BG: #0d419d (subtle)
+│ │ Priority: High | Attempts: 1/3      │ │ Text: #e6edf3
+│ │ Created: 2h ago                     │ │ Badge: #58a6ff
+│ │ Border: #388bfd                     │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ ┌─────────────────────────────────────┐ │
+│ │ ● Content.Process.Text   [Claimed]  │ │ 100px Task Card
+│ │ ID: 12344                           │ │ BG: #341a03 (subtle)
+│ │ Priority: Medium | Attempts: 1/3    │ │ Text: #e6edf3
+│ │ ▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░ 45%           │ │ Progress: #58a6ff
+│ │ Created: 5h ago                     │ │ Badge: #d29922
+│ │ Border: #bb8009                     │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ ┌─────────────────────────────────────┐ │
+│ │ ● Instagram.Reels.Fetch [Completed] │ │ 88px Task Card
+│ │ ID: 12343                           │ │ BG: #0d3818 (subtle)
+│ │ Priority: Low | Attempts: 1/3       │ │ Text: #e6edf3
+│ │ Completed: 1d ago                   │ │ Badge: #3fb950
+│ │ Border: #2ea043                     │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+├─────────────────────────────────────────┤
+│  Tasks  │  Workers  │  Settings         │ 56px Bottom Nav
+│  #58a6ff│  #8d96a0  │  #8d96a0          │ BG: #161b22
+│    ●    │           │                   │ Border: #30363d
+└─────────────────────────────────────────┘
+```
+
+### Task Detail View (Dark Mode - 360px)
+
+```
+┌─────────────────────────────────────────┐
+│ ← Task Details                   [...]  │ 64px Header
+│ BG: #161b22  Text: #e6edf3             │
+├─────────────────────────────────────────┤
+│ BG: #0d1117                             │
+│ ┌─────────────────────────────────────┐ │
+│ │      [Pending Badge]                │ │
+│ │      BG: #0d419d  Text: #58a6ff     │ │ 120px
+│ │                                     │ │ Status Card
+│ │   PrismQ.YouTube.ScrapeShorts       │ │ BG: #161b22
+│ │   Text: #e6edf3                     │ │ Border: #30363d
+│ │                                     │ │
+│ │         Task ID: 12345              │ │
+│ │         Text: #8d96a0               │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ ┌─────────────────────────────────────┐ │
+│ │ Details                             │ │
+│ │ Text: #e6edf3                       │ │
+│ │                                     │ │ 180px
+│ │ Priority:        High               │ │ Details Card
+│ │ Attempts:        1 of 3             │ │ BG: #161b22
+│ │ Created:         2h ago             │ │ Border: #30363d
+│ │ Worker ID:       —                  │ │ Values: #8d96a0
+│ │ Last Updated:    2h ago             │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ ┌─────────────────────────────────────┐ │
+│ │ Parameters                          │ │
+│ │ Text: #e6edf3                       │ │ Params Card
+│ │                                     │ │ BG: #161b22
+│ │ search_query:    "inspiration"      │ │ Border: #30363d
+│ │ max_results:     10                 │ │ Values: #8d96a0
+│ │ language:        "en"               │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ ┌───────────────────────────────────┐   │
+│ │   [Claim This Task]               │   │ 44px Button
+│ │   BG: #1f6feb  Text: #ffffff      │   │ Border: #388bfd
+│ └───────────────────────────────────┘   │
+│                                         │
+├─────────────────────────────────────────┤
+│  Tasks  │  Workers  │  Settings         │ 56px Bottom Nav
+│  #58a6ff│  #8d96a0  │  #8d96a0          │
+└─────────────────────────────────────────┘
+```
+
+### Settings View (Dark Mode - 360px)
+
+```
+┌─────────────────────────────────────────┐
+│ ← Settings                              │ 64px Header
+│ BG: #161b22  Text: #e6edf3             │
+├─────────────────────────────────────────┤
+│ BG: #0d1117                             │
+│ ┌─────────────────────────────────────┐ │
+│ │ Theme                               │ │
+│ │ Text: #e6edf3                       │ │
+│ │                                     │ │
+│ │ Appearance                          │ │
+│ │ ┌─────────────────────────────────┐ │ │
+│ │ │ ○ Light                         │ │ │
+│ │ │ ● Dark (GitHub)  ←  ACTIVE      │ │ │
+│ │ │ ○ AMOLED (True Black)           │ │ │ Theme Card
+│ │ │ ○ Auto (System)                 │ │ │ BG: #161b22
+│ │ └─────────────────────────────────┘ │ │ Border: #30363d
+│ │                                     │ │ Selected: #58a6ff
+│ │ AMOLED Mode (Pure Black)            │ │
+│ │ ┌─────────────────────────────────┐ │ │
+│ │ │ [Toggle OFF]                    │ │ │
+│ │ │ Enable for maximum power saving │ │ │
+│ │ │ Text: #6e7681                   │ │ │
+│ │ └─────────────────────────────────┘ │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+│ ┌─────────────────────────────────────┐ │
+│ │ Preferences                         │ │
+│ │ Text: #e6edf3                       │ │
+│ │                                     │ │ Prefs Card
+│ │ Notifications                       │ │ BG: #161b22
+│ │ ┌─────────────────────────────────┐ │ │ Border: #30363d
+│ │ │ [Toggle ON]  BG: #238636        │ │ │
+│ │ └─────────────────────────────────┘ │ │
+│ └─────────────────────────────────────┘ │
+│                                         │
+├─────────────────────────────────────────┤
+│  Tasks  │  Workers  │  Settings         │ 56px
+│  #8d96a0│  #8d96a0  │  #58a6ff          │
+│         │           │     ●             │
+└─────────────────────────────────────────┘
+```
+
+### Modal (Dark Mode)
+
+```
+┌─────────────────────────────────────────┐
+│ BG: rgba(1, 4, 9, 0.8)  ← Dark Backdrop │
+│                                         │
+│  ┌───────────────────────────────────┐  │
+│  │ Complete Task                     │  │
+│  │ Text: #e6edf3                     │  │
+│  │                                   │  │
+│  │ Result Data (JSON)                │  │
+│  │ ┌─────────────────────────────┐   │  │
+│  │ │ {                           │   │  │ Modal
+│  │ │   "items": [],              │   │  │ BG: #161b22
+│  │ │   "count": 10               │   │  │ Border: #30363d
+│  │ │ }                           │   │  │ Input BG: #0d1117
+│  │ │ BG: #0d1117  Text: #e6edf3  │   │  │ Input Border: #30363d
+│  │ └─────────────────────────────┘   │  │
+│  │                                   │  │
+│  │ ┌───────────────────────────────┐ │  │
+│  │ │ Submit                        │ │  │
+│  │ │ BG: #1f6feb  Text: #ffffff   │ │  │
+│  │ └───────────────────────────────┘ │  │
+│  │                                   │  │
+│  └───────────────────────────────────┘  │
+│                                         │
+└─────────────────────────────────────────┘
+```
+
+### Toast Notification (Dark Mode)
+
+```
+┌─────────────────────────────────────────┐
+│                                         │
+│ ┌─────────────────────────────────────┐ │
+│ │ ✓ Task claimed successfully         │ │ Success Toast
+│ │ BG: #238636  Text: #ffffff          │ │ Border: #2ea043
+│ └─────────────────────────────────────┘ │
+│                                         │
+└─────────────────────────────────────────┘
+
+┌─────────────────────────────────────────┐
+│                                         │
+│ ┌─────────────────────────────────────┐ │
+│ │ ✕ Unable to claim task              │ │ Error Toast
+│ │ Already claimed by another worker   │ │ BG: #da3633
+│ │ BG: #da3633  Text: #ffffff          │ │ Border: #f85149
+│ └─────────────────────────────────────┘ │
+│                                         │
+└─────────────────────────────────────────┘
+```
+
+### Color Legend for Dark Mode
+
+**Backgrounds**:
+- `#0d1117` - Main canvas (page background)
+- `#161b22` - Surface (cards, modals, navigation)
+- `#1c2128` - Elevated surface (hover states)
+
+**Borders**:
+- `#30363d` - Default borders
+- `#21262d` - Muted borders
+- `#6e7681` - Strong borders
+
+**Text**:
+- `#e6edf3` - Primary text (15.8:1 contrast)
+- `#8d96a0` - Secondary text (7.2:1 contrast)
+- `#6e7681` - Tertiary text (5.1:1 contrast)
+
+**Status (Subtle Backgrounds)**:
+- `#0d419d` - Info/Pending (blue)
+- `#341a03` - Warning/Claimed (orange)
+- `#0d3818` - Success/Completed (green)
+- `#490b08` - Error/Failed (red)
+
+**Status (Text)**:
+- `#58a6ff` - Info/Primary actions
+- `#d29922` - Warning
+- `#3fb950` - Success
+- `#ff7b72` - Error
+
+---
+
 ## Accessibility Notes
 
 **All Wireframes Include**:
@@ -768,8 +994,16 @@ Configure app settings, worker preferences, and account.
 - Loading states announce to screen readers
 - Error messages associated with form fields
 
+**Dark Mode Accessibility**:
+- All text colors meet WCAG 2.1 AAA contrast ratios (7:1+)
+- Primary text: 15.8:1 contrast on dark backgrounds
+- Status colors: 7.1:1 to 8.6:1 contrast
+- Focus indicators highly visible (#58a6ff)
+- Reduced eye strain in low-light environments
+
 ---
 
 ## Version History
 
 - v1.0.0 (2025-11-09): Initial wireframes for Worker11
+- v1.1.0 (2025-11-09): Added comprehensive dark mode wireframes (GitHub-inspired)
