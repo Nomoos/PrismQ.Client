@@ -6,6 +6,7 @@
  */
 
 require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../api/QueryProfiler.php';
 
 class Database {
     private static $instance = null;
@@ -45,6 +46,16 @@ class Database {
      */
     public function getConnection() {
         return $this->connection;
+    }
+    
+    /**
+     * Prepare a statement with query profiling
+     * 
+     * @param string $query SQL query
+     * @return ProfiledPDOStatement|PDOStatement Profiled statement or regular statement if profiling disabled
+     */
+    public function prepare($query) {
+        return QueryProfiler::prepare($this->connection, $query);
     }
     
     /**

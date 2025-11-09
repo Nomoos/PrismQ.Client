@@ -10,7 +10,7 @@ class EndpointRouter {
     private $db;
     
     public function __construct() {
-        $this->db = Database::getInstance()->getConnection();
+        $this->db = Database::getInstance();
     }
     
     /**
@@ -44,7 +44,7 @@ class EndpointRouter {
             $this->validateRequest($endpoint['id'], $requestData);
             
             // Execute action
-            $executor = new ActionExecutor($this->db);
+            $executor = new ActionExecutor($this->db->getConnection());
             $result = $executor->execute($endpoint, $requestData);
             
             // Return response

@@ -11,7 +11,7 @@ class TaskController {
     private $db;
     
     public function __construct() {
-        $this->db = Database::getInstance()->getConnection();
+        $this->db = Database::getInstance();
     }
     
     /**
@@ -82,7 +82,7 @@ class TaskController {
             );
             $stmt->execute([$taskType['id'], $params_json, $dedupe_key, $priority]);
             
-            $task_id = $this->db->lastInsertId();
+            $task_id = $this->db->getConnection()->lastInsertId();
             
             // Log to history if enabled
             if (ENABLE_TASK_HISTORY) {

@@ -63,7 +63,25 @@ The environment check will validate:
 
 ### Automated Deployment (Recommended)
 
-**Use the automated deployment script for easy setup:**
+**Use the automated deployment scripts for easy setup:**
+
+#### Option 1: Update Deploy Script First (Recommended)
+
+```bash
+# Step 1: Update deploy.php to the latest version
+php deploy-deploy.php
+
+# Step 2: Run the updated deployment script
+php deploy.php
+```
+
+**Web browser method:**
+1. Upload both `deploy-deploy.php` and `deploy.php` to your server
+2. Access `https://your-domain.com/path/deploy-deploy.php` in your browser
+3. Click "Continue to Deploy" after the update completes
+4. Follow the deployment wizard
+
+#### Option 2: Direct Deployment
 
 1. Upload `deploy.php` to your server
 2. Open in browser: `https://your-domain.com/path/deploy.php`
@@ -73,6 +91,12 @@ The environment check will validate:
    - Set up the database
    - Configure the application
    - Validate the installation
+
+**Why use deploy-deploy.php?**
+- Ensures you always have the latest deployment script
+- Gets bug fixes and improvements automatically
+- Single responsibility: just updates deploy.php
+- Recommended before each deployment
 
 **📖 See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for detailed instructions**
 
@@ -449,6 +473,7 @@ Proprietary - All Rights Reserved - Copyright (c) 2025 PrismQ
 
 - [PrismQ.Client](../../) - Main client application
 - [Data-Driven Architecture](docs/DATA_DRIVEN_ARCHITECTURE.md) - **Complete guide to the data-driven API architecture**
+- [Custom Handlers Analysis](docs/CUSTOM_HANDLERS_ANALYSIS.md) - **Evaluation of custom handlers vs data-driven actions**
 - [Deployment Guide](DEPLOYMENT_GUIDE.md) - **Automated deployment script documentation**
 - [API Reference](docs/API_REFERENCE.md) - Detailed API documentation
 - [Hosting Information](docs/HOSTING_INFO.md) - Vedos/Wedos account details and resource allocation
@@ -459,3 +484,4 @@ Proprietary - All Rights Reserved - Copyright (c) 2025 PrismQ
 - [Issue Tracking](_meta/issues/INDEX.md) - All project issues organized by worker
 - [Parallelization Matrix](_meta/PARALLELIZATION_MATRIX.md) - Worker coordination and dependencies
 - [Organization Summary](_meta/ORGANIZATION_SUMMARY.md) - Project structure and implementation details
+- [Worker03 Implementation Summary](WORKER03_IMPLEMENTATION_SUMMARY.md) - Custom Handlers evaluation and approval

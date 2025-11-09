@@ -52,6 +52,9 @@ cd Frontend && npm run dev
 - **[Log Streaming Guide](./Backend/_meta/docs/LOG_STREAMING_GUIDE.md)** - Real-time log streaming
 
 ### Operations & Deployment
+- **[Release Management Guide](./RELEASE.md)** - Version control and release process (Worker01)
+- **[Deployment Checklist](./DEPLOYMENT_CHECKLIST.md)** - Production deployment procedures
+- **[Changelog](./CHANGELOG.md)** - Version history and changes
 - **[Windows Setup](./Backend/_meta/docs/WINDOWS_SETUP.md)** - Windows-specific setup instructions
 - **[Data Directory Rationale](./_meta/docs/DATA_DIRECTORY_RATIONALE.md)** - Data storage design decisions
 - **[Security Fixes](./_meta/docs/SECURITY_FIXES.md)** - Security updates and patches
