@@ -66,6 +66,7 @@ cd Frontend && npm run dev
 - **[Worker Integration Guide](./examples/workers/INTEGRATION_GUIDE.md)** - Complete integration documentation
 
 ### Additional Resources
+- **[Documentation Templates](./_meta/templates/README.md)** - Standard templates for creating documentation
 - **[Screenshots Guide](./_meta/docs/SCREENSHOTS_GUIDE.md)** - UI screenshot capture
 - **[Postman Collection](./_meta/docs/POSTMAN_COLLECTION.md)** - API testing guide
 - **[Implementation Summary](./_meta/docs/IMPLEMENTATION_SUMMARY.md)** - Development history
