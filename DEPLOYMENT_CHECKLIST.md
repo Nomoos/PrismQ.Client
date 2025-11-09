@@ -135,15 +135,22 @@ ls -la Frontend/dist/
 # Backend deployment (TaskManager)
 cd Backend/TaskManager
 
+# IMPORTANT: Update deploy script first (recommended)
+# This ensures you have the latest version with all fixes
+php deploy-deploy.php     # Downloads latest deploy.php from GitHub
+
+# Then run the deployment
+php deploy.php            # Follow the interactive prompts
+
+# OR for manual setup:
 # Install dependencies
 composer install --no-dev --optimize-autoloader
-
-# Run any setup scripts
-php setup/deploy.php     # If available
 
 # Verify deployment
 php -l api/*.php         # Syntax check
 ```
+
+**Note**: The `deploy-deploy.php` script ensures `deploy.php` is always up-to-date by downloading it from the GitHub repository. This is recommended before each deployment to get the latest bug fixes and improvements.
 
 ### Step 5: Deploy Frontend
 
