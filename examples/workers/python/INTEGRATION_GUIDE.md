@@ -66,7 +66,7 @@ The Python worker is a production-ready implementation that:
    Client → POST /tasks → Creates task with params
 
 2. Task Claiming
-   Worker → POST /tasks/claim → Claims next available task
+   Worker → POST /tasks/claim → Claims next available task by type ID
 
 3. Task Processing
    Worker → Process task → Execute business logic
@@ -119,7 +119,7 @@ The worker accepts configuration via command-line arguments:
 python worker.py \
   --api-url=http://localhost:8000/api \
   --worker-id=python-worker-01 \
-  --task-types="example.echo,example.uppercase" \
+  --task-type-ids="1,2,3" \
   --poll-interval=10 \
   --max-runs=0 \
   --debug
@@ -134,7 +134,7 @@ Alternatively, use environment variables:
 cat > .env << EOF
 TASKMANAGER_API_URL=http://localhost:8000/api
 WORKER_ID=python-worker-01
-TASK_TYPES=example.echo,example.uppercase
+TASK_TYPE_IDS=1,2,3
 POLL_INTERVAL=10
 MAX_RUNS=0
 DEBUG=false
@@ -151,7 +151,7 @@ python worker.py
 |--------|---------------------|---------|-------------|
 | `--api-url` | `TASKMANAGER_API_URL` | `http://localhost:8000/api` | TaskManager API base URL |
 | `--worker-id` | `WORKER_ID` | Auto-generated UUID | Unique worker identifier |
-| `--task-types` | `TASK_TYPES` | All types | Comma-separated task types to process |
+| `--task-type-ids` | `TASK_TYPE_IDS` | All active types | Comma-separated task type IDs to process |
 | `--poll-interval` | `POLL_INTERVAL` | `10` | Seconds to wait between polls when no tasks |
 | `--max-runs` | `MAX_RUNS` | `0` (unlimited) | Maximum number of tasks to process before exiting |
 | `--debug` | `DEBUG` | `false` | Enable verbose debug logging |
@@ -163,7 +163,7 @@ python worker.py
 For local development and testing:
 
 ```bash
-# Basic usage (localhost)
+# Basic usage (localhost, all task types)
 python worker.py
 
 # With debug logging
@@ -172,8 +172,8 @@ python worker.py --debug
 # Process limited number of tasks
 python worker.py --max-runs=10
 
-# Process only specific task types
-python worker.py --task-types="example.echo,example.uppercase"
+# Process only specific task type IDs
+python worker.py --task-type-ids="1,2"
 ```
 
 ### Production Mode
@@ -181,16 +181,18 @@ python worker.py --task-types="example.echo,example.uppercase"
 For production deployment:
 
 ```bash
-# Run with production API URL
+# Run with production API URL and specific task types
 python worker.py \
   --api-url=https://taskmanager.example.com/api \
   --worker-id=python-worker-prod-01 \
+  --task-type-ids="1,2,3" \
   --poll-interval=5
 
 # Run in background
 nohup python worker.py \
   --api-url=https://taskmanager.example.com/api \
   --worker-id=python-worker-prod-01 \
+  --task-type-ids="1,2,3" \
   > worker.log 2>&1 &
 
 # Check worker process
@@ -259,6 +261,74 @@ Tasks in TaskManager follow this structure:
    else:
        worker.fail_task(task['id'], result['message'])
    ```
+
+### Task Claiming Details
+
+The claim endpoint **requires** specifying which task type to claim by its ID (not name). The `task_type_id` parameter is **mandatory** and must be a positive integer.
+
+**API Endpoint**: `POST /tasks/claim`
+
+**Required Parameters**:
+- `worker_id` (string): Unique identifier for this worker - **required**
+- `task_type_id` (integer): Specific task type ID to claim - **required, must be a positive integer**
+
+**Optional Parameters**:
+- `type_pattern` (string): Additional SQL LIKE filter (e.g., "PrismQ.%")
+- `sort_by` (string): Field to sort by (`created_at`, `priority`, `id`, `attempts`)
+- `sort_order` (string): Sort direction (`ASC` or `DESC`)
+
+**How to Get Task Type IDs**:
+
+Before claiming tasks, you need to know the task type ID. Query the API:
+
+```python
+import requests
+
+# Get all task types
+response = requests.get('http://localhost:8000/api/task-types')
+task_types = response.json()['data']['task_types']
+
+# Find the ID for a specific task type
+for task_type in task_types:
+    if task_type['name'] == 'example.echo':
+        task_type_id = task_type['id']
+        print(f"Task type 'example.echo' has ID: {task_type_id}")
+```
+
+**Claiming Example**:
+
+```python
+# Claim a task with specific type ID
+response = requests.post(
+    'http://localhost:8000/api/tasks/claim',
+    json={
+        'worker_id': 'python-worker-01',
+        'task_type_id': 1,  # Must specify task type ID
+        'sort_by': 'priority',
+        'sort_order': 'DESC'  # Claim highest priority first
+    }
+)
+
+if response.status_code == 200:
+    task = response.json()['data']
+    print(f"Claimed task {task['id']} of type {task['type']}")
+```
+
+**Claiming Strategies**:
+
+Different sorting options allow different processing strategies:
+
+1. **FIFO (First In, First Out)**: Process oldest tasks first
+   - `sort_by='created_at'`, `sort_order='ASC'` (default)
+
+2. **LIFO (Last In, First Out)**: Process newest tasks first
+   - `sort_by='created_at'`, `sort_order='DESC'`
+
+3. **Priority-based**: Process highest priority tasks first
+   - `sort_by='priority'`, `sort_order='DESC'`
+
+4. **Retry failed tasks first**: Process tasks with most attempts
+   - `sort_by='attempts'`, `sort_order='DESC'`
 
 ## Adding Custom Task Types
 

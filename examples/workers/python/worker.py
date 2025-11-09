@@ -6,7 +6,7 @@ A production-ready Python worker implementation that demonstrates how to integra
 with the TaskManager API for distributed task processing.
 
 This example shows:
-- Task claiming from TaskManager API
+- Task claiming from TaskManager API using task type IDs
 - Extensible task processing handlers
 - Task completion and error handling
 - Graceful shutdown handling
@@ -18,20 +18,20 @@ Usage:
 Options:
     --api-url URL          TaskManager API base URL (default: http://localhost:8000/api)
     --worker-id ID         Worker identifier (default: auto-generated)
-    --task-types TYPES     Comma-separated task types to process (default: all types)
+    --task-type-ids IDS    Comma-separated task type IDs to process (default: all active types)
     --poll-interval SEC    Seconds to wait between polls (default: 10)
     --max-runs NUM         Maximum tasks to process (default: unlimited)
     --debug                Enable debug logging
 
 Examples:
-    # Run with default settings (processes all task types)
+    # Run with default settings (processes all active task types)
     python worker.py
 
     # Run with custom API URL
     python worker.py --api-url=https://api.example.com/api
 
-    # Process only specific task types
-    python worker.py --task-types="example.echo,example.uppercase"
+    # Process only specific task type IDs
+    python worker.py --task-type-ids="1,2,3"
 
     # Process 10 tasks then exit
     python worker.py --max-runs=10
@@ -62,14 +62,14 @@ class TaskManagerWorker:
         self,
         api_url: str,
         worker_id: str,
-        task_types: Optional[List[str]] = None,
+        task_type_ids: Optional[List[int]] = None,
         poll_interval: int = 10,
         max_runs: int = 0,
         debug: bool = False
     ):
         self.api_url = api_url.rstrip('/')
         self.worker_id = worker_id
-        self.task_types = task_types  # None means all types
+        self.task_type_ids = task_type_ids  # List of task type IDs to claim
         self.poll_interval = poll_interval
         self.max_runs = max_runs
         self.debug = debug
@@ -80,6 +80,9 @@ class TaskManagerWorker:
         self.tasks_failed = 0
         self.consecutive_errors = 0
         self.max_consecutive_errors = 5
+        
+        # Task type ID cache
+        self._task_type_cache = {}
         
         # Setup logging
         log_level = logging.DEBUG if debug else logging.INFO
@@ -117,40 +120,99 @@ class TaskManagerWorker:
             self.logger.error(f"✗ API health check failed: {e}")
             return False
             
-    def claim_task(self) -> Optional[Dict[str, Any]]:
-        """Claim a task from the queue."""
+    def get_task_type_id(self, task_type_name: str) -> Optional[int]:
+        """Get task type ID from task type name."""
+        # Check cache first
+        if task_type_name in self._task_type_cache:
+            return self._task_type_cache[task_type_name]
+        
         try:
-            payload = {'worker_id': self.worker_id}
-            if self.task_types:
-                payload['task_types'] = self.task_types
-            
-            response = requests.post(
-                urljoin(self.api_url, '/tasks/claim'),
-                json=payload,
-                timeout=10
+            response = requests.get(
+                urljoin(self.api_url, f'/task-types/{task_type_name}'),
+                timeout=5
             )
             
             if response.status_code == 200:
-                task = response.json()
-                if task:
-                    self.logger.info(f"✓ Claimed task {task['id']} (type: {task['type']})")
-                    self.consecutive_errors = 0
-                    return task
-                else:
-                    self.logger.debug("No tasks available")
-                    return None
-            elif response.status_code == 404:
-                self.logger.debug("No tasks available")
-                return None
-            else:
-                self.logger.warning(f"Failed to claim task: HTTP {response.status_code}")
-                self.consecutive_errors += 1
-                return None
-                
-        except requests.exceptions.RequestException as e:
-            self.logger.error(f"Error claiming task: {e}")
-            self.consecutive_errors += 1
+                data = response.json()
+                if data.get('success'):
+                    task_type_id = data['data']['id']
+                    self._task_type_cache[task_type_name] = task_type_id
+                    return task_type_id
+            
+            self.logger.warning(f"Task type '{task_type_name}' not found")
             return None
+            
+        except requests.exceptions.RequestException as e:
+            self.logger.error(f"Error fetching task type ID: {e}")
+            return None
+    
+    def list_task_types(self) -> List[Dict[str, Any]]:
+        """Get list of all active task types."""
+        try:
+            response = requests.get(
+                urljoin(self.api_url, '/task-types'),
+                params={'active_only': 'true'},
+                timeout=5
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success'):
+                    return data['data']['task_types']
+            
+            return []
+            
+        except requests.exceptions.RequestException as e:
+            self.logger.error(f"Error listing task types: {e}")
+            return []
+            
+    def claim_task(self) -> Optional[Dict[str, Any]]:
+        """Claim a task from the queue."""
+        # If no task type IDs specified, get all active task types
+        task_type_ids = self.task_type_ids
+        if not task_type_ids:
+            # Get all active task types
+            task_types = self.list_task_types()
+            if task_types:
+                task_type_ids = [tt['id'] for tt in task_types]
+            else:
+                self.logger.warning("No active task types found")
+                return None
+        
+        # Try to claim a task from each task type
+        for task_type_id in task_type_ids:
+            try:
+                payload = {
+                    'worker_id': self.worker_id,
+                    'task_type_id': task_type_id
+                }
+                
+                response = requests.post(
+                    urljoin(self.api_url, '/tasks/claim'),
+                    json=payload,
+                    timeout=10
+                )
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    if data.get('success'):
+                        task = data['data']
+                        self.logger.info(f"✓ Claimed task {task['id']} (type: {task['type']})")
+                        self.consecutive_errors = 0
+                        return task
+                elif response.status_code == 404:
+                    # No tasks available for this type, try next
+                    continue
+                else:
+                    self.logger.warning(f"Failed to claim task for type {task_type_id}: HTTP {response.status_code}")
+                    
+            except requests.exceptions.RequestException as e:
+                self.logger.error(f"Error claiming task for type {task_type_id}: {e}")
+                self.consecutive_errors += 1
+        
+        # No tasks available from any type
+        self.logger.debug("No tasks available from any task type")
+        return None
             
     def update_progress(self, task_id: str, progress: int, message: Optional[str] = None) -> bool:
         """Update task progress."""
@@ -187,9 +249,15 @@ class TaskManagerWorker:
     def complete_task(self, task_id: str, result: Dict[str, Any]) -> bool:
         """Mark a task as completed."""
         try:
+            payload = {
+                'worker_id': self.worker_id,
+                'success': True,
+                'result': result.get('data', {})
+            }
+            
             response = requests.post(
                 urljoin(self.api_url, f'/tasks/{task_id}/complete'),
-                json={'result': result},
+                json=payload,
                 timeout=10
             )
             
@@ -207,9 +275,15 @@ class TaskManagerWorker:
     def fail_task(self, task_id: str, error_message: str) -> bool:
         """Mark a task as failed."""
         try:
+            payload = {
+                'worker_id': self.worker_id,
+                'success': False,
+                'error': error_message
+            }
+            
             response = requests.post(
-                urljoin(self.api_url, f'/tasks/{task_id}/fail'),
-                json={'error': error_message},
+                urljoin(self.api_url, f'/tasks/{task_id}/complete'),
+                json=payload,
                 timeout=10
             )
             
@@ -344,7 +418,12 @@ class TaskManagerWorker:
         self.logger.info("=" * 60)
         self.logger.info(f"Worker ID:      {self.worker_id}")
         self.logger.info(f"API URL:        {self.api_url}")
-        self.logger.info(f"Task Types:     {', '.join(self.task_types) if self.task_types else 'all types'}")
+        
+        if self.task_type_ids:
+            self.logger.info(f"Task Type IDs:  {', '.join(map(str, self.task_type_ids))}")
+        else:
+            self.logger.info(f"Task Type IDs:  all active types")
+            
         self.logger.info(f"Poll Interval:  {self.poll_interval}s")
         self.logger.info(f"Max Runs:       {self.max_runs if self.max_runs > 0 else 'unlimited'}")
         self.logger.info(f"Debug Mode:     {self.debug}")
@@ -410,14 +489,14 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Run with default settings
+  # Run with default settings (processes all task types)
   python worker.py
 
   # Run with custom API URL
   python worker.py --api-url=https://api.example.com/api
 
-  # Process only specific task types
-  python worker.py --task-types="example.echo,example.uppercase"
+  # Process only specific task type IDs
+  python worker.py --task-type-ids="1,2,3"
 
   # Process 10 tasks then exit
   python worker.py --max-runs=10
@@ -437,8 +516,8 @@ Examples:
     )
     
     parser.add_argument(
-        '--task-types',
-        help='Comma-separated task types to process (default: all types)'
+        '--task-type-ids',
+        help='Comma-separated task type IDs to process (default: all active types)'
     )
     
     parser.add_argument(
@@ -463,16 +542,16 @@ Examples:
     
     args = parser.parse_args()
     
-    # Parse task types
-    task_types = None
-    if args.task_types:
-        task_types = [t.strip() for t in args.task_types.split(',')]
+    # Parse task type IDs
+    task_type_ids = None
+    if args.task_type_ids:
+        task_type_ids = [int(tid.strip()) for tid in args.task_type_ids.split(',')]
     
     # Create and run worker
     worker = TaskManagerWorker(
         api_url=args.api_url,
         worker_id=args.worker_id,
-        task_types=task_types,
+        task_type_ids=task_type_ids,
         poll_interval=args.poll_interval,
         max_runs=args.max_runs,
         debug=args.debug

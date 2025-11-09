@@ -43,10 +43,10 @@ python worker.py
 
 ### 2. Worker with Type Filter
 
-Process only specific task types:
+Process only specific task type IDs:
 
 ```bash
-python worker.py --task-types="example.echo,example.uppercase"
+python worker.py --task-type-ids="1,2"
 ```
 
 ### 3. Debug Mode
@@ -126,7 +126,7 @@ def _handle_custom_task(self, params: Dict[str, Any]) -> Dict[str, Any]:
 |--------|---------------------|---------|
 | `--api-url` | `TASKMANAGER_API_URL` | `http://localhost:8000/api` |
 | `--worker-id` | `WORKER_ID` | Auto-generated |
-| `--task-types` | `TASK_TYPES` | `null` (all types) |
+| `--task-type-ids` | `TASK_TYPE_IDS` | `null` (all active types) |
 | `--poll-interval` | `POLL_INTERVAL` | `10` seconds |
 | `--max-runs` | `MAX_RUNS` | `0` (unlimited) |
 | `--debug` | `DEBUG` | `false` |

@@ -300,13 +300,19 @@ Claim an available task for processing.
 ```json
 {
   "worker_id": "string (required)",
-  "type_pattern": "string (optional)"
+  "task_type_id": "integer (required)",
+  "type_pattern": "string (optional)",
+  "sort_by": "string (optional)",
+  "sort_order": "string (optional)"
 }
 ```
 
 **Parameters**:
-- `worker_id`: Unique identifier for the worker claiming the task
-- `type_pattern`: SQL LIKE pattern to filter tasks by type (e.g., "PrismQ.Script.%")
+- `worker_id` (required): Unique identifier for the worker claiming the task
+- `task_type_id` (required): Specific task type ID to claim - must be a positive integer matching a registered task type ID. This parameter is mandatory and cannot be omitted.
+- `type_pattern` (optional): SQL LIKE pattern to filter tasks by type name (e.g., "PrismQ.Script.%")
+- `sort_by` (optional): Field to sort by (allowed values: `created_at`, `priority`, `id`, `attempts`; default: `created_at`)
+- `sort_order` (optional): Sort direction (`ASC` or `DESC`; default: `ASC`)
 
 **Example Request**:
 ```bash
@@ -314,7 +320,9 @@ curl -X POST https://your-domain.com/api/tasks/claim \
   -H "Content-Type: application/json" \
   -d '{
     "worker_id": "worker-001",
-    "type_pattern": "PrismQ.Script.%"
+    "task_type_id": 1,
+    "sort_by": "priority",
+    "sort_order": "DESC"
   }'
 ```
 
@@ -331,21 +339,28 @@ curl -X POST https://your-domain.com/api/tasks/claim \
       "style": "formal",
       "length": 1500
     },
-    "attempts": 1
+    "attempts": 1,
+    "priority": 0
   },
   "timestamp": 1699999999
 }
 ```
 
 **Error Responses**:
-- `400 Bad Request`: Missing worker_id
-- `404 Not Found`: No available tasks
+- `400 Bad Request`: Missing required fields (worker_id or task_type_id), invalid task_type_id (must be positive integer), or invalid sort_by/sort_order
+- `404 Not Found`: No available tasks for the specified task type
 - `500 Internal Server Error`: Database error
 
 **Notes**:
+- **`task_type_id` is mandatory** - Every claim request must specify which task type to claim by providing its ID
 - Tasks in `pending` status are claimable
 - Tasks in `claimed` status older than `TASK_CLAIM_TIMEOUT` are also claimable (timeout recovery)
-- Only one task is claimed per request (FIFO order by created_at)
+- Only one task is claimed per request
+- The `type_pattern` parameter provides additional filtering on top of the required `task_type_id` if needed
+- Use `sort_by` and `sort_order` to control claiming behavior:
+  - FIFO (First In, First Out): `sort_by=created_at`, `sort_order=ASC` (default)
+  - LIFO (Last In, First Out): `sort_by=created_at`, `sort_order=DESC`
+  - Highest Priority First: `sort_by=priority`, `sort_order=DESC`
 
 ---
 

@@ -304,7 +304,30 @@ class CustomHandlers {
         }
         
         $worker_id = trim($data['worker_id']);
+        
+        // task_type_id is required and must be a valid positive integer
+        if (!isset($data['task_type_id'])) {
+            throw new Exception('task_type_id is required', 400);
+        }
+        $task_type_id = intval($data['task_type_id']);
+        if ($task_type_id <= 0) {
+            throw new Exception('task_type_id must be a positive integer', 400);
+        }
+        
         $type_pattern = isset($data['type_pattern']) ? trim($data['type_pattern']) : null;
+        $sort_by = isset($data['sort_by']) ? trim($data['sort_by']) : 'created_at';
+        $sort_order = isset($data['sort_order']) ? strtoupper(trim($data['sort_order'])) : 'ASC';
+        
+        // Validate sort_by field (whitelist to prevent SQL injection)
+        $allowed_sort_fields = ['created_at', 'priority', 'id', 'attempts'];
+        if (!in_array($sort_by, $allowed_sort_fields)) {
+            throw new Exception('Invalid sort_by field. Allowed values: ' . implode(', ', $allowed_sort_fields), 400);
+        }
+        
+        // Validate sort_order (whitelist to prevent SQL injection)
+        if (!in_array($sort_order, ['ASC', 'DESC'])) {
+            throw new Exception('Invalid sort_order. Allowed values: ASC, DESC', 400);
+        }
         
         // Start transaction
         $this->db->beginTransaction();
@@ -313,19 +336,22 @@ class CustomHandlers {
             // Find available task
             $timeout_threshold = date('Y-m-d H:i:s', time() - TASK_CLAIM_TIMEOUT);
             
-            $sql = "SELECT t.id, t.type_id, t.params_json, t.attempts, tt.name as type_name
+            $sql = "SELECT t.id, t.type_id, t.params_json, t.attempts, t.priority, tt.name as type_name
                     FROM tasks t
                     JOIN task_types tt ON t.type_id = tt.id
-                    WHERE (t.status = 'pending' OR (t.status = 'claimed' AND t.claimed_at < ?))";
+                    WHERE (t.status = 'pending' OR (t.status = 'claimed' AND t.claimed_at < ?))
+                    AND t.type_id = ?";
             
-            $params = [$timeout_threshold];
+            $params = [$timeout_threshold, $task_type_id];
             
+            // Filter by type pattern (optional additional filter)
             if ($type_pattern) {
                 $sql .= " AND tt.name LIKE ?";
                 $params[] = $type_pattern;
             }
             
-            $sql .= " ORDER BY t.created_at ASC LIMIT 1 FOR UPDATE";
+            // Add sorting - using validated fields only
+            $sql .= " ORDER BY t.{$sort_by} {$sort_order} LIMIT 1 FOR UPDATE";
             
             $stmt = $this->db->prepare($sql);
             $stmt->execute($params);
@@ -354,6 +380,7 @@ class CustomHandlers {
                 'type' => $task['type_name'],
                 'params' => json_decode($task['params_json'], true),
                 'attempts' => $task['attempts'] + 1,
+                'priority' => $task['priority'],
                 'message' => 'Task claimed successfully'
             ];
             
