@@ -60,6 +60,8 @@ export const useTaskStore = defineStore('tasks', () => {
   }
   
   async function claimTask(taskTypeId: number, workerId: string): Promise<Task | undefined> {
+    loading.value = true
+    error.value = null
     try {
       const response = await taskService.claimTask({
         worker_id: workerId,
@@ -67,6 +69,17 @@ export const useTaskStore = defineStore('tasks', () => {
       })
       if (response.success && response.data) {
         updateTask(response.data)
+        return response.data
+      }
+      return undefined
+    } catch (e) {
+      error.value = e instanceof Error ? e.message : 'Failed to claim task'
+      throw e
+    } finally {
+      loading.value = false
+    }
+  }
+  
   async function fetchTask(id: number): Promise<Task | undefined> {
     loading.value = true
     error.value = null
@@ -84,12 +97,16 @@ export const useTaskStore = defineStore('tasks', () => {
       }
       return undefined
     } catch (e) {
-      console.error('Failed to claim task:', e)
+      error.value = e instanceof Error ? e.message : 'Failed to fetch task'
       throw e
+    } finally {
+      loading.value = false
     }
   }
   
   async function completeTask(taskId: number, workerId: string, result: Record<string, any>) {
+    loading.value = true
+    error.value = null
     try {
       await taskService.completeTask(taskId, {
         worker_id: workerId,
@@ -104,12 +121,16 @@ export const useTaskStore = defineStore('tasks', () => {
         task.completed_at = new Date().toISOString()
       }
     } catch (e) {
-      console.error('Failed to complete task:', e)
+      error.value = e instanceof Error ? e.message : 'Failed to complete task'
       throw e
+    } finally {
+      loading.value = false
     }
   }
   
   async function failTask(taskId: number, workerId: string, errorMessage: string) {
+    loading.value = true
+    error.value = null
     try {
       await taskService.completeTask(taskId, {
         worker_id: workerId,
@@ -123,66 +144,26 @@ export const useTaskStore = defineStore('tasks', () => {
         task.error_message = errorMessage
       }
     } catch (e) {
-      console.error('Failed to mark task as failed:', e)
-      throw e
-      error.value = e instanceof Error ? e.message : 'Failed to fetch task'
+      error.value = e instanceof Error ? e.message : 'Failed to mark task as failed'
       throw e
     } finally {
       loading.value = false
     }
   }
   
-  async function claimTask(workerId: string, taskTypeId: number): Promise<Task | undefined> {
-    loading.value = true
-    error.value = null
-    try {
-      const response = await taskService.claimTask(workerId, taskTypeId)
-      if (response.success && response.data) {
-        // Update task in local state
-        const index = tasks.value.findIndex(t => t.id === response.data!.id)
-        if (index !== -1) {
-          tasks.value[index] = response.data
-        }
-        return response.data
-      }
-      return undefined
-    } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Failed to claim task'
-      throw e
-    } finally {
-      loading.value = false
-    }
-  }
-  
-  async function completeTask(
-    id: number, 
-    workerId: string, 
-    success: boolean, 
-    result?: Record<string, any>, 
-    errorMessage?: string
-  ): Promise<Task | undefined> {
-    loading.value = true
-    error.value = null
-    try {
-      const response = await taskService.completeTask(id, workerId, success, result, errorMessage)
-      if (response.success && response.data) {
-        // Update task in local state
-        const index = tasks.value.findIndex(t => t.id === id)
-        if (index !== -1) {
-          tasks.value[index] = response.data
-        }
-        return response.data
-      }
-      return undefined
-    } catch (e) {
-      error.value = e instanceof Error ? e.message : 'Failed to complete task'
-      throw e
-    } finally {
-      loading.value = false
+  function updateTask(updatedTask: Task) {
+    const index = tasks.value.findIndex(t => t.id === updatedTask.id)
+    if (index !== -1) {
+      tasks.value[index] = updatedTask
+    } else {
+      // Task not in list, add it
+      tasks.value.push(updatedTask)
     }
   }
   
   async function updateProgress(taskId: number, workerId: string, progress: number, message?: string) {
+    loading.value = true
+    error.value = null
     try {
       await taskService.updateProgress(taskId, {
         worker_id: workerId,
@@ -195,18 +176,10 @@ export const useTaskStore = defineStore('tasks', () => {
         task.progress = progress
       }
     } catch (e) {
-      console.error('Failed to update progress:', e)
+      error.value = e instanceof Error ? e.message : 'Failed to update progress'
       throw e
-    }
-  }
-  
-  function updateTask(updatedTask: Task) {
-    const index = tasks.value.findIndex(t => t.id === updatedTask.id)
-    if (index !== -1) {
-      tasks.value[index] = updatedTask
-    } else {
-      // Task not in list, add it
-      tasks.value.push(updatedTask)
+    } finally {
+      loading.value = false
     }
   }
   
