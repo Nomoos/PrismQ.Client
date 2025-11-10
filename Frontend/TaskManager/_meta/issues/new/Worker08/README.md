@@ -10,8 +10,10 @@ Worker08 is responsible for all deployment, DevOps, and monitoring activities fo
 
 ## Quick Links
 
-### 📋 Current State
-- **[Worker08 Current State Guide](./WORKER08_CURRENT_STATE_GUIDE.md)** - Comprehensive overview of current status, completed work, and pending tasks
+### 📚 Documentation
+- **[Documentation Index](./WORKER08_DOCUMENTATION_INDEX.md)** - ⭐ Complete guide to all Worker08 documentation
+- **[Current State Guide](./WORKER08_CURRENT_STATE_GUIDE.md)** - Comprehensive overview of current status, completed work, and pending tasks
+- **[Visual Workflow Guide](./WORKER08_VISUAL_WORKFLOW.md)** - Workflow diagrams and visual references
 
 ### 🎯 Active Issues
 
