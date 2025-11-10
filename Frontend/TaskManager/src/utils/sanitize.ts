@@ -1,17 +1,30 @@
 /**
  * Sanitization utilities for XSS protection
  * 
+ * SECURITY IMPLEMENTATION:
+ * This module provides multiple layers of XSS protection:
+ * 1. DOMPurify: Industry-standard sanitization for rich HTML content
+ * 2. HTML escaping: Fallback for basic text that needs entity encoding
+ * 3. Pattern-based validation: Detection of dangerous XSS patterns
+ * 4. Input-specific sanitization: Specialized handling for different input types
+ * 
  * USAGE GUIDELINES:
- * - Use sanitizeHtml() when displaying user-generated content in HTML contexts
+ * - Use sanitizeHtmlWithDOMPurify() for rich HTML content that needs to preserve safe tags
+ * - Use sanitizeHtml() when displaying user-generated content (escapes all HTML)
+ * - Use sanitizeUserInput() for general user inputs (combines DOMPurify + length limits)
  * - Use sanitizeWorkerId() for Worker ID inputs (Settings page)
  * - Use sanitizeText() for general text inputs that need length limits
  * - Use isContentSafe() to validate content before accepting it
  * - Use validateAndSanitizeWorkerId() for complete Worker ID validation
  * 
- * Note: Vue's text interpolation {{ }} automatically escapes HTML, so you only
- * need explicit sanitization when using v-html (which should be avoided) or
- * when storing/processing user input.
+ * SECURITY NOTES:
+ * - Vue's text interpolation {{ }} automatically escapes HTML
+ * - Only use v-html with sanitized content (preferably with DOMPurify)
+ * - Always sanitize user input before storing or processing
+ * - Never trust client-side validation alone - always validate on server side too
  */
+
+import DOMPurify from 'dompurify'
 
 /**
  * Sanitize a string by escaping HTML special characters
@@ -166,4 +179,134 @@ export function validateAndSanitizeWorkerId(workerId: string): {
     value: sanitized,
     isValid: true
   }
+}
+
+/**
+ * Sanitize HTML content using DOMPurify with safe configuration
+ * This allows limited safe HTML tags while removing dangerous content
+ * 
+ * USE CASE: When you need to display user-generated content that may contain
+ * safe HTML formatting (e.g., bold, italic, links) but must block XSS attacks
+ * 
+ * @param dirty - The HTML content to sanitize
+ * @param allowedTags - Optional array of allowed HTML tags (default: basic formatting tags)
+ * @returns Sanitized HTML string safe for use with v-html
+ */
+export function sanitizeHtmlWithDOMPurify(
+  dirty: string,
+  allowedTags: string[] = ['b', 'i', 'em', 'strong', 'p', 'br', 'span']
+): string {
+  if (typeof dirty !== 'string') {
+    return String(dirty)
+  }
+
+  return DOMPurify.sanitize(dirty, {
+    ALLOWED_TAGS: allowedTags,
+    ALLOWED_ATTR: [], // No attributes allowed by default for maximum security
+    KEEP_CONTENT: true, // Keep text content even if tags are removed
+    RETURN_DOM: false,
+    RETURN_DOM_FRAGMENT: false,
+  })
+}
+
+/**
+ * Sanitize user input by removing all HTML tags using DOMPurify
+ * This is the most secure option for general user inputs
+ * 
+ * USE CASE: Form inputs, search queries, and any user-generated text
+ * where HTML should not be allowed
+ * 
+ * @param input - The user input to sanitize
+ * @param maxLength - Maximum allowed length (default: 1000)
+ * @returns Sanitized plain text with no HTML
+ */
+export function sanitizeUserInput(input: string, maxLength: number = 1000): string {
+  if (typeof input !== 'string') {
+    return String(input)
+  }
+
+  // First pass: Remove all HTML tags using DOMPurify
+  let sanitized = DOMPurify.sanitize(input, {
+    ALLOWED_TAGS: [], // No HTML tags allowed
+    KEEP_CONTENT: true, // Keep the text content
+  })
+
+  // Remove control characters except newline, carriage return, and tab
+  sanitized = sanitized.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+
+  // Trim whitespace
+  sanitized = sanitized.trim()
+
+  // Limit length
+  if (sanitized.length > maxLength) {
+    sanitized = sanitized.substring(0, maxLength)
+  }
+
+  return sanitized
+}
+
+/**
+ * Sanitize HTML for safe display in rich text contexts
+ * Allows common formatting tags and safe attributes
+ * 
+ * USE CASE: Task descriptions, comments, or other rich text content
+ * 
+ * @param dirty - The HTML content to sanitize
+ * @returns Sanitized HTML safe for display
+ */
+export function sanitizeRichText(dirty: string): string {
+  if (typeof dirty !== 'string') {
+    return String(dirty)
+  }
+
+  return DOMPurify.sanitize(dirty, {
+    ALLOWED_TAGS: [
+      'b', 'i', 'em', 'strong', 'u', 's', 'strike',
+      'p', 'br', 'span', 'div',
+      'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+      'ul', 'ol', 'li',
+      'a', 'code', 'pre', 'blockquote'
+    ],
+    ALLOWED_ATTR: ['href', 'title'], // Only safe attributes for links
+    ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto):)/i, // Only allow http, https, and mailto URLs
+    KEEP_CONTENT: true,
+    RETURN_DOM: false,
+    RETURN_DOM_FRAGMENT: false,
+  })
+}
+
+/**
+ * Sanitize a URL to prevent javascript: and data: URI attacks
+ * 
+ * @param url - The URL to sanitize
+ * @returns Safe URL or empty string if dangerous
+ */
+export function sanitizeUrl(url: string): string {
+  if (typeof url !== 'string') {
+    return ''
+  }
+
+  // Allow only http, https, and mailto protocols
+  const allowedProtocols = /^(?:https?|mailto):/i
+  
+  // Remove whitespace
+  const trimmed = url.trim()
+  
+  // Check for dangerous protocols
+  if (/^(?:javascript|data|vbscript):/i.test(trimmed)) {
+    return ''
+  }
+
+  // If it has a protocol, ensure it's allowed
+  if (/:/.test(trimmed) && !allowedProtocols.test(trimmed)) {
+    return ''
+  }
+
+  // Use DOMPurify to sanitize the URL
+  const sanitized = DOMPurify.sanitize(trimmed, {
+    ALLOWED_TAGS: [],
+    KEEP_CONTENT: true,
+  })
+
+  return sanitized
 }
