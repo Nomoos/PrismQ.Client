@@ -1,6 +1,16 @@
 /**
  * Sanitization utilities for XSS protection
- * These functions help prevent Cross-Site Scripting (XSS) attacks by sanitizing user input
+ * 
+ * USAGE GUIDELINES:
+ * - Use sanitizeHtml() when displaying user-generated content in HTML contexts
+ * - Use sanitizeWorkerId() for Worker ID inputs (Settings page)
+ * - Use sanitizeText() for general text inputs that need length limits
+ * - Use isContentSafe() to validate content before accepting it
+ * - Use validateAndSanitizeWorkerId() for complete Worker ID validation
+ * 
+ * Note: Vue's text interpolation {{ }} automatically escapes HTML, so you only
+ * need explicit sanitization when using v-html (which should be avoided) or
+ * when storing/processing user input.
  */
 
 /**
