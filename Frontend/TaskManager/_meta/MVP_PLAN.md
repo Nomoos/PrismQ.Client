@@ -1,8 +1,8 @@
 # Frontend/TaskManager MVP Plan
 
-**Document Version**: 1.0  
-**Last Updated**: 2025-11-09  
-**Status**: Planning Phase  
+**Document Version**: 1.1  
+**Last Updated**: 2025-11-10  
+**Status**: Enhanced - Task Creation & Navigation Implemented  
 **Strategy**: Phased approach from MVP to full product
 
 ---
@@ -11,6 +11,13 @@
 
 This document outlines the **Minimum Viable Product (MVP)** strategy for Frontend/TaskManager, followed by a phased enhancement approach. The goal is to deliver working software quickly while maintaining quality and enabling iterative improvements.
 
+### Recent Updates (2025-11-10)
+- ✅ **Task creation form** with dynamic parameter generation
+- ✅ **Most commonly used task types** displayed first
+- ✅ **Navigation hierarchy** (PrismQ.IdeaInspiration → PrismQ → PrismQ.Idea)
+- ✅ **Position memory** using localStorage
+- ✅ **Usage tracking** in backend for task type analytics
+
 ### MVP Philosophy
 - **Minimal but Complete**: Deliver core functionality that works end-to-end
 - **Mobile-First**: Optimize for mobile from day one
@@ -18,20 +25,47 @@ This document outlines the **Minimum Viable Product (MVP)** strategy for Fronten
 - **Quick Wins**: Demonstrate value early and iterate based on feedback
 
 ### Timeline Overview
-- **Phase 0 (MVP)**: 1 week - Basic but functional task management
+- **Phase 0 (MVP)**: 1 week - Basic but functional task management ✅ COMPLETE
+- **Phase 0.5 (Enhanced MVP)**: NEW - Task creation and navigation ✅ COMPLETE
 - **Phase 1 (Core)**: 1 week - Essential features and polish
 - **Phase 2 (Enhanced)**: 1-2 weeks - Advanced features
 - **Phase 3 (Advanced)**: Ongoing - Nice-to-have features
 
 ---
 
-## Phase 0: MVP (Week 1) 🎯
+## Phase 0.5: Enhanced MVP (November 2025) ✅ COMPLETE
 
-**Goal**: Deliver a working, deployable task management interface  
-**Timeline**: 5-7 days  
-**Success Metric**: Can view, claim, and complete tasks on mobile device
+**Goal**: Add task creation and navigation features  
+**Timeline**: 1 day  
+**Success Metric**: Users can create tasks with parameters and navigate PrismQ hierarchy
 
-### MVP Scope
+### Enhanced MVP Scope
+
+#### ✅ Completed Features
+
+**Task Creation**:
+- ✅ Task creation form with dynamic field generation based on JSON schema
+- ✅ Support for string, number, integer, boolean, enum, and complex types
+- ✅ Form validation based on task type parameter schema
+- ✅ Priority setting (optional)
+- ✅ Most used task types shown first in dropdown
+- ✅ Create Task button in header
+- ✅ Route: /tasks/new
+
+**Navigation Hierarchy**:
+- ✅ Breadcrumb navigation component
+- ✅ Three-level hierarchy: PrismQ.IdeaInspiration → PrismQ → PrismQ.Idea
+- ✅ Position persistence in localStorage
+- ✅ Navigation controls (back, forward, reset)
+- ✅ Current position display
+
+**Backend Enhancements**:
+- ✅ task_type_usage table for tracking usage frequency
+- ✅ Automatic usage count increment on task creation
+- ✅ Enhanced task-types API endpoint with usage statistics
+- ✅ Sorting by usage count (most used first)
+
+### Updated MVP Scope
 
 #### ✅ In Scope (Must Have)
 
@@ -41,14 +75,17 @@ This document outlines the **Minimum Viable Product (MVP)** strategy for Fronten
 - ✅ Claim a task
 - ✅ Complete a task
 - ✅ Basic task status filtering (pending, claimed, completed)
+- ✅ **NEW**: Create tasks with parameters
+- ✅ **NEW**: Navigate PrismQ hierarchy
 
 **Technical Foundation**:
 - ✅ Vue 3 + TypeScript project structure
 - ✅ API integration (task operations)
-- ✅ Basic routing (task list, task detail)
+- ✅ Basic routing (task list, task detail, task creation)
 - ✅ Pinia state management (tasks store)
 - ✅ Mobile-responsive layout
 - ✅ Static build deployment
+- ✅ **NEW**: LocalStorage for navigation state
 
 **UI Components** (Minimal):
 - ✅ Task list view (existing - enhance)
@@ -65,10 +102,10 @@ This document outlines the **Minimum Viable Product (MVP)** strategy for Fronten
 - ✅ Basic error handling
 - ✅ Deployable to Vedos
 
-#### ❌ Out of Scope (Deferred)
+#### ~~❌~~ ✅ Previously Out of Scope (Now Implemented)
 
 **Advanced Features**:
-- ❌ Task creation form
+- ✅ **Task creation form** (NOW IMPLEMENTED)
 - ❌ Progress updates
 - ❌ Worker dashboard
 - ❌ Advanced filtering/sorting
@@ -184,13 +221,13 @@ This document outlines the **Minimum Viable Product (MVP)** strategy for Fronten
 ### Phase 1 Scope
 
 #### Features to Add
-- [ ] Task creation form
+- [x] ~~Task creation form~~ (COMPLETED in Phase 0.5)
 - [ ] Progress updates
 - [ ] Worker dashboard (basic)
 - [ ] Settings page (API config)
 - [ ] Advanced filtering (status, type, priority)
 - [ ] Search functionality
-- [ ] Toast notifications
+- [x] ~~Toast notifications~~ (ALREADY EXISTS)
 - [ ] Better error messages
 
 #### Quality Improvements

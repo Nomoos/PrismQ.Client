@@ -5,10 +5,20 @@
       role="banner"
       class="bg-white dark:bg-dark-surface-default shadow-sm sticky top-0 z-10 dark:border-b dark:border-dark-border-default"
     >
-      <div class="max-w-7xl mx-auto px-4 py-4">
+      <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-dark-text-primary">TaskManager</h1>
+        <RouterLink
+          to="/tasks/new"
+          class="btn-primary px-4 py-2 text-sm"
+          aria-label="Create new task"
+        >
+          + New Task
+        </RouterLink>
       </div>
     </header>
+
+    <!-- Navigation Breadcrumb -->
+    <NavigationBreadcrumb />
 
     <!-- Main Content -->
     <main 
@@ -193,6 +203,7 @@ import { useTaskPolling } from '../composables/useTaskPolling'
 import LoadingSpinner from '../components/base/LoadingSpinner.vue'
 import EmptyState from '../components/base/EmptyState.vue'
 import StatusBadge from '../components/base/StatusBadge.vue'
+import NavigationBreadcrumb from '../components/NavigationBreadcrumb.vue'
 
 const router = useRouter()
 const taskStore = useTaskStore()
