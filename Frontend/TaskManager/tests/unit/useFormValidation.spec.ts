@@ -431,4 +431,72 @@ describe('Validation Rules', () => {
       expect(rule.message).toBe('Must be special')
     })
   })
+
+  describe('workerId', () => {
+    it('should pass for valid worker IDs', () => {
+      const rule = validationRules.workerId()
+      expect(rule.validator('frontend-worker-1')).toBe(true)
+      expect(rule.validator('worker_123')).toBe(true)
+      expect(rule.validator('my.worker.01')).toBe(true)
+    })
+
+    it('should fail for too short worker ID', () => {
+      const rule = validationRules.workerId()
+      expect(rule.validator('ab')).toBe(false)
+      expect(rule.validator('a')).toBe(false)
+    })
+
+    it('should fail for too long worker ID', () => {
+      const rule = validationRules.workerId()
+      const longId = 'a'.repeat(60)
+      expect(rule.validator(longId)).toBe(false)
+    })
+
+    it('should fail for worker ID not starting with alphanumeric', () => {
+      const rule = validationRules.workerId()
+      expect(rule.validator('-worker')).toBe(false)
+      expect(rule.validator('_worker')).toBe(false)
+      expect(rule.validator('.worker')).toBe(false)
+    })
+
+    it('should fail for non-string values', () => {
+      const rule = validationRules.workerId()
+      expect(rule.validator(123)).toBe(false)
+      expect(rule.validator(null)).toBe(false)
+    })
+
+    it('should sanitize and validate', () => {
+      const rule = validationRules.workerId()
+      // After sanitization, this becomes a valid worker ID
+      expect(rule.validator('worker<test>123')).toBe(true)
+    })
+  })
+
+  describe('safeContent', () => {
+    it('should pass for safe content', () => {
+      const rule = validationRules.safeContent()
+      expect(rule.validator('Hello World')).toBe(true)
+      expect(rule.validator('worker-123')).toBe(true)
+    })
+
+    it('should fail for script tags', () => {
+      const rule = validationRules.safeContent()
+      expect(rule.validator('<script>alert(1)</script>')).toBe(false)
+    })
+
+    it('should fail for javascript: protocol', () => {
+      const rule = validationRules.safeContent()
+      expect(rule.validator('javascript:alert(1)')).toBe(false)
+    })
+
+    it('should fail for event handlers', () => {
+      const rule = validationRules.safeContent()
+      expect(rule.validator('onclick="alert(1)"')).toBe(false)
+    })
+
+    it('should pass for non-string values', () => {
+      const rule = validationRules.safeContent()
+      expect(rule.validator(123)).toBe(true)
+    })
+  })
 })
