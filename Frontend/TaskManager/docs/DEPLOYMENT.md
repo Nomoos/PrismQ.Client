@@ -88,6 +88,37 @@ The frontend needs to know where your Backend/TaskManager API is.
 
 **Note:** Environment variables are baked into the build at compile time. You must rebuild after changing `.env`.
 
+### Configuring Error Tracking (Optional - Recommended)
+
+For production error monitoring, configure Sentry:
+
+**Before Building:**
+1. Sign up for free Sentry account at [sentry.io](https://sentry.io/)
+2. Create a new Vue project in Sentry
+3. Copy your DSN (Data Source Name)
+4. Edit `Frontend/TaskManager/.env`:
+   ```bash
+   VITE_API_BASE_URL=https://your-api-domain.com/api
+   VITE_API_KEY=your-api-key-here
+   
+   # Sentry Error Tracking (Optional)
+   VITE_SENTRY_DSN=https://your-dsn@sentry.io/project-id
+   VITE_SENTRY_ENVIRONMENT=production
+   VITE_SENTRY_ENABLED=true
+   ```
+5. Rebuild: `./build-and-package.sh`
+6. Re-upload `deploy-package/`
+
+**Benefits:**
+- 🐛 Real-time error notifications
+- 📊 Track error trends and affected users
+- 🔍 Debug production issues with stack traces
+- 📈 Monitor API performance
+
+**Free Tier:** 5,000 errors/month (sufficient for most deployments)
+
+**See:** [SENTRY_SETUP.md](./SENTRY_SETUP.md) for detailed setup guide
+
 ### Deployment Methods
 
 #### Method 1: Manual FTP Upload (Easiest)
