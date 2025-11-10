@@ -58,22 +58,6 @@ CREATE TABLE IF NOT EXISTS task_history (
     INDEX idx_created (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Workers Table
--- Stores registered workers with their status and metadata
-CREATE TABLE IF NOT EXISTS workers (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    worker_id VARCHAR(255) NOT NULL UNIQUE,  -- Unique worker identifier
-    name VARCHAR(255),                        -- Human-readable worker name
-    status ENUM('active', 'idle', 'offline') DEFAULT 'offline',
-    metadata_json TEXT,                       -- Additional worker metadata (capabilities, version, etc.)
-    last_heartbeat TIMESTAMP NULL,            -- Last heartbeat/activity timestamp
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_worker_id (worker_id),
-    INDEX idx_status (status),
-    INDEX idx_last_heartbeat (last_heartbeat)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 -- Task Type Usage Table
 -- Tracks usage frequency of task types for analytics and UI sorting
 CREATE TABLE IF NOT EXISTS task_type_usage (
