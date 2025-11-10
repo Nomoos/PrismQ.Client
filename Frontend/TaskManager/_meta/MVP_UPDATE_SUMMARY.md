@@ -24,28 +24,23 @@ This update implements the requirements from the problem statement in Czech:
 
 ### Backend Changes (Backend/TaskManager)
 
-#### 1. Task Type Usage Tracking
-- **New table**: `task_type_usage` - tracks how many times each task type has been used
-- **Fields**:
-  - `type_id` - reference to task_types
-  - `usage_count` - number of times this type has been used
-  - `last_used_at` - timestamp of last usage
+#### 1. Task Type Usage Tracking (Simplified)
+- **No new table needed** - Usage statistics calculated dynamically from existing `tasks` table
+- Usage count: `COUNT(*)` grouped by `type_id`
+- Last used: `MAX(created_at)` grouped by `type_id`
 
-#### 2. Enhanced Task Creation
-- Modified `task_create` handler to automatically increment usage count
-- Uses `ON DUPLICATE KEY UPDATE` for atomic counter increment
-
-#### 3. Enhanced Task Types API
+#### 2. Enhanced Task Types API
 - Updated `/task-types` endpoint to include usage statistics
-- Added LEFT JOIN with task_type_usage table
-- Returns `usage_count` and `last_used_at` fields
+- Added LEFT JOIN with subquery: `(SELECT type_id, COUNT(*) as usage_count, MAX(created_at) as last_used_at FROM tasks GROUP BY type_id)`
+- Returns `usage_count` and `last_used_at` fields dynamically
 - Supports sorting by usage_count (DESC by default)
+- **No additional writes needed** - statistics automatically update as tasks are created
 
-#### 4. Worker Management (Removed)
+#### 3. Worker Management (Removed)
 - **Clarification received**: Backend doesn't need to track workers
 - Workers simply send their ID when claiming/completing tasks
 - Removed all worker registration/status/heartbeat endpoints
-- Removed workers table from schema
+- No workers table in schema
 
 ---
 
@@ -177,20 +172,26 @@ Enhanced `TaskType` interface with:
 
 ## Database Schema Changes
 
-### New Table: task_type_usage
+### No New Tables Required
+All functionality implemented using existing `tasks` and `task_types` tables.
+
+**Usage statistics calculated dynamically:**
 ```sql
-CREATE TABLE IF NOT EXISTS task_type_usage (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    type_id INT NOT NULL,
-    usage_count INT DEFAULT 0,
-    last_used_at TIMESTAMP NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (type_id) REFERENCES task_types(id) ON DELETE CASCADE,
-    UNIQUE KEY unique_type_usage (type_id),
-    INDEX idx_usage_count (usage_count),
-    INDEX idx_last_used (last_used_at)
-) ENGINE=InnoDB;
+SELECT 
+    tt.id,
+    tt.name,
+    COALESCE(t.usage_count, 0) as usage_count,
+    t.last_used_at
+FROM task_types tt
+LEFT JOIN (
+    SELECT 
+        type_id, 
+        COUNT(*) as usage_count, 
+        MAX(created_at) as last_used_at 
+    FROM tasks 
+    GROUP BY type_id
+) t ON tt.id = t.type_id
+ORDER BY usage_count DESC;
 ```
 
 ### Removed Table: workers
@@ -253,29 +254,15 @@ CREATE TABLE IF NOT EXISTS task_type_usage (
 ## Migration Notes
 
 ### Database Migration
-Run the updated schema.sql to add task_type_usage table:
-```bash
-mysql -u username -p database < Backend/TaskManager/src/database/schema.sql
-```
-
-Or manually:
-```sql
-CREATE TABLE IF NOT EXISTS task_type_usage (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    type_id INT NOT NULL,
-    usage_count INT DEFAULT 0,
-    last_used_at TIMESTAMP NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (type_id) REFERENCES task_types(id) ON DELETE CASCADE,
-    UNIQUE KEY unique_type_usage (type_id),
-    INDEX idx_usage_count (usage_count),
-    INDEX idx_last_used (last_used_at)
-) ENGINE=InnoDB;
-```
+No new tables required. The existing `tasks` and `task_types` tables are sufficient.
 
 ### Endpoint Updates
-Re-run seed_endpoints.sql to update task-types endpoint definition.
+Re-run seed_endpoints.sql to update the `/task-types` endpoint definition with dynamic usage calculation:
+```bash
+mysql -u username -p database < Backend/TaskManager/src/database/seed_endpoints.sql
+```
+
+The updated endpoint uses a subquery to calculate statistics on-the-fly from the tasks table.
 
 ### Frontend Deployment
 Standard deployment process - no special migration needed.
@@ -315,17 +302,19 @@ Standard deployment process - no special migration needed.
 - Per-user, per-browser memory
 - Acceptable for this use case
 
-**3. Usage Tracking**
-- Automatic, transparent to users
-- Minimal overhead (single UPDATE query)
-- Enables smart UI decisions
-- Foundation for future analytics
+**3. Usage Tracking (Simplified)**
+- No separate table needed
+- Statistics calculated on-demand from tasks table
+- Zero write overhead - just creates tasks normally
+- Subquery in SELECT performs aggregation
+- Acceptable performance for typical usage
 
 ### Performance Considerations
 - Bundle size increased slightly (211KB → 243KB)
 - Still well under 500KB target
 - Gzipped size acceptable (76KB)
 - No performance regression
+- Usage statistics: Calculated via subquery (fast with proper indexing on tasks.type_id)
 
 ### Security Considerations
 - No new security concerns

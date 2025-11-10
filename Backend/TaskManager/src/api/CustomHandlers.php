@@ -275,14 +275,6 @@ class CustomHandlers {
         
         $task_id = $this->db->lastInsertId();
         
-        // Update task type usage statistics
-        $stmt = $this->db->prepare(
-            "INSERT INTO task_type_usage (type_id, usage_count, last_used_at) 
-             VALUES (?, 1, NOW()) 
-             ON DUPLICATE KEY UPDATE usage_count = usage_count + 1, last_used_at = NOW()"
-        );
-        $stmt->execute([$taskType['id']]);
-        
         // Log to history
         if (ENABLE_TASK_HISTORY) {
             $this->logHistory($task_id, 'created', null, 'Task created');
