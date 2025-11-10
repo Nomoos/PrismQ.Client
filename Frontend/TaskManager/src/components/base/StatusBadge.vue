@@ -1,5 +1,7 @@
 <template>
   <span
+    role="status"
+    :aria-label="`Status: ${props.status}`"
     :class="[
       'inline-block px-2 py-1 rounded text-xs font-medium',
       badgeClasses
