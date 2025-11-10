@@ -37,7 +37,7 @@
               type="text"
               placeholder="e.g., frontend-worker-1"
               aria-label="Worker ID"
-              aria-describedby="worker-id-description"
+              :aria-describedby="fields.workerId?.error ? 'worker-id-error' : 'worker-id-description'"
               :aria-invalid="!!fields.workerId?.error"
               class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 dark:focus:ring-dark-primary-border focus:border-transparent bg-white dark:bg-dark-canvas-inset text-gray-900 dark:text-dark-text-primary min-h-[44px]"
               :class="fields.workerId?.error ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-dark-border-default'"
@@ -123,12 +123,12 @@
       <!-- App Information -->
       <section class="card" aria-labelledby="app-info-heading">
         <h2 id="app-info-heading" class="text-lg font-semibold mb-4 dark:text-dark-text-primary">Application Info</h2>
-        <dl class="space-y-2 text-sm" role="list" aria-label="Application information">
-          <div class="flex justify-between" role="listitem">
+        <dl class="space-y-2 text-sm" aria-label="Application information">
+          <div class="flex justify-between">
             <dt class="text-gray-600 dark:text-dark-text-secondary">Version:</dt>
             <dd class="font-medium dark:text-dark-text-primary">0.1.0</dd>
           </div>
-          <div class="flex justify-between" role="listitem">
+          <div class="flex justify-between">
             <dt class="text-gray-600 dark:text-dark-text-secondary">Environment:</dt>
             <dd class="font-medium dark:text-dark-text-primary">{{ environment }}</dd>
           </div>
