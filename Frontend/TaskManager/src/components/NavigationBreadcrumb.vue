@@ -31,6 +31,38 @@
         </li>
       </ol>
       
+      <!-- Child Navigation Menu -->
+      <div 
+        v-if="navigation.availableChildren.value.length > 0" 
+        class="mt-4"
+      >
+        <p class="text-xs font-semibold text-gray-700 dark:text-dark-text-secondary mb-2">
+          Navigate to:
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <button
+            v-for="child in navigation.availableChildren.value"
+            :key="child"
+            @click="navigation.navigateTo(child)"
+            class="btn-secondary text-xs px-3 py-1.5 hover:bg-primary-50 dark:hover:bg-dark-primary-subtle"
+            :aria-label="`Navigate to ${getChildLabel(child)}`"
+          >
+            {{ getChildLabel(child) }}
+          </button>
+        </div>
+      </div>
+      
+      <!-- Parent Navigation -->
+      <div v-if="navigation.parentNode.value" class="mt-3">
+        <button
+          @click="navigation.goToParent()"
+          class="btn-secondary text-xs px-3 py-1"
+          aria-label="Go to parent"
+        >
+          ↑ Back to {{ navigation.parentNode.value }}
+        </button>
+      </div>
+      
       <!-- Navigation Controls -->
       <div class="mt-3 flex gap-2">
         <button
@@ -38,7 +70,7 @@
           :disabled="!navigation.canGoBack.value"
           class="btn-secondary text-xs px-3 py-1"
           :class="{ 'opacity-50 cursor-not-allowed': !navigation.canGoBack.value }"
-          aria-label="Go back in hierarchy"
+          aria-label="Go back in history"
         >
           ← Back
         </button>
@@ -48,7 +80,7 @@
           :disabled="!navigation.canGoForward.value"
           class="btn-secondary text-xs px-3 py-1"
           :class="{ 'opacity-50 cursor-not-allowed': !navigation.canGoForward.value }"
-          aria-label="Go forward in hierarchy"
+          aria-label="Go forward in history"
         >
           Forward →
         </button>
@@ -56,7 +88,7 @@
         <button
           @click="navigation.reset()"
           class="btn-secondary text-xs px-3 py-1 ml-auto"
-          aria-label="Reset to start"
+          aria-label="Reset to root"
         >
           Reset
         </button>
@@ -72,6 +104,13 @@
 
 <script setup lang="ts">
 import { useNavigation } from '../composables/useNavigation'
+import type { NavigationLevel } from '../composables/useNavigation'
 
 const navigation = useNavigation()
+
+function getChildLabel(child: NavigationLevel): string {
+  // Extract the label from the full path (e.g., 'PrismQ.Idea' -> 'Idea')
+  const parts = child.split('.')
+  return parts[parts.length - 1]
+}
 </script>
