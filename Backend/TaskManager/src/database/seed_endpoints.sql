@@ -36,10 +36,13 @@ INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action
 INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
 ('/task-types', 'GET', 'List all task types', 'query',
 '{
-    "table": "task_types",
-    "select": ["id", "name", "version", "is_active", "created_at", "updated_at"],
-    "where_optional": {"is_active": "{{query.active_only}}"},
-    "order": "name ASC"
+    "table": "task_types tt",
+    "joins": [
+        {"type": "LEFT", "table": "task_type_usage ttu", "on": "tt.id = ttu.type_id"}
+    ],
+    "select": ["tt.id", "tt.name", "tt.version", "tt.is_active", "tt.created_at", "tt.updated_at", "COALESCE(ttu.usage_count, 0) as usage_count", "ttu.last_used_at"],
+    "where_optional": {"tt.is_active": "{{query.active_only}}"},
+    "order": "{{query.sort_by:usage_count}} {{query.sort_order:DESC}}"
 }', TRUE);
 
 -- Create Task
@@ -154,3 +157,79 @@ FROM api_endpoints WHERE path = '/tasks/:id/progress' AND method = 'POST';
 INSERT IGNORE INTO api_validations (endpoint_id, param_name, param_source, validation_rules_json, error_message)
 SELECT id, 'progress', 'body', '{"type": "integer", "required": true, "minimum": 0, "maximum": 100}', 'Progress must be between 0 and 100'
 FROM api_endpoints WHERE path = '/tasks/:id/progress' AND method = 'POST';
+
+-- =============================================================================
+-- WORKER MANAGEMENT ENDPOINTS
+-- =============================================================================
+
+-- Register/Update Worker
+INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
+('/workers/register', 'POST', 'Register or update a worker', 'custom',
+'{
+    "handler": "worker_register",
+    "required_fields": ["worker_id"]
+}', TRUE);
+
+-- Update Worker Status
+INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
+('/workers/:worker_id/status', 'PUT', 'Update worker status', 'update',
+'{
+    "table": "workers",
+    "set": {
+        "status": "{{body.status}}",
+        "last_heartbeat": "NOW()"
+    },
+    "where": {"worker_id": "{{path.worker_id}}"}
+}', TRUE);
+
+-- Worker Heartbeat
+INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
+('/workers/:worker_id/heartbeat', 'POST', 'Update worker heartbeat timestamp', 'update',
+'{
+    "table": "workers",
+    "set": {
+        "last_heartbeat": "NOW()"
+    },
+    "where": {"worker_id": "{{path.worker_id}}"}
+}', TRUE);
+
+-- Get Worker by ID
+INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
+('/workers/:worker_id', 'GET', 'Get worker details by ID', 'query',
+'{
+    "table": "workers",
+    "select": ["id", "worker_id", "name", "status", "metadata_json as metadata", "last_heartbeat", "created_at", "updated_at"],
+    "where": {"worker_id": "{{path.worker_id}}"},
+    "transform": {
+        "metadata": "json_decode"
+    }
+}', TRUE);
+
+-- List Workers
+INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
+('/workers', 'GET', 'List all workers with optional status filter', 'query',
+'{
+    "table": "workers",
+    "select": ["id", "worker_id", "name", "status", "last_heartbeat", "created_at", "updated_at"],
+    "where_optional": {
+        "status": "{{query.status}}"
+    },
+    "order": "last_heartbeat DESC"
+}', TRUE);
+
+-- Get Worker Statistics
+INSERT IGNORE INTO api_endpoints (path, method, description, action_type, action_config_json, is_active) VALUES
+('/workers/:worker_id/stats', 'GET', 'Get worker statistics', 'custom',
+'{
+    "handler": "worker_stats"
+}', TRUE);
+
+-- Add validations for worker registration
+INSERT IGNORE INTO api_validations (endpoint_id, param_name, param_source, validation_rules_json, error_message)
+SELECT id, 'worker_id', 'body', '{"type": "string", "required": true, "minLength": 1}', 'Worker ID is required'
+FROM api_endpoints WHERE path = '/workers/register' AND method = 'POST';
+
+-- Add validations for worker status update
+INSERT IGNORE INTO api_validations (endpoint_id, param_name, param_source, validation_rules_json, error_message)
+SELECT id, 'status', 'body', '{"type": "string", "required": true, "enum": ["active", "idle", "offline"]}', 'Status must be active, idle, or offline'
+FROM api_endpoints WHERE path = '/workers/:worker_id/status' AND method = 'PUT';
