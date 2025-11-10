@@ -36,6 +36,9 @@ playwright-report
 _meta/tests/e2e-results
 .nyc_output
 
+# Lighthouse CI reports
+.lighthouseci
+
 # Build
 .vite
 tsconfig.tsbuildinfo
