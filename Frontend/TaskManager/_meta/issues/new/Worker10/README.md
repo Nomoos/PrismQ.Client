@@ -6,7 +6,8 @@
 **Group**: Group A - Core Implementation
 
 ## Assigned Issues
-- [ISSUE-FRONTEND-010: Senior Review](./ISSUE-FRONTEND-010-senior-review.md) - ✅ COMPLETED
+- [ISSUE-FRONTEND-010: Senior Review](../../done/ISSUE-FRONTEND-010-senior-review.md) - ✅ COMPLETED (moved to done/)
+- [ISSUE-FRONTEND-018: Final Review & Production Approval](./ISSUE-FRONTEND-018-final-review-approval.md) - 🔴 NOT STARTED (pending critical gaps)
 
 ## Completion Summary
 Comprehensive review completed with conditional approval:
