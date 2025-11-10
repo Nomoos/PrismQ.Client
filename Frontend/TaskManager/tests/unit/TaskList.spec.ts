@@ -84,7 +84,7 @@ describe('TaskList.vue', () => {
 
     it('should display bottom navigation', () => {
       wrapper = mount(TaskList)
-      const nav = wrapper.find('nav')
+      const nav = wrapper.find('nav[aria-label="Main navigation"]')
       expect(nav.exists()).toBe(true)
       expect(nav.text()).toContain('Tasks')
       expect(nav.text()).toContain('Workers')
