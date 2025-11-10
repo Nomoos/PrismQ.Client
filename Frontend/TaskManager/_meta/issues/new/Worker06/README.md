@@ -6,7 +6,7 @@
 **Group**: Group A - Core Implementation
 
 ## Assigned Issues
-- [ISSUE-FRONTEND-006: Documentation](./ISSUE-FRONTEND-006-documentation.md) - ✅ COMPLETED
+- [ISSUE-FRONTEND-006: Documentation](../../done/ISSUE-FRONTEND-006-documentation.md) - ✅ COMPLETED (moved to done/)
 
 ## Completion Summary
 All documentation deliverables completed:

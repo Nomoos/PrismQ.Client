@@ -5,7 +5,7 @@
 **Current Focus**: Phase 0 MVP Complete
 
 ## Assigned Issues
-- [ISSUE-FRONTEND-003: TaskManager Integration](./ISSUE-FRONTEND-003-api-integration.md) - ✅ COMPLETED
+- [ISSUE-FRONTEND-003: TaskManager Integration](../../done/ISSUE-FRONTEND-003-api-integration.md) - ✅ COMPLETED (moved to done/)
 
 ## Responsibilities
 - ✅ API client configuration and enhancement
