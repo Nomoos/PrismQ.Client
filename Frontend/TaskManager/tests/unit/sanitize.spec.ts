@@ -4,7 +4,11 @@ import {
   sanitizeWorkerId,
   sanitizeText,
   isContentSafe,
-  validateAndSanitizeWorkerId
+  validateAndSanitizeWorkerId,
+  sanitizeHtmlWithDOMPurify,
+  sanitizeUserInput,
+  sanitizeRichText,
+  sanitizeUrl
 } from '@/utils/sanitize'
 
 describe('Sanitization Utilities', () => {
@@ -232,6 +236,119 @@ describe('Sanitization Utilities', () => {
         const result = validateAndSanitizeWorkerId(id)
         expect(result.isValid).toBe(true)
         expect(result.value).toBe(id)
+      })
+    })
+  })
+
+  describe('DOMPurify Integration', () => {
+    describe('sanitizeHtmlWithDOMPurify', () => {
+      it('should remove script tags but keep content', () => {
+        const input = 'Safe text <script>alert(1)</script> more text'
+        const sanitized = sanitizeHtmlWithDOMPurify(input)
+        expect(sanitized).toContain('Safe text')
+        expect(sanitized).toContain('more text')
+        expect(sanitized).not.toContain('<script>')
+      })
+
+      it('should allow safe HTML tags by default', () => {
+        const input = '<p>Text with <strong>bold</strong> and <em>italic</em></p>'
+        const sanitized = sanitizeHtmlWithDOMPurify(input)
+        expect(sanitized).toContain('<strong>')
+        expect(sanitized).toContain('<em>')
+      })
+
+      it('should remove event handlers', () => {
+        const input = '<p onclick="alert(1)">Click</p>'
+        const sanitized = sanitizeHtmlWithDOMPurify(input)
+        expect(sanitized).not.toContain('onclick')
+        expect(sanitized).toContain('Click')
+      })
+
+      it('should respect custom allowed tags', () => {
+        const input = '<p>Para</p><span>Span</span>'
+        const sanitized = sanitizeHtmlWithDOMPurify(input, ['span'])
+        expect(sanitized).toContain('<span>')
+        expect(sanitized).not.toContain('<p>')
+      })
+    })
+
+    describe('sanitizeUserInput', () => {
+      it('should remove all HTML tags', () => {
+        const input = '<p>Hello</p><b>World</b>'
+        const sanitized = sanitizeUserInput(input)
+        expect(sanitized).toBe('HelloWorld')
+      })
+
+      it('should enforce max length', () => {
+        const input = 'a'.repeat(2000)
+        const sanitized = sanitizeUserInput(input)
+        expect(sanitized.length).toBe(1000)
+      })
+
+      it('should respect custom max length', () => {
+        const input = 'a'.repeat(100)
+        const sanitized = sanitizeUserInput(input, 50)
+        expect(sanitized.length).toBe(50)
+      })
+
+      it('should trim whitespace', () => {
+        const input = '  hello  '
+        const sanitized = sanitizeUserInput(input)
+        expect(sanitized).toBe('hello')
+      })
+    })
+
+    describe('sanitizeRichText', () => {
+      it('should allow headings and paragraphs', () => {
+        const input = '<h1>Title</h1><p>Content</p>'
+        const sanitized = sanitizeRichText(input)
+        expect(sanitized).toContain('<h1>')
+        expect(sanitized).toContain('<p>')
+      })
+
+      it('should allow links with safe protocols', () => {
+        const input = '<a href="https://example.com">Link</a>'
+        const sanitized = sanitizeRichText(input)
+        expect(sanitized).toContain('<a')
+        expect(sanitized).toContain('href=')
+      })
+
+      it('should block javascript protocol in links', () => {
+        const input = '<a href="javascript:alert(1)">Bad</a>'
+        const sanitized = sanitizeRichText(input)
+        expect(sanitized).not.toContain('javascript:')
+      })
+    })
+
+    describe('sanitizeUrl', () => {
+      it('should allow https URLs', () => {
+        const url = 'https://example.com'
+        expect(sanitizeUrl(url)).toBe(url)
+      })
+
+      it('should allow http URLs', () => {
+        const url = 'http://example.com'
+        expect(sanitizeUrl(url)).toBe(url)
+      })
+
+      it('should allow mailto URLs', () => {
+        const url = 'mailto:test@example.com'
+        expect(sanitizeUrl(url)).toBe(url)
+      })
+
+      it('should block javascript protocol', () => {
+        const url = 'javascript:alert(1)'
+        expect(sanitizeUrl(url)).toBe('')
+      })
+
+      it('should block data protocol', () => {
+        const url = 'data:text/html,<script>alert(1)</script>'
+        expect(sanitizeUrl(url)).toBe('')
+      })
+
+      it('should trim whitespace', () => {
+        const url = '  https://example.com  '
+        expect(sanitizeUrl(url)).toBe('https://example.com')
       })
     })
   })
