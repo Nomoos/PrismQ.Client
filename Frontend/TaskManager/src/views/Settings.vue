@@ -23,9 +23,14 @@
               v-model="workerIdInput"
               type="text"
               placeholder="e.g., frontend-worker-1"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-dark-border-default rounded-lg focus:ring-2 focus:ring-primary-500 dark:focus:ring-dark-primary-border focus:border-transparent bg-white dark:bg-dark-canvas-inset text-gray-900 dark:text-dark-text-primary"
+              class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 dark:focus:ring-dark-primary-border focus:border-transparent bg-white dark:bg-dark-canvas-inset text-gray-900 dark:text-dark-text-primary"
+              :class="fields.workerId?.error ? 'border-red-500 dark:border-red-400' : 'border-gray-300 dark:border-dark-border-default'"
+              @blur="validateField('workerId')"
             />
-            <p class="text-xs text-gray-500 dark:text-dark-text-tertiary mt-1">
+            <p v-if="fields.workerId?.error" class="text-xs text-red-600 dark:text-red-400 mt-1">
+              {{ fields.workerId.error }}
+            </p>
+            <p v-else class="text-xs text-gray-500 dark:text-dark-text-tertiary mt-1">
               This ID will be used when claiming and completing tasks
             </p>
           </div>
@@ -101,6 +106,8 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useFormValidation, validationRules } from '../composables/useFormValidation'
+import { validateAndSanitizeWorkerId } from '../utils/sanitize'
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api'
 const apiKey = import.meta.env.VITE_API_KEY ? '••••••••' : 'Not configured'
@@ -109,6 +116,9 @@ const environment = import.meta.env.MODE
 const workerIdInput = ref('')
 const saveMessage = ref('')
 const saveSuccess = ref(false)
+
+// Form validation
+const { registerField, validateField, fields } = useFormValidation()
 
 // Load worker ID from localStorage on mount
 onMounted(() => {
@@ -119,17 +129,40 @@ onMounted(() => {
     // Default worker ID
     workerIdInput.value = 'frontend-worker-1'
   }
+  
+  // Register the worker ID field with validation
+  registerField('workerId', workerIdInput.value, [
+    validationRules.required('Worker ID is required'),
+    validationRules.workerId('Worker ID must be 3-50 alphanumeric characters, hyphens, underscores, or dots, and start with a letter or number'),
+    validationRules.safeContent('Worker ID contains potentially unsafe characters')
+  ])
 })
 
 function saveWorkerId() {
-  if (!workerIdInput.value.trim()) {
-    saveMessage.value = 'Worker ID cannot be empty'
+  // Update the field value
+  fields.value.workerId.value = workerIdInput.value
+  
+  // Validate the field
+  if (!validateField('workerId')) {
+    saveMessage.value = fields.value.workerId.error || 'Invalid Worker ID'
+    saveSuccess.value = false
+    return
+  }
+
+  // Validate and sanitize the worker ID
+  const result = validateAndSanitizeWorkerId(workerIdInput.value)
+  
+  if (!result.isValid) {
+    saveMessage.value = result.error || 'Invalid Worker ID'
     saveSuccess.value = false
     return
   }
 
   try {
-    localStorage.setItem('workerId', workerIdInput.value.trim())
+    // Store the sanitized value
+    localStorage.setItem('workerId', result.value)
+    // Update the input with the sanitized value
+    workerIdInput.value = result.value
     saveMessage.value = 'Worker ID saved successfully!'
     saveSuccess.value = true
     
