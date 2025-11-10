@@ -1,24 +1,42 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-dark-canvas-default">
     <!-- Header -->
-    <header class="bg-white dark:bg-dark-surface-default shadow-sm sticky top-0 z-10 dark:border-b dark:border-dark-border-default">
+    <header 
+      role="banner"
+      class="bg-white dark:bg-dark-surface-default shadow-sm sticky top-0 z-10 dark:border-b dark:border-dark-border-default"
+    >
       <div class="max-w-7xl mx-auto px-4 py-4">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-dark-text-primary">TaskManager</h1>
       </div>
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 py-6">
+    <main 
+      id="main-content"
+      role="main"
+      aria-label="Task list"
+      class="max-w-7xl mx-auto px-4 py-6"
+      tabindex="-1"
+    >
       <!-- Loading State -->
-      <div v-if="loading" class="text-center py-8">
+      <div v-if="loading" class="text-center py-8" role="status" aria-live="polite">
         <LoadingSpinner size="lg" />
         <p class="mt-2 text-gray-600 dark:text-dark-text-secondary">Loading tasks...</p>
       </div>
 
       <!-- Error State -->
-      <div v-else-if="error" class="bg-red-50 dark:bg-dark-error-subtle border border-red-200 dark:border-dark-error-border rounded-lg p-4">
+      <div 
+        v-else-if="error" 
+        class="bg-red-50 dark:bg-dark-error-subtle border border-red-200 dark:border-dark-error-border rounded-lg p-4"
+        role="alert"
+        aria-live="assertive"
+      >
         <p class="text-red-800 dark:text-dark-error-text">{{ error }}</p>
-        <button @click="taskStore.clearError" class="btn-primary mt-2">
+        <button 
+          @click="taskStore.clearError" 
+          class="btn-primary mt-2"
+          aria-label="Retry loading tasks"
+        >
           Retry
         </button>
       </div>
@@ -26,11 +44,23 @@
       <!-- Task List -->
       <div v-else>
         <!-- Filter Tabs -->
-        <div class="flex gap-2 mb-4 overflow-x-auto pb-2">
+        <nav 
+          aria-label="Task filter tabs"
+          class="flex gap-2 mb-4 overflow-x-auto pb-2"
+          role="tablist"
+        >
           <button
             v-for="status in ['all', 'pending', 'claimed', 'completed', 'failed']"
             :key="status"
             @click="currentFilter = status"
+            role="tab"
+            :aria-selected="currentFilter === status"
+            :aria-label="`Filter by ${status} tasks, ${getTaskCount(status)} tasks`"
+            :tabindex="currentFilter === status ? 0 : -1"
+            @keydown.left="navigateFilter(-1, status)"
+            @keydown.right="navigateFilter(1, status)"
+            @keydown.home="navigateToFirstFilter"
+            @keydown.end="navigateToLastFilter"
             :class="[
               'px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors',
               currentFilter === status
@@ -39,11 +69,11 @@
             ]"
           >
             {{ status.charAt(0).toUpperCase() + status.slice(1) }}
-            <span class="ml-2 text-sm opacity-75">
+            <span class="ml-2 text-sm opacity-75" aria-hidden="true">
               ({{ getTaskCount(status) }})
             </span>
           </button>
-        </div>
+        </nav>
 
         <!-- Tasks -->
         <EmptyState
@@ -53,11 +83,21 @@
           message="There are no tasks matching this filter"
         />
 
-        <div v-else class="space-y-3">
-          <div
+        <div 
+          v-else 
+          class="space-y-3"
+          role="list"
+          aria-label="Tasks"
+        >
+          <article
             v-for="task in filteredTasks"
             :key="task.id"
+            role="listitem"
+            tabindex="0"
             @click="goToTask(task.id)"
+            @keydown.enter="goToTask(task.id)"
+            @keydown.space.prevent="goToTask(task.id)"
+            :aria-label="`Task ${task.type}, ID ${task.id}, status ${task.status}, priority ${task.priority}`"
             class="card cursor-pointer hover:shadow-md dark:hover:border-dark-border-strong transition-shadow"
           >
             <div class="flex items-start justify-between">
@@ -68,10 +108,12 @@
                       'inline-block w-3 h-3 rounded-full',
                       getStatusColor(task.status)
                     ]"
+                    :aria-label="`Status: ${task.status}`"
+                    role="img"
                   ></span>
-                  <h3 class="font-semibold text-gray-900 dark:text-dark-text-primary truncate">
+                  <h2 class="font-semibold text-gray-900 dark:text-dark-text-primary truncate">
                     {{ task.type }}
-                  </h3>
+                  </h2>
                 </div>
                 <p class="text-sm text-gray-500 dark:text-dark-text-secondary mt-1">ID: {{ task.id }}</p>
                 <p class="text-sm text-gray-600 dark:text-dark-text-secondary mt-1">
@@ -80,7 +122,14 @@
                 
                 <!-- Progress Bar -->
                 <div v-if="task.status === 'claimed' && task.progress > 0" class="mt-2">
-                  <div class="w-full bg-gray-200 dark:bg-dark-neutral-bg rounded-full h-2">
+                  <div 
+                    class="w-full bg-gray-200 dark:bg-dark-neutral-bg rounded-full h-2"
+                    role="progressbar"
+                    :aria-valuenow="task.progress"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    :aria-label="`Task progress: ${task.progress}%`"
+                  >
                     <div
                       class="bg-primary-500 dark:bg-dark-primary-bg h-2 rounded-full transition-all duration-300"
                       :style="{ width: `${task.progress}%` }"
@@ -97,28 +146,36 @@
                 </p>
               </div>
             </div>
-          </div>
+          </article>
         </div>
       </div>
     </main>
 
     <!-- Bottom Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-dark-surface-default border-t border-gray-200 dark:border-dark-border-default safe-area-inset-bottom">
+    <nav 
+      role="navigation"
+      aria-label="Main navigation"
+      class="fixed bottom-0 left-0 right-0 bg-white dark:bg-dark-surface-default border-t border-gray-200 dark:border-dark-border-default safe-area-inset-bottom"
+    >
       <div class="flex justify-around">
         <RouterLink
           to="/"
+          aria-label="Tasks"
+          aria-current="page"
           class="flex-1 flex flex-col items-center py-3 text-primary-600 dark:text-dark-primary-text"
         >
           <span class="text-xs font-medium">Tasks</span>
         </RouterLink>
         <RouterLink
           to="/workers"
+          aria-label="Workers"
           class="flex-1 flex flex-col items-center py-3 text-gray-600 dark:text-dark-text-secondary hover:text-primary-600 dark:hover:text-dark-primary-text"
         >
           <span class="text-xs font-medium">Workers</span>
         </RouterLink>
         <RouterLink
           to="/settings"
+          aria-label="Settings"
           class="flex-1 flex flex-col items-center py-3 text-gray-600 dark:text-dark-text-secondary hover:text-primary-600 dark:hover:text-dark-primary-text"
         >
           <span class="text-xs font-medium">Settings</span>
@@ -154,6 +211,8 @@ const filteredTasks = computed(() => {
   return taskStore.tasks.filter(t => t.status === currentFilter.value)
 })
 
+const filterStatuses = ['all', 'pending', 'claimed', 'completed', 'failed']
+
 function getTaskCount(status: string): number {
   if (status === 'all') return taskStore.tasks.length
   return taskStore.tasks.filter(t => t.status === status).length
@@ -182,5 +241,39 @@ function formatDate(dateString: string): string {
 
 function goToTask(id: number) {
   router.push(`/tasks/${id}`)
+}
+
+// Keyboard navigation for filter tabs
+function navigateFilter(direction: number, currentStatus: string) {
+  const currentIndex = filterStatuses.indexOf(currentStatus)
+  const newIndex = currentIndex + direction
+  
+  if (newIndex >= 0 && newIndex < filterStatuses.length) {
+    currentFilter.value = filterStatuses[newIndex]
+    // Focus the new tab
+    setTimeout(() => {
+      const buttons = document.querySelectorAll('[role="tab"]')
+      const button = buttons[newIndex] as HTMLElement
+      button?.focus()
+    }, 0)
+  }
+}
+
+function navigateToFirstFilter() {
+  currentFilter.value = filterStatuses[0]
+  setTimeout(() => {
+    const buttons = document.querySelectorAll('[role="tab"]')
+    const button = buttons[0] as HTMLElement
+    button?.focus()
+  }, 0)
+}
+
+function navigateToLastFilter() {
+  currentFilter.value = filterStatuses[filterStatuses.length - 1]
+  setTimeout(() => {
+    const buttons = document.querySelectorAll('[role="tab"]')
+    const button = buttons[buttons.length - 1] as HTMLElement
+    button?.focus()
+  }, 0)
 }
 </script>
