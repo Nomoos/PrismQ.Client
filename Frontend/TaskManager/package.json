@@ -27,8 +27,8 @@
     "baseline:capture": "node scripts/baseline.js capture",
     "baseline:compare": "node scripts/baseline.js compare",
     "baseline:report": "node scripts/baseline.js report",
-    "lighthouse": "npm run build && npm run preview & lhci autorun --config=lighthouserc.js",
-    "lighthouse:ci": "lhci autorun --config=lighthouserc.js",
+    "lighthouse": "npm run build && npm run preview & lhci autorun --config=lighthouserc.cjs",
+    "lighthouse:ci": "lhci autorun --config=lighthouserc.cjs",
     "perf:test": "npm run bundle:check && npm run lighthouse"
   },
   "dependencies": {

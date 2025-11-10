@@ -2,6 +2,13 @@
 
 Simple guide for building and deploying Frontend/TaskManager to Vedos/Wedos shared hosting.
 
+> **📚 Enhanced Guides Available:**
+> - **[Quick Reference](./QUICK_DEPLOYMENT_REFERENCE.md)** - Fast deployment commands
+> - **[Deployment Runbook](./DEPLOYMENT_RUNBOOK.md)** - Complete deployment procedures
+> - **[Staging Checklist](./STAGING_DEPLOYMENT_CHECKLIST.md)** - Detailed staging deployment checklist
+> - **[Rollback Procedures](./ROLLBACK_PROCEDURES.md)** - Emergency rollback guide
+> - **[Monitoring Setup](./MONITORING_SETUP.md)** - Monitoring and alerting configuration
+
 ## Quick Start (3 Steps)
 
 ### Step 1: Build the Package
