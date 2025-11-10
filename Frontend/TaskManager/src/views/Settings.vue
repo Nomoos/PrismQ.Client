@@ -123,12 +123,12 @@
       <!-- App Information -->
       <section class="card" aria-labelledby="app-info-heading">
         <h2 id="app-info-heading" class="text-lg font-semibold mb-4 dark:text-dark-text-primary">Application Info</h2>
-        <dl class="space-y-2 text-sm" role="list" aria-label="Application information">
-          <div class="flex justify-between" role="listitem">
+        <dl class="space-y-2 text-sm" aria-label="Application information">
+          <div class="flex justify-between">
             <dt class="text-gray-600 dark:text-dark-text-secondary">Version:</dt>
             <dd class="font-medium dark:text-dark-text-primary">0.1.0</dd>
           </div>
-          <div class="flex justify-between" role="listitem">
+          <div class="flex justify-between">
             <dt class="text-gray-600 dark:text-dark-text-secondary">Environment:</dt>
             <dd class="font-medium dark:text-dark-text-primary">{{ environment }}</dd>
           </div>
