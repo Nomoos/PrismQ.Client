@@ -17,11 +17,21 @@
   "monitoring": {
     "health_endpoint": "/health.json",
     "health_page": "/health.html",
-    "sentry_enabled": false,
-    "performance_tracking": true
+    "sentry_enabled": true,
+    "performance_tracking": true,
+    "debug_mode": false
   },
   "server": {
-    "location": "vedos",
+    "location": "vedos-production",
     "deployment_method": "automated"
+  },
+  "features": {
+    "debug_enabled": false,
+    "console_logging": false,
+    "beta_features": false
+  },
+  "security": {
+    "https_enforced": true,
+    "csp_enabled": true
   }
 }
