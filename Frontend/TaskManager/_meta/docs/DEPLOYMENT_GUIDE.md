@@ -888,15 +888,17 @@ jobs:
         with:
           node-version: '18'
       
-      - name: Build
+      - name: Build and Package
         run: |
           cd Frontend/TaskManager
           npm ci
-          npm run build
+          ./build-and-package.sh
       
       - name: Deploy via SSH
         run: |
-          scp -r dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/www/site/
+          cd Frontend/TaskManager
+          scp deploy-package-latest.tar.gz ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd /www/site && php deploy-auto.php --source=/tmp/deploy-package-latest.tar.gz"
 ```
 
 ### Multi-Environment Deployment
@@ -939,7 +941,9 @@ Serve static assets from CDN:
 
 1. Upload assets to CDN:
    ```bash
-   aws s3 sync dist/assets/ s3://your-cdn-bucket/assets/
+   # After building with build-and-package.sh
+   cd deploy-package
+   aws s3 sync assets/ s3://your-cdn-bucket/assets/
    ```
 
 2. Configure CDN URL in build:
