@@ -32,6 +32,36 @@ cd Frontend && npm run dev
 
 ## 📚 Documentation
 
+### Getting Started
+- **[Setup Guide](./_meta/docs/SETUP.md)** - Installation and configuration
+- **[User Guide](./_meta/docs/USER_GUIDE.md)** - How to use the web client
+- **[Node.js Installation](./_meta/docs/NODEJS_INSTALLATION.md)** - Node.js setup instructions
+- **[Troubleshooting](./_meta/docs/TROUBLESHOOTING.md)** - Common issues and solutions
+
+### Architecture & Design
+- **[On-Demand Architecture](./_meta/docs/ONDEMAND_ARCHITECTURE.md)** - Client architecture principles
+- **[System Architecture](./_meta/docs/ARCHITECTURE.md)** - Complete system design
+- **[API Reference](./Backend/TaskManager/_meta/docs/api/API_REFERENCE.md)** - REST API documentation
+- **[Integration Guide](./_meta/docs/INTEGRATION_GUIDE.md)** - Integration with PrismQ modules
+
+### Development
+- **[Development Guide](./_meta/docs/DEVELOPMENT.md)** - Contributing guide
+- **[Testing Guide](./_meta/docs/TESTING.md)** - Test coverage and commands
+- **[Configuration](./_meta/docs/CONFIGURATION.md)** - Configuration options
+- **[Modules Guide](./_meta/docs/MODULES.md)** - How to add new modules
+
+### Operations & Deployment
+- **[Release Management Guide](./_meta/docs/RELEASE.md)** - Version control and release process
+- **[Deployment Checklist](./_meta/docs/DEPLOYMENT_CHECKLIST.md)** - Production deployment procedures
+- **[Changelog](./_meta/docs/CHANGELOG.md)** - Version history and changes
+- **[Data Directory Rationale](./_meta/docs/DATA_DIRECTORY_RATIONALE.md)** - Data storage design decisions
+- **[Security Fixes](./_meta/docs/SECURITY_FIXES.md)** - Security updates and patches
+
+### Worker Implementation
+- **[Worker Implementation Plan](./_meta/docs/WORKER_IMPLEMENTATION_PLAN.md)** - Strategic implementation plan
+- **[Worker Implementation Guidelines](./_meta/docs/WORKER_IMPLEMENTATION_GUIDELINES.md)** - Best practices and patterns
+- **[Worker Examples](./_meta/examples/workers/README.md)** - Production-ready worker examples (Python, PHP)
+- **[Worker Integration Guide](./_meta/examples/workers/INTEGRATION_GUIDE.md)** - Complete integration documentation
 **→ [Complete Documentation Index](./_meta/docs/README.md)** - Full documentation organized by role and purpose
 
 ### Quick Navigation
