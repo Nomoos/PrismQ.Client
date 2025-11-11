@@ -2,6 +2,9 @@
 
 Simple guide for building and deploying Frontend/TaskManager to Vedos/Wedos shared hosting.
 
+> **📖 See Also:**  
+> For a complete deployment overview covering both Backend and Frontend, see the **[Global Deployment Guide](../../../../_meta/DEPLOYMENT_GUIDE.md)** which provides deployment options, prerequisites, and workflow coordination.
+
 > **📚 Enhanced Guides Available:**
 > - **[Quick Reference](./QUICK_DEPLOYMENT_REFERENCE.md)** - Fast deployment commands
 > - **[Deployment Runbook](./DEPLOYMENT_RUNBOOK.md)** - Complete deployment procedures

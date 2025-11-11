@@ -1,5 +1,8 @@
 # TaskManager Deployment Guide
 
+> **📖 See Also:**  
+> For a complete deployment overview covering both Backend and Frontend, see the **[Global Deployment Guide](../../../../../_meta/DEPLOYMENT_GUIDE.md)** which provides deployment options, prerequisites, and workflow coordination.
+
 ## Overview
 
 This guide explains how to deploy TaskManager to a server using the automated deployment scripts.
