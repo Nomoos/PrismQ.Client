@@ -49,7 +49,8 @@ ssh user@production-server
 cd /path/to/production
 BACKUP="backups/frontend_$(date +%Y%m%d_%H%M%S)"
 mkdir -p "$BACKUP"
-cp -r dist/ assets/ index.html .htaccess "$BACKUP/"
+# Backup deployed files (from previous deploy-package/)
+cp -r assets/ index.html .htaccess deploy*.php health.* "$BACKUP/" 2>/dev/null || true
 
 # 5. Deploy
 # From local:
@@ -72,7 +73,9 @@ curl https://your-domain.com/health.json
 ssh user@server
 cd /path/to/deployment
 BACKUP=$(ls -t backups/ | head -1)
-rm -rf dist/ assets/ index.html
+# Remove current deployed files
+rm -rf assets/ index.html .htaccess deploy*.php health.*
+# Restore from backup
 cp -r "backups/$BACKUP"/* .
 curl http://localhost/health.json
 ```

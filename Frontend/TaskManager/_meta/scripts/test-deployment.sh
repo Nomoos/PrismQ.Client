@@ -13,7 +13,9 @@
 
 # Configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DEPLOY_PACKAGE_DIR="$SCRIPT_DIR/deploy-package"
+# deploy-package/ is in Frontend/TaskManager/, not in _meta/scripts/
+FRONTEND_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+DEPLOY_PACKAGE_DIR="$FRONTEND_DIR/deploy-package"
 ENVIRONMENT="${1:-staging}"
 
 # Colors
