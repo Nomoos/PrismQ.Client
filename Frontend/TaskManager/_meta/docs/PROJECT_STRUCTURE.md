@@ -182,6 +182,10 @@ Frontend/TaskManager/
 
 Generated build output. NOT in git, created by `npm run build`.
 
+**Purpose:** Primary build output from Vite. Contains compiled and bundled application files.
+
+**Created by:** `npm run build` command
+
 ```
 dist/
 ├── index.html                    # Entry HTML file
@@ -194,29 +198,92 @@ dist/
 └── health.*                      # Copied from public/
 ```
 
+**Note:** `dist/` contains ONLY the built application files. For deployment, use `deploy-package/` instead (see below).
+
+## Deployment Package (`deploy-package/`)
+
+Generated deployment package. NOT in git, created by `build-and-package.sh`.
+
+**Purpose:** Ready-to-upload deployment package that includes `dist/` contents plus deployment scripts.
+
+**Created by:** `./build-and-package.sh` or `build-and-package.bat`
+
+```
+deploy-package/
+├── index.html                    # From dist/
+├── assets/                       # From dist/
+│   ├── *.js
+│   └── *.css
+├── deploy-deploy.php             # From dist/
+├── sw.js                         # From dist/
+├── health.*                      # From dist/
+├── deploy.php                    # Deployment wizard (ADDED)
+├── deploy-auto.php               # CLI deployment script (ADDED)
+├── .htaccess                     # Apache config (ADDED)
+├── .htaccess.example             # Backup template (ADDED)
+└── README_DEPLOYMENT.txt         # Deployment instructions (ADDED)
+```
+
+**Key Difference:**
+- `dist/` = Build output (minimal, for development/preview)
+- `deploy-package/` = Deployment package (includes deployment scripts and configurations)
+
+**For deployment:** Always upload `deploy-package/` contents, NOT `dist/` directly.
+
 ## Generated Directories
 
 These are generated and should NOT be in version control:
 
-- `node_modules/` - npm dependencies
-- `dist/` - Build output
-- `deploy-package/` - Deployment package
+- `node_modules/` - npm dependencies (created by `npm install`)
+- `dist/` - Build output (created by `npm run build`)
+- `deploy-package/` - Deployment package (created by `build-and-package.sh`)
+- `deploy-package-*.tar.gz` - Compressed archives (created by `build-and-package.sh`)
+- `deploy-package-*.zip` - Windows archives (created by `build-and-package.sh`)
 - `.vite/` - Vite cache
+
+## Build & Deployment Workflow
+
+Understanding the relationship between `dist/` and `deploy-package/`:
+
+```
+Step 1: npm run build
+        ↓
+     dist/ directory created
+     (Vite build output)
+        ↓
+Step 2: ./build-and-package.sh
+        ↓
+     Copies dist/* to deploy-package/
+     Adds deployment scripts
+     Creates archives (.tar.gz, .zip)
+        ↓
+     deploy-package/ directory ready
+     (Ready for server upload)
+        ↓
+Step 3: Upload to server
+     - Via FTP: upload deploy-package/* contents
+     - Via SCP: scp deploy-package-latest.tar.gz
+     - Via deploy.php: run deployment wizard
+```
 
 ## What Gets Deployed?
 
-Only the contents of `dist/` plus deployment scripts:
+The contents of `deploy-package/` (NOT `dist/` directly):
 
 ```
 Deployed Files:
-├── index.html
-├── assets/
-│   ├── *.js
-│   └── *.css
-├── deploy-deploy.php
-├── .htaccess (from .htaccess.example)
-├── sw.js
-└── health.*
+├── index.html                    # Application entry point
+├── assets/                       # Bundled JS/CSS
+│   ├── *.js                      # JavaScript bundles
+│   └── *.css                     # CSS bundles
+├── deploy.php                    # Deployment setup wizard
+├── deploy-auto.php               # CLI deployment script
+├── deploy-deploy.php             # Script downloader
+├── .htaccess                     # Apache SPA routing
+├── .htaccess.example             # Configuration template
+├── sw.js                         # Service worker
+├── health.*                      # Health check files
+└── README_DEPLOYMENT.txt         # Deployment instructions
 ```
 
 ## File Organization Principles

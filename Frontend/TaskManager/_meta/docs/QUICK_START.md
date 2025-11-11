@@ -61,6 +61,20 @@ npm run preview
 
 ## Building for Production
 
+### Understanding Build Output
+
+There are two types of build outputs:
+
+1. **`dist/`** - Vite build output (created by `npm run build`)
+   - Contains only compiled application files
+   - For local preview and testing
+   - ❌ Do NOT deploy this directory directly
+
+2. **`deploy-package/`** - Deployment package (created by `build-and-package.sh`)
+   - Contains everything from `dist/` plus deployment scripts
+   - Ready for production deployment
+   - ✅ Always deploy this directory
+
 ### Automated Build & Package (Recommended)
 
 **Linux/Mac:**
@@ -79,19 +93,25 @@ build-and-package.bat
 ```
 
 This creates:
-- `deploy-package/` - Ready-to-upload directory with all files
+- `dist/` - Vite build output (intermediate)
+- `deploy-package/` - Complete deployment package with all files
 - `deploy-package-YYYYMMDD_HHMMSS.tar.gz` - Archive for easy transfer
 - `deploy-package-YYYYMMDD_HHMMSS.zip` - Windows-compatible archive
 - `deploy-package-latest.tar.gz` - Symlink to latest build
 
-### Manual Build
+### Manual Build (Advanced)
+
+If you only need the Vite build without deployment scripts:
 
 ```bash
 # Build static files only
 npm run build
 
 # Output will be in dist/ directory
+# Note: This does NOT create deploy-package/
 ```
+
+**For production deployment, always use `build-and-package.sh` instead of manual build.**
 
 ## Deployment to Vedos/Wedos
 
