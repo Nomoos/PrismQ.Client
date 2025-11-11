@@ -41,7 +41,7 @@ cd Frontend && npm run dev
 ### Architecture & Design
 - **[On-Demand Architecture](./_meta/docs/ONDEMAND_ARCHITECTURE.md)** - Client architecture principles
 - **[System Architecture](./_meta/docs/ARCHITECTURE.md)** - Complete system design
-- **[API Reference](./Backend/TaskManager/_meta/docs/API_REFERENCE.md)** - REST API documentation
+- **[API Reference](./Backend/TaskManager/_meta/docs/api/API_REFERENCE.md)** - REST API documentation
 - **[Integration Guide](./_meta/docs/INTEGRATION_GUIDE.md)** - Integration with PrismQ modules
 
 ### Development
