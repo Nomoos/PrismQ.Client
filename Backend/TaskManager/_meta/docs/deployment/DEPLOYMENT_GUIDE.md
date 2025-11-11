@@ -174,7 +174,7 @@ api/JsonSchemaValidator.php
 database/Database.php
 database/schema.sql
 database/seed_endpoints.sql
-_meta/config/config.example.php
+config/config.example.php
 public/openapi.json
 public/README.md
 public/swagger-ui/* (18 files)

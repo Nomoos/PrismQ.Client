@@ -366,7 +366,7 @@ class TaskManagerDeployer
             'database/Database.php' => DATABASE_PATH . '/Database.php',
             'database/schema.sql' => DATABASE_PATH . '/schema.sql',
             'database/seed_endpoints.sql' => DATABASE_PATH . '/seed_endpoints.sql',
-            '_meta/config/config.example.php' => CONFIG_PATH . '/config.example.php',
+            'config/config.example.php' => CONFIG_PATH . '/config.example.php',
             // OpenAPI documentation files
             'public/openapi.json' => PUBLIC_PATH . '/openapi.json',
             'public/README.md' => PUBLIC_PATH . '/README.md',

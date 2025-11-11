@@ -671,7 +671,7 @@ For multi-platform APIs, `'*'` is the standard and recommended approach.
 ## Documentation
 
 - **Full Security Guide**: `Backend/TaskManager/_meta/docs/SECURITY.md`
-- **Configuration Example**: `Backend/TaskManager/_meta/config/config.example.php`
+- **Configuration Example**: `Backend/TaskManager/src/config/config.example.php`
 - **Security Tests**: `Backend/TaskManager/tests/security/`
 
 ## Support
