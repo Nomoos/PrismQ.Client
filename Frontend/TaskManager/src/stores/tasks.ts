@@ -7,6 +7,7 @@ export const useTaskStore = defineStore('tasks', () => {
   // State
   const tasks = ref<Task[]>([])
   const loading = ref(false)
+  const initialLoad = ref(true)
   const error = ref<string | null>(null)
   
   // Getters
@@ -28,15 +29,24 @@ export const useTaskStore = defineStore('tasks', () => {
   
   // Actions
   async function fetchTasks(params?: { status?: string; type?: string }) {
-    loading.value = true
+    // Only show loading spinner on initial load or when we have no data
+    // This prevents flickering during polling when we already have tasks
+    if (initialLoad.value || tasks.value.length === 0) {
+      loading.value = true
+    }
     error.value = null
     try {
       const response = await taskService.getTasks(params)
       if (response.success) {
         tasks.value = response.data
+        initialLoad.value = false
       }
     } catch (e) {
       error.value = e instanceof Error ? e.message : 'Failed to fetch tasks. Please check your connection and try again.'
+      // On error during initial load, mark as complete to show error state
+      if (initialLoad.value) {
+        initialLoad.value = false
+      }
     } finally {
       loading.value = false
     }
@@ -252,6 +262,7 @@ export const useTaskStore = defineStore('tasks', () => {
   return {
     tasks,
     loading,
+    initialLoad,
     error,
     pendingTasks,
     claimedTasks,

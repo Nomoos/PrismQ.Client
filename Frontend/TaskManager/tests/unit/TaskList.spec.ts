@@ -7,7 +7,11 @@ import type { Task } from '../../src/types'
 
 // Mock the composables
 vi.mock('../../src/composables/useTaskPolling', () => ({
-  useTaskPolling: vi.fn()
+  useTaskPolling: vi.fn(() => ({
+    isPolling: { value: false },
+    startPolling: vi.fn(),
+    stopPolling: vi.fn()
+  }))
 }))
 
 // Mock router

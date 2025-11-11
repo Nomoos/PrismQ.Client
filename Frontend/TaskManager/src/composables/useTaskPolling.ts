@@ -10,17 +10,39 @@ export function useTaskPolling(intervalMs = 5000, autoStart = true) {
   const taskStore = useTaskStore()
   const isPolling = ref(false)
   let intervalId: number | null = null
+  let consecutiveErrors = 0
+  const MAX_CONSECUTIVE_ERRORS = 3
+  
+  async function poll() {
+    try {
+      await taskStore.fetchTasks()
+      // Reset error counter on success
+      consecutiveErrors = 0
+    } catch (e) {
+      consecutiveErrors++
+      console.error(`[TaskPolling] Error fetching tasks (${consecutiveErrors}/${MAX_CONSECUTIVE_ERRORS})`, e)
+      
+      // Stop polling after too many consecutive errors
+      if (consecutiveErrors >= MAX_CONSECUTIVE_ERRORS) {
+        console.error('[TaskPolling] Too many consecutive errors, stopping polling')
+        stopPolling()
+      }
+    }
+  }
   
   function startPolling() {
     if (isPolling.value) return
     
     isPolling.value = true
-    intervalId = window.setInterval(() => {
-      taskStore.fetchTasks()
-    }, intervalMs)
+    consecutiveErrors = 0 // Reset error counter when starting
     
     // Fetch immediately on start
-    taskStore.fetchTasks()
+    poll()
+    
+    // Set up interval for subsequent fetches
+    intervalId = window.setInterval(() => {
+      poll()
+    }, intervalMs)
   }
   
   function stopPolling() {
