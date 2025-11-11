@@ -24,27 +24,16 @@
       tabindex="-1"
     >
       <!-- Loading State -->
-      <div v-if="loading" class="card text-center py-8" role="status" aria-live="polite">
-        <LoadingSpinner size="lg" />
-        <p class="mt-2 text-gray-600 dark:text-dark-text-secondary">Loading task...</p>
+      <div v-if="loading" class="card">
+        <LoadingState message="Loading task..." />
       </div>
 
       <!-- Error State -->
-      <div 
+      <ErrorDisplay 
         v-else-if="error" 
-        class="bg-red-50 dark:bg-dark-error-subtle border border-red-200 dark:border-dark-error-border rounded-lg p-4"
-        role="alert"
-        aria-live="assertive"
-      >
-        <p class="text-red-800 dark:text-dark-error-text">{{ error }}</p>
-        <button 
-          @click="loadTask" 
-          class="btn-primary mt-2"
-          aria-label="Retry loading task"
-        >
-          Retry
-        </button>
-      </div>
+        :message="error"
+        @retry="loadTask"
+      />
 
       <!-- Task Details -->
       <div v-else-if="task" class="space-y-4">
@@ -223,8 +212,10 @@ import { useTaskStore } from '../stores/tasks'
 import { useWorkerStore } from '../stores/worker'
 import { useToast } from '../composables/useToast'
 import ConfirmDialog from '../components/base/ConfirmDialog.vue'
-import LoadingSpinner from '../components/base/LoadingSpinner.vue'
+import LoadingState from '../components/base/LoadingState.vue'
+import ErrorDisplay from '../components/base/ErrorDisplay.vue'
 import StatusBadge from '../components/base/StatusBadge.vue'
+import { formatDate as formatDateUtil } from '../utils/dateFormatting'
 import type { Task } from '../types'
 
 const route = useRoute()
@@ -316,16 +307,7 @@ async function handleComplete(success: boolean) {
 }
 
 function formatDate(dateString: string): string {
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / 60000)
-  
-  if (diffInMinutes < 1) return 'Just now'
-  if (diffInMinutes < 60) return `${diffInMinutes}m ago`
-  if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`
-  
-  // Format as full date for older items
-  return date.toLocaleString()
+  return formatDateUtil(dateString)
 }
 
 onMounted(() => {

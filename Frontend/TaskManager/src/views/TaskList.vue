@@ -29,27 +29,14 @@
       tabindex="-1"
     >
       <!-- Loading State -->
-      <div v-if="loading" class="text-center py-8" role="status" aria-live="polite">
-        <LoadingSpinner size="lg" />
-        <p class="mt-2 text-gray-600 dark:text-dark-text-secondary">Loading tasks...</p>
-      </div>
+      <LoadingState v-if="loading" message="Loading tasks..." />
 
       <!-- Error State -->
-      <div 
+      <ErrorDisplay 
         v-else-if="error" 
-        class="bg-red-50 dark:bg-dark-error-subtle border border-red-200 dark:border-dark-error-border rounded-lg p-4"
-        role="alert"
-        aria-live="assertive"
-      >
-        <p class="text-red-800 dark:text-dark-error-text">{{ error }}</p>
-        <button 
-          @click="taskStore.clearError" 
-          class="btn-primary mt-2"
-          aria-label="Retry loading tasks"
-        >
-          Retry
-        </button>
-      </div>
+        :message="error"
+        @retry="taskStore.clearError"
+      />
 
       <!-- Task List -->
       <div v-else>
@@ -200,10 +187,13 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useTaskStore } from '../stores/tasks'
 import { useTaskPolling } from '../composables/useTaskPolling'
-import LoadingSpinner from '../components/base/LoadingSpinner.vue'
+import LoadingState from '../components/base/LoadingState.vue'
+import ErrorDisplay from '../components/base/ErrorDisplay.vue'
 import EmptyState from '../components/base/EmptyState.vue'
 import StatusBadge from '../components/base/StatusBadge.vue'
 import NavigationBreadcrumb from '../components/NavigationBreadcrumb.vue'
+import { getStatusColor } from '../utils/statusHelpers'
+import { formatRelativeTime } from '../utils/dateFormatting'
 
 const router = useRouter()
 const taskStore = useTaskStore()
@@ -229,25 +219,8 @@ function getTaskCount(status: string): number {
   return taskStore.tasks.filter(t => t.status === status).length
 }
 
-function getStatusColor(status: string): string {
-  const colors = {
-    pending: 'bg-yellow-400',
-    claimed: 'bg-blue-400',
-    completed: 'bg-green-400',
-    failed: 'bg-red-400'
-  }
-  return colors[status as keyof typeof colors] || 'bg-gray-400'
-}
-
 function formatDate(dateString: string): string {
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / 60000)
-  
-  if (diffInMinutes < 1) return 'Just now'
-  if (diffInMinutes < 60) return `${diffInMinutes}m ago`
-  if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`
-  return date.toLocaleDateString()
+  return formatRelativeTime(dateString)
 }
 
 function goToTask(id: number) {
