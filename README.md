@@ -1,36 +1,54 @@
 # PrismQ Web Client
 
-Local web control panel for running PrismQ data collection modules.
+Web-based task queue management system built with the TaskManager module.
 
 ## ✨ Highlights
 
-- **Module discovery** - Automatic detection of available PrismQ modules
-- **Web interface** - Vue 3 frontend with FastAPI backend
-- **Real-time monitoring** - Live log streaming and status updates
-- **Parameter configuration** - Form-based module configuration with persistence
-- **Concurrent execution** - Run multiple modules simultaneously
-- **On-demand architecture** - All operations triggered by UI requests (no autonomous background tasks)
-- **296 tests** - Comprehensive test coverage (195 backend + 101 frontend)
+### TaskManager Module
+A complete task queue system with backend API and frontend UI:
+
+- **Backend Module** - Lightweight PHP REST API for shared hosting
+- **Frontend Module** - Mobile-first Vue 3 web interface
+- **On-demand architecture** - All operations triggered by HTTP requests (no background processes)
+- **JSON Schema validation** - Task parameters validated against schemas
+- **Worker coordination** - Claim/complete workflow with timeout handling
+- **Data-driven API** - REST endpoints defined in database, not code
+- **Production ready** - Comprehensive test coverage and deployment automation
 
 ## 🚀 Quick Start
 
-**Windows (One-click launcher):**
-```cmd
-_meta\_scripts\run_both.bat
+### TaskManager Module
+
+**Backend Module (PHP REST API):**
+```bash
+# Deploy to shared hosting (production)
+# See Backend/TaskManager/README.md for deployment instructions
+
+# Or test locally with PHP built-in server
+cd Backend/TaskManager/src
+php -S localhost:8000
 ```
 
-**Manual start:**
+**Frontend Module (Vue 3 Web UI):**
 ```bash
-# Backend (Terminal 1)
-cd Backend && uvicorn src.main:app --reload
-
-# Frontend (Terminal 2)  
-cd Frontend && npm run dev
+# Development mode
+cd Frontend/TaskManager
+npm install
+npm run dev
 
 # Open http://localhost:5173
 ```
 
+**📖 Complete documentation:**
+- [Backend/TaskManager Documentation](./Backend/TaskManager/README.md) - Backend module setup and API
+- [Frontend/TaskManager Documentation](./Frontend/TaskManager/README.md) - Frontend module setup and UI
+
 ## 📚 Documentation
+
+### TaskManager Module
+- **[Backend/TaskManager](./Backend/TaskManager/README.md)** - Backend module documentation and API reference
+- **[Frontend/TaskManager](./Frontend/TaskManager/README.md)** - Frontend module documentation and user guide
+- **[API Reference](./Backend/TaskManager/_meta/docs/api/API_REFERENCE.md)** - REST API documentation
 
 ### Getting Started
 - **[Setup Guide](./_meta/docs/SETUP.md)** - Installation and configuration
@@ -41,7 +59,6 @@ cd Frontend && npm run dev
 ### Architecture & Design
 - **[On-Demand Architecture](./_meta/docs/ONDEMAND_ARCHITECTURE.md)** - Client architecture principles
 - **[System Architecture](./_meta/docs/ARCHITECTURE.md)** - Complete system design
-- **[API Reference](./Backend/TaskManager/_meta/docs/api/API_REFERENCE.md)** - REST API documentation
 - **[Integration Guide](./_meta/docs/INTEGRATION_GUIDE.md)** - Integration with PrismQ modules
 
 ### Development
@@ -100,10 +117,16 @@ Deployment and release management
 
 ## 🔗 Related
 
+### TaskManager Module
+- [Backend/TaskManager](./Backend/TaskManager/) - Backend module: PHP-based REST API for task queue
+- [Frontend/TaskManager](./Frontend/TaskManager/) - Frontend module: Vue 3 mobile-first UI
+
+### Navigation
+- [Backend Directory](./Backend/) - Backend modules index
+- [Frontend Directory](./Frontend/) - Frontend modules index
+
+### Project
 - [Main Repository](../) - PrismQ.IdeaInspiration overview
-- [Backend](./Backend/) - FastAPI REST API
-- [Frontend](./Frontend/) - Vue 3 web UI
-- [TaskManager](./Backend/TaskManager/) - Task queue system
 
 ## 📄 License
 
