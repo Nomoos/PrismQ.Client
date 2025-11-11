@@ -25,20 +25,14 @@
       tabindex="-1"
     >
       <!-- Loading State -->
-      <div v-if="loading" class="text-center py-8" role="status" aria-live="polite">
-        <LoadingSpinner size="lg" />
-        <p class="mt-2 text-gray-600 dark:text-dark-text-secondary">Loading task types...</p>
-      </div>
+      <LoadingState v-if="loading" message="Loading task types..." />
 
       <!-- Error State -->
-      <div 
+      <ErrorDisplay 
         v-else-if="error" 
-        class="bg-red-50 dark:bg-dark-error-subtle border border-red-200 dark:border-dark-error-border rounded-lg p-4"
-        role="alert"
-        aria-live="assertive"
-      >
-        <p class="text-red-800 dark:text-dark-error-text">{{ error }}</p>
-      </div>
+        :message="error"
+        :retryable="false"
+      />
 
       <!-- Task Creation Form -->
       <form v-else @submit.prevent="handleSubmit" class="space-y-4">
@@ -223,7 +217,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { taskService } from '../services/taskService'
-import LoadingSpinner from '../components/base/LoadingSpinner.vue'
+import LoadingState from '../components/base/LoadingState.vue'
+import ErrorDisplay from '../components/base/ErrorDisplay.vue'
 import type { TaskType } from '../types'
 
 const router = useRouter()

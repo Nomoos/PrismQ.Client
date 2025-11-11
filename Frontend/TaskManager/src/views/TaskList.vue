@@ -29,27 +29,14 @@
       tabindex="-1"
     >
       <!-- Loading State -->
-      <div v-if="loading" class="text-center py-8" role="status" aria-live="polite">
-        <LoadingSpinner size="lg" />
-        <p class="mt-2 text-gray-600 dark:text-dark-text-secondary">Loading tasks...</p>
-      </div>
+      <LoadingState v-if="loading" message="Loading tasks..." />
 
       <!-- Error State -->
-      <div 
+      <ErrorDisplay 
         v-else-if="error" 
-        class="bg-red-50 dark:bg-dark-error-subtle border border-red-200 dark:border-dark-error-border rounded-lg p-4"
-        role="alert"
-        aria-live="assertive"
-      >
-        <p class="text-red-800 dark:text-dark-error-text">{{ error }}</p>
-        <button 
-          @click="taskStore.clearError" 
-          class="btn-primary mt-2"
-          aria-label="Retry loading tasks"
-        >
-          Retry
-        </button>
-      </div>
+        :message="error"
+        @retry="taskStore.clearError"
+      />
 
       <!-- Task List -->
       <div v-else>
@@ -99,64 +86,12 @@
           role="list"
           aria-label="Tasks"
         >
-          <article
+          <TaskCard
             v-for="task in filteredTasks"
             :key="task.id"
-            role="listitem"
-            tabindex="0"
-            @click="goToTask(task.id)"
-            @keydown.enter="goToTask(task.id)"
-            @keydown.space.prevent="goToTask(task.id)"
-            :aria-label="`Task ${task.type}, ID ${task.id}, status ${task.status}, priority ${task.priority}`"
-            class="card cursor-pointer hover:shadow-md dark:hover:border-dark-border-strong transition-shadow"
-          >
-            <div class="flex items-start justify-between">
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2">
-                  <span
-                    :class="[
-                      'inline-block w-3 h-3 rounded-full',
-                      getStatusColor(task.status)
-                    ]"
-                    :aria-label="`Status: ${task.status}`"
-                    role="img"
-                  ></span>
-                  <h2 class="font-semibold text-gray-900 dark:text-dark-text-primary truncate">
-                    {{ task.type }}
-                  </h2>
-                </div>
-                <p class="text-sm text-gray-500 dark:text-dark-text-secondary mt-1">ID: {{ task.id }}</p>
-                <p class="text-sm text-gray-600 dark:text-dark-text-secondary mt-1">
-                  Priority: {{ task.priority }} | Attempts: {{ task.attempts }}/{{ task.max_attempts }}
-                </p>
-                
-                <!-- Progress Bar -->
-                <div v-if="task.status === 'claimed' && task.progress > 0" class="mt-2">
-                  <div 
-                    class="w-full bg-gray-200 dark:bg-dark-neutral-bg rounded-full h-2"
-                    role="progressbar"
-                    :aria-valuenow="task.progress"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    :aria-label="`Task progress: ${task.progress}%`"
-                  >
-                    <div
-                      class="bg-primary-500 dark:bg-dark-primary-bg h-2 rounded-full transition-all duration-300"
-                      :style="{ width: `${task.progress}%` }"
-                    ></div>
-                  </div>
-                  <p class="text-xs text-gray-500 dark:text-dark-text-tertiary mt-1">{{ task.progress }}% complete</p>
-                </div>
-              </div>
-              
-              <div class="ml-4 text-right flex-shrink-0">
-                <StatusBadge :status="task.status" />
-                <p class="text-xs text-gray-500 dark:text-dark-text-tertiary mt-2">
-                  {{ formatDate(task.created_at) }}
-                </p>
-              </div>
-            </div>
-          </article>
+            :task="task"
+            @click="goToTask"
+          />
         </div>
       </div>
     </main>
@@ -200,9 +135,10 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useTaskStore } from '../stores/tasks'
 import { useTaskPolling } from '../composables/useTaskPolling'
-import LoadingSpinner from '../components/base/LoadingSpinner.vue'
+import LoadingState from '../components/base/LoadingState.vue'
+import ErrorDisplay from '../components/base/ErrorDisplay.vue'
 import EmptyState from '../components/base/EmptyState.vue'
-import StatusBadge from '../components/base/StatusBadge.vue'
+import TaskCard from '../components/TaskCard.vue'
 import NavigationBreadcrumb from '../components/NavigationBreadcrumb.vue'
 
 const router = useRouter()
@@ -227,27 +163,6 @@ const filterStatuses = ['all', 'pending', 'claimed', 'completed', 'failed']
 function getTaskCount(status: string): number {
   if (status === 'all') return taskStore.tasks.length
   return taskStore.tasks.filter(t => t.status === status).length
-}
-
-function getStatusColor(status: string): string {
-  const colors = {
-    pending: 'bg-yellow-400',
-    claimed: 'bg-blue-400',
-    completed: 'bg-green-400',
-    failed: 'bg-red-400'
-  }
-  return colors[status as keyof typeof colors] || 'bg-gray-400'
-}
-
-function formatDate(dateString: string): string {
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / 60000)
-  
-  if (diffInMinutes < 1) return 'Just now'
-  if (diffInMinutes < 60) return `${diffInMinutes}m ago`
-  if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`
-  return date.toLocaleDateString()
 }
 
 function goToTask(id: number) {
