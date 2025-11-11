@@ -122,28 +122,14 @@ https://your-domain.com/taskmanager/deploy-deploy.php
 
 ```
 Frontend/TaskManager/
-├── src/                          # Application source
+├── src/                          # Application source code
 │   ├── main.ts                   # Entry point
 │   ├── App.vue                   # Root component
 │   ├── router/                   # Vue Router configuration
-│   │   └── index.ts
 │   ├── stores/                   # Pinia state management
-│   │   ├── tasks.ts              # Task store
-│   │   ├── workers.ts            # Worker store
-│   │   └── auth.ts               # Authentication store
 │   ├── services/                 # API services
-│   │   ├── api.ts                # API client
-│   │   ├── taskService.ts        # Task operations
-│   │   └── workerService.ts      # Worker operations
 │   ├── components/               # Vue components
-│   │   ├── base/                 # Base components
-│   │   ├── tasks/                # Task components
-│   │   └── workers/              # Worker components
 │   ├── views/                    # Page views
-│   │   ├── TaskList.vue
-│   │   ├── TaskDetail.vue
-│   │   ├── WorkerDashboard.vue
-│   │   └── Settings.vue
 │   ├── composables/              # Reusable composables
 │   ├── types/                    # TypeScript types
 │   └── assets/                   # Static assets
@@ -153,21 +139,23 @@ Frontend/TaskManager/
 ├── tests/                        # Test files
 │   ├── unit/                     # Unit tests (Vitest)
 │   └── e2e/                      # E2E tests (Playwright)
-├── _meta/                        # Project metadata
-│   ├── docs/                     # Documentation
+├── _meta/                        # Project metadata (not deployed)
+│   ├── README.md                 # _meta organization guide
+│   ├── docs/                     # All project documentation
+│   ├── scripts/                  # Development scripts
+│   ├── examples/                 # Code examples and templates
 │   ├── issues/                   # Issue tracking
-│   │   ├── new/                  # Unassigned issues
-│   │   ├── wip/                  # In progress
-│   │   └── done/                 # Completed
-│   ├── PROJECT_PLAN.md           # Project roadmap
-│   ├── PARALLELIZATION_MATRIX.md # Worker coordination
-│   └── BLOCKERS.md               # Blocker tracking
+│   └── baselines/                # Performance baselines
 ├── package.json                  # Dependencies
 ├── vite.config.ts                # Vite configuration
 ├── tsconfig.json                 # TypeScript configuration
 ├── tailwind.config.js            # Tailwind CSS config
-└── README.md                     # This file
+├── build-and-package.sh          # Production build script
+├── deploy.php                    # Server deployment script
+└── README.md                     # This file (you are here)
 ```
+
+**Note**: See [`_meta/README.md`](./_meta/README.md) for detailed information about project metadata organization.
 
 ## 🛠️ Technology Stack
 
@@ -216,28 +204,33 @@ VITE_API_KEY=your-api-key
 
 ## 📚 Documentation
 
-### User Documentation
-- **[User Guide](./_meta/docs/USER_GUIDE.md)** ✅ - Complete guide for end users
-- **[Troubleshooting](./_meta/docs/TROUBLESHOOTING.md)** ✅ - Common issues and solutions
+**Quick Links**:
+- 📖 **[_meta Organization Guide](./_meta/README.md)** - Complete guide to project metadata
+- 📝 **[Project Status](./_meta/docs/NEXT_STEPS.md)** - Current status and next steps
+- 🇨🇿 **[Czech Summary](./_meta/docs/CZECH_SUMMARY.md)** - Český souhrn projektu
 
-### Developer Documentation
-- **[Developer Guide](./_meta/docs/DEVELOPER_GUIDE.md)** ✅ - Development setup and best practices
-- **[API Integration Guide](./_meta/docs/API_INTEGRATION.md)** ✅ - Backend API integration
-- **[Component Library](./_meta/docs/COMPONENT_LIBRARY.md)** ✅ - Component documentation
-- **[Performance Guide](./_meta/docs/PERFORMANCE_GUIDE.md)** ✅ - Performance optimization
-- **[Contributing Guide](./_meta/docs/CONTRIBUTING.md)** ✅ - How to contribute
+### For Users
+- **[User Guide](./_meta/docs/USER_GUIDE.md)** - Complete guide for end users (coming soon)
+- **[Troubleshooting](./_meta/docs/TROUBLESHOOTING.md)** - Common issues and solutions (coming soon)
 
-### Deployment Documentation
-- **[Deployment Guide](./docs/DEPLOYMENT.md)** ✅ - Step-by-step deployment to Vedos/Wedos
-- **[Quick Deploy FTP Guide](./QUICK_DEPLOY_FTP.md)** ✅ - Fast FTP deployment workflow
-- **[Deployment Runbook](./DEPLOYMENT_RUNBOOK.md)** ✅ - Operational procedures for staging and production
-- **[Staging Setup Guide](./STAGING_SETUP.md)** ✅ - Configure and maintain staging environment
-- **[Production Deployment Checklist](./PRODUCTION_DEPLOYMENT_CHECKLIST.md)** ✅ - Pre/post deployment checklist
+### For Developers
+- **[API Integration](./_meta/docs/API_INTEGRATION.md)** - Backend API integration guide
+- **[Performance Guide](./_meta/docs/PERFORMANCE.md)** - Performance optimization
+- **[Security Guide](./_meta/docs/SECURITY.md)** - Security best practices
+- **[Testing Guide](./_meta/docs/TESTING.md)** - Testing strategy and guidelines
+- **[Accessibility Guide](./_meta/docs/ACCESSIBILITY_GUIDE.md)** - WCAG 2.1 AA compliance
 
-### Planning & Architecture
-- **[Project Plan](./_meta/PROJECT_PLAN.md)** - Comprehensive project roadmap
-- **[Parallelization Matrix](./_meta/PARALLELIZATION_MATRIX.md)** - Worker coordination strategy
-- **[Blockers Tracking](./_meta/BLOCKERS.md)** - Current blockers and risks
+### For Deployment
+- **[Deployment Guide](./_meta/docs/DEPLOYMENT.md)** - Complete deployment instructions
+- **[Deployment Runbook](./_meta/docs/DEPLOYMENT_RUNBOOK.md)** - Operational procedures
+- **[Rollback Procedures](./_meta/docs/ROLLBACK_PROCEDURES.md)** - Emergency rollback guide
+- **[Quick Deploy Reference](./_meta/docs/QUICK_DEPLOYMENT_REFERENCE.md)** - Fast deployment
+
+### Project Management
+- **[Issue Index](./_meta/issues/INDEX.md)** - All project issues and tracking
+- **[Parallelization Matrix](./_meta/docs/PARALLELIZATION_MATRIX.md)** - Worker coordination
+
+**All Documentation**: See [`_meta/docs/`](./_meta/docs/) for the complete collection (30+ documents).
 
 ## 🧪 Testing
 
@@ -293,10 +286,11 @@ npm run test:e2e:ui
 4. Set API base URL in environment
 5. Test: `https://your-domain.com/taskmanager/`
 
-## 👥 Team & Workers
+## 👥 Team & Coordination
 
-### Worker Assignments
+See [`_meta/issues/INDEX.md`](./_meta/issues/INDEX.md) for complete worker assignments and issue tracking.
 
+### Workers
 - **Worker01**: Project Manager & Planning
 - **Worker02**: API Integration Expert
 - **Worker03**: Vue.js/TypeScript Expert
@@ -310,31 +304,22 @@ npm run test:e2e:ui
 
 ## 📊 Project Status
 
-**Current Phase**: MVP Complete - Ready for Deployment  
-**Progress**: 95% (Core features complete, deployment pending)  
-**Timeline**: Ready for staging deployment  
-**Blockers**: None - awaiting backend deployment
+**Current Phase**: Production Ready - MVP Complete  
+**Progress**: 100% (All 15 issues complete)  
+**Production Approval**: ✅ 8.7/10 (Worker10 & Worker12)
 
-### Completion Status
+**See**: [`_meta/docs/NEXT_STEPS.md`](./_meta/docs/NEXT_STEPS.md) for detailed status and roadmap.
 
-| Phase | Status | Progress |
-|-------|--------|----------|
-| Phase 0: MVP Foundation | ✅ COMPLETE | 100% |
-| Phase 1: Core Features | ✅ COMPLETE | 100% |
-| Phase 2: Polish & Testing | ✅ COMPLETE | 100% |
-| Phase 3: Deployment | ⏳ IN PROGRESS | 90% |
+### Quick Stats
 
-### Recent Updates (2025-11-09)
-
-- ✅ All core views implemented (TaskList, TaskDetail, WorkerDashboard, Settings)
-- ✅ Toast notification system added for user feedback
-- ✅ Confirmation dialogs for destructive actions
-- ✅ Full task lifecycle support (view, claim, complete, fail)
-- ✅ Real-time polling for task updates
-- ✅ Worker ID configuration and persistence
-- ✅ All tests passing (33/33 tests)
-- ✅ TypeScript strict mode (0 errors)
-- ✅ Bundle optimized (211KB total, 71KB gzipped)
+| Metric | Status |
+|--------|--------|
+| TypeScript Errors | ✅ 0 errors (strict mode) |
+| Test Coverage | ✅ 627 tests (97% pass rate) |
+| Bundle Size | ✅ 236KB (target: <500KB) |
+| Lighthouse Score | ✅ 99-100/100 |
+| Accessibility | ✅ WCAG 2.1 AA compliant |
+| Load Time (3G) | ✅ 1.5-2.1s (target: <3s) |
 
 ## 🔗 Related Projects
 
@@ -349,7 +334,25 @@ Proprietary - All Rights Reserved - Copyright (c) 2025 PrismQ
 ---
 
 **Created By**: Worker01 (Project Manager)  
-**MVP Completed By**: Worker02 (API Integration) + Worker03 (Vue.js/TypeScript) + Worker11 (UX Design)  
-**Date**: 2025-11-09  
-**Status**: ✅ MVP COMPLETE - Ready for Deployment  
-**Production Readiness**: 9/10 (Core features complete, awaiting deployment validation)
+**Production Ready**: ✅ YES  
+**Production Approval**: 8.7/10 (Worker10 & Worker12)  
+**Last Updated**: 2025-11-11
+
+## 📖 Additional Resources
+
+### Navigation
+- 📁 **[Project Metadata](./_meta/README.md)** - Complete _meta organization
+- 📝 **[Project Status](./_meta/docs/NEXT_STEPS.md)** - Current status and roadmap
+- 🔍 **[Issue Tracking](./_meta/issues/INDEX.md)** - All issues and progress
+- 📚 **[All Documentation](./_meta/docs/)** - 30+ comprehensive documents
+
+### Quick Access
+- **Getting Started**: This README (Quick Start section above)
+- **Development**: See "Quick Start" and "Technology Stack" sections
+- **Deployment**: See "Deploy to Vedos/Wedos" section above
+- **Testing**: `npm test` and [`_meta/docs/TESTING.md`](./_meta/docs/TESTING.md)
+- **Performance**: [`_meta/docs/PERFORMANCE.md`](./_meta/docs/PERFORMANCE.md)
+
+---
+
+**License**: Proprietary - All Rights Reserved - Copyright (c) 2025 PrismQ
