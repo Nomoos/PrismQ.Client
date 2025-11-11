@@ -12,6 +12,45 @@ Simple guide for building and deploying Frontend/TaskManager to Vedos/Wedos shar
 > - **[Rollback Procedures](./ROLLBACK_PROCEDURES.md)** - Emergency rollback guide
 > - **[Monitoring Setup](./MONITORING_SETUP.md)** - Monitoring and alerting configuration
 
+## Understanding Build vs Deployment Directories
+
+**Important:** There are two different directories in the build workflow:
+
+### `dist/` Directory
+- **Purpose:** Primary build output from Vite
+- **Created by:** `npm run build`
+- **Contains:** Compiled and bundled application files only
+- **Use for:** Development preview (`npm run preview`) and local testing
+- **Deploy:** ❌ Do NOT deploy this directly to production
+
+### `deploy-package/` Directory
+- **Purpose:** Complete deployment package ready for server upload
+- **Created by:** `./build-and-package.sh` or `build-and-package.bat`
+- **Contains:** Everything from `dist/` PLUS deployment scripts, configurations, and documentation
+- **Use for:** Production deployment to web servers
+- **Deploy:** ✅ Always deploy this directory to production
+
+### Build Workflow
+```
+1. npm run build
+   ↓
+   Creates dist/ (build output only)
+   
+2. ./build-and-package.sh
+   ↓
+   Copies dist/* to deploy-package/
+   Adds deployment scripts (deploy.php, deploy-auto.php, etc.)
+   Adds server configuration (.htaccess)
+   Creates deployment documentation
+   Creates compressed archives (.tar.gz, .zip)
+   ↓
+   deploy-package/ is ready for deployment
+   
+3. Upload deploy-package/ contents to server
+```
+
+**Key Takeaway:** Always use `./build-and-package.sh` and deploy `deploy-package/`, not `dist/`.
+
 ## Quick Start (3 Steps)
 
 ### Step 1: Build the Package
@@ -55,26 +94,40 @@ This creates `deploy-package/` directory with all files ready to upload.
 
 ### Building Locally
 
-The build process:
+The `build-and-package.sh` script performs the complete build and packaging process:
+
+**What it does:**
 1. Installs npm dependencies (if needed)
-2. Builds production bundle with Vite
-3. Copies deployment scripts
-4. Creates archive files for easy transfer
+2. Runs `npm run build` to create `dist/` directory
+3. Creates `deploy-package/` directory
+4. Copies all files from `dist/` to `deploy-package/`
+5. Adds deployment scripts (deploy.php, deploy-auto.php)
+6. Adds server configuration (.htaccess)
+7. Adds deployment documentation (README_DEPLOYMENT.txt)
+8. Creates compressed archives for easy transfer
 
 **Build Options:**
 ```bash
-# Normal build
+# Normal build (recommended)
 ./build-and-package.sh
 
-# Clean build (removes node_modules and rebuilds)
+# Clean build (removes node_modules, dist/, deploy-package/ and rebuilds everything)
 ./build-and-package.sh --clean
 ```
 
 **Output:**
-- `deploy-package/` - Ready-to-upload directory
-- `deploy-package-YYYYMMDD_HHMMSS.tar.gz` - Archive for Linux/Mac
-- `deploy-package-YYYYMMDD_HHMMSS.zip` - Archive for Windows
+- `dist/` - Vite build output (intermediate directory)
+- `deploy-package/` - Complete deployment package (use this for deployment)
+- `deploy-package-YYYYMMDD_HHMMSS.tar.gz` - Compressed archive for Linux/Mac
+- `deploy-package-YYYYMMDD_HHMMSS.zip` - Compressed archive for Windows
 - `deploy-package-latest.tar.gz` - Symlink to latest archive
+
+**Manual Build (Advanced):**
+If you only need the Vite build output without deployment scripts:
+```bash
+npm run build  # Creates dist/ only
+```
+However, for deployment, always use `build-and-package.sh` to get the complete package.
 
 ### Configuring API Connection
 

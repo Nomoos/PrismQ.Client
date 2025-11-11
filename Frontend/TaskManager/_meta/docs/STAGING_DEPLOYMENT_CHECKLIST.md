@@ -68,10 +68,11 @@ This checklist ensures consistent, error-free staging deployments. Follow each s
   - Should show correct staging API URL
 
 ### Build Execution
-- [ ] Run clean build
+- [ ] Run production build
   ```bash
   npm run build
   ```
+  - This creates the `dist/` directory with Vite build output
 
 - [ ] Verify build completed successfully
   - No TypeScript errors
@@ -88,7 +89,7 @@ This checklist ensures consistent, error-free staging deployments. Follow each s
   - Contains `index.html`, `assets/`, etc.
 
 ### Build Verification
-- [ ] Test built files locally
+- [ ] Test built files locally (using dist/)
   ```bash
   npm run preview
   ```
@@ -105,21 +106,28 @@ This checklist ensures consistent, error-free staging deployments. Follow each s
   ```
 
 ### Package Creation
-- [ ] Run packaging script
+- [ ] Create deployment package
   ```bash
   ./build-and-package.sh
   ```
+  - This copies `dist/*` to `deploy-package/`
+  - Adds deployment scripts and configurations
+  - Creates compressed archives
 
-- [ ] Verify package created
+- [ ] Verify deployment package created
   ```bash
   ls -lh deploy-package/
   ```
-  - Contains all required files
+  - Contains all files from `dist/`
+  - Contains `deploy.php`, `deploy-auto.php`
+  - Contains `.htaccess` configuration
+  - Contains `README_DEPLOYMENT.txt`
   - `deploy-package-*.tar.gz` created
   - `deploy-package-latest.tar.gz` symlink exists
 
-- [ ] Run deployment tests
+- [ ] Run deployment tests (on deploy-package/)
   ```bash
+  cd _meta/scripts
   ./test-deployment.sh staging
   ```
   - All tests should pass
@@ -144,7 +152,8 @@ This checklist ensures consistent, error-free staging deployments. Follow each s
   ```bash
   BACKUP_DIR="backups/frontend_$(date +%Y%m%d_%H%M%S)"
   mkdir -p "$BACKUP_DIR"
-  cp -r dist/ assets/ index.html .htaccess health.json "$BACKUP_DIR/" 2>/dev/null || true
+  # Note: Server has deployed files (from previous deploy-package/)
+  cp -r assets/ index.html .htaccess health.json deploy*.php "$BACKUP_DIR/" 2>/dev/null || true
   ls -lh "$BACKUP_DIR"
   ```
 
@@ -305,9 +314,10 @@ This checklist ensures consistent, error-free staging deployments. Follow each s
   - Hard refresh (Ctrl+Shift+R)
   - Load time should be < 3 seconds
 
-- [ ] Check bundle sizes
+- [ ] Check bundle sizes on server
   ```bash
-  ls -lh dist/assets/*.js
+  # On server (deployed files are in assets/)
+  ls -lh assets/*.js
   ```
   - Main bundle < 15KB (gzipped)
   - Vue vendor < 40KB (gzipped)
@@ -396,7 +406,9 @@ If critical issues are found:
   # On server
   cd /path/to/staging
   LATEST_BACKUP=$(ls -t backups/ | head -1)
-  rm -rf dist/ assets/ index.html
+  # Remove current deployed files
+  rm -rf assets/ index.html .htaccess deploy*.php health.*
+  # Restore from backup
   cp -r "backups/$LATEST_BACKUP"/* .
   ```
 

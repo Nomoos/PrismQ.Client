@@ -382,7 +382,9 @@ ls -lt backups/
 
 # Restore backup
 LATEST_BACKUP=$(ls -t backups/ | head -1)
-rm -rf dist/
+# Remove current deployed files
+rm -rf assets/ index.html .htaccess deploy*.php health.*
+# Restore from backup
 cp -r "backups/$LATEST_BACKUP"/* .
 
 # Verify rollback
@@ -459,8 +461,11 @@ cat .htaccess
 # Test API from server
 curl https://api.your-domain.com/health
 
-# Check API URL in deployed build
-grep -r "VITE_API_BASE_URL" dist/assets/
+# Check API URL in deployed build (on server, not local)
+grep -r "VITE_API_BASE_URL" assets/
+
+# Note: To check locally before deployment:
+# grep -r "VITE_API_BASE_URL" deploy-package/assets/
 
 # Verify CORS headers
 curl -H "Origin: https://your-domain.com" \

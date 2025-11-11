@@ -96,10 +96,11 @@ BACKUP="backups/frontend_20251110_143022"  # Replace with actual
 # 5. Create safety backup of current (problematic) version
 SAFETY_BACKUP="backups/rollback_safety_$(date +%Y%m%d_%H%M%S)"
 mkdir -p "$SAFETY_BACKUP"
-cp -r dist/ assets/ index.html .htaccess "$SAFETY_BACKUP/" 2>/dev/null
+# Note: Deployed files (from deploy-package/) are in root, not dist/
+cp -r assets/ index.html .htaccess deploy*.php health.* "$SAFETY_BACKUP/" 2>/dev/null
 
 # 6. Remove current deployment
-rm -rf dist/ assets/ index.html
+rm -rf assets/ index.html .htaccess deploy*.php health.*
 
 # 7. Restore from backup
 cp -r "$BACKUP"/* .
@@ -178,10 +179,9 @@ cat backups/frontend_20251110_120000/health.json
 SAFETY_DIR="backups/rollback_safety_$(date +%Y%m%d_%H%M%S)"
 mkdir -p "$SAFETY_DIR"
 
-# Copy current files
-cp -r dist/ "$SAFETY_DIR/dist/" 2>/dev/null || true
+# Copy current deployed files (from previous deploy-package/)
 cp -r assets/ "$SAFETY_DIR/assets/" 2>/dev/null || true
-cp index.html .htaccess health.json deploy.php "$SAFETY_DIR/" 2>/dev/null || true
+cp index.html .htaccess health.json deploy*.php "$SAFETY_DIR/" 2>/dev/null || true
 
 # Verify safety backup
 ls -la "$SAFETY_DIR"
@@ -218,9 +218,9 @@ EOF
 
 ```bash
 # Remove problematic deployment
-rm -rf dist/ assets/ index.html
+rm -rf assets/ index.html .htaccess deploy*.php health.*
 
-# Note: Keep .htaccess, deploy scripts, backups/
+# Note: Keep backups/ directory
 
 # Restore from backup
 BACKUP_DIR="backups/frontend_20251110_120000"
