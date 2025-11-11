@@ -10,6 +10,12 @@
 
 This is the central deployment guide for PrismQ Client, covering both the **Backend/TaskManager** (PHP REST API) and **Frontend/TaskManager** (Vue 3 web interface). This guide provides a high-level overview and links to detailed deployment documentation for each component.
 
+### Production Deployments
+
+**Live Production URLs:**
+- **Backend API**: https://api.prismq.nomoos.cz
+- **Frontend UI**: https://prismq.nomoos.cz
+
 ### Project Structure
 
 ```
@@ -36,10 +42,12 @@ PrismQ Client uses a **modular deployment approach**:
 Deploy the PHP REST API to handle task queue operations:
 
 ```bash
-# Upload deploy.php to your server
-# Visit: https://your-domain.com/api/deploy.php
+# Upload deploy.php from Backend/TaskManager/src/ to your server
+# Visit: https://your-domain.com/deploy.php
 # Follow the interactive setup wizard
 ```
+
+**Production Example**: https://api.prismq.nomoos.cz
 
 **See**: [Backend Deployment Guide](../Backend/TaskManager/_meta/docs/deployment/DEPLOYMENT_GUIDE.md)
 
@@ -56,6 +64,8 @@ cd Frontend/TaskManager
 # Visit: https://your-domain.com/deploy.php
 # Complete the setup
 ```
+
+**Production Example**: https://prismq.nomoos.cz
 
 **See**: [Frontend Deployment Guide](../Frontend/TaskManager/_meta/docs/DEPLOYMENT.md)
 
@@ -154,14 +164,15 @@ Supported platforms:
 
 **Step 1: Environment Check**
 ```bash
-# Upload and run check_setup.php
+# Upload check_setup.php from Backend/TaskManager/src/ and run
 php check_setup.php
 ```
 
 **Step 2: Deploy Backend**
 ```bash
 # Option A: Web-based (recommended)
-# Visit: https://your-domain.com/api/deploy.php
+# Upload deploy.php from Backend/TaskManager/src/
+# Visit: https://your-domain.com/deploy.php
 
 # Option B: Command-line
 php deploy.php
@@ -173,6 +184,11 @@ curl https://your-domain.com/api/health
 # Expected: {"success":true,"message":"TaskManager API is healthy"}
 ```
 
+**Production Example**:
+```bash
+curl https://api.prismq.nomoos.cz/api/health
+```
+
 **Detailed Guide**: [Backend Deployment Guide](../Backend/TaskManager/_meta/docs/deployment/DEPLOYMENT_GUIDE.md)
 
 ### Phase 3: Frontend Deployment
@@ -182,6 +198,13 @@ curl https://your-domain.com/api/health
 # Edit Frontend/TaskManager/.env
 VITE_API_BASE_URL=https://your-domain.com/api
 VITE_API_KEY=your-api-key-here
+```
+
+**Production Example**:
+```bash
+# Production configuration
+VITE_API_BASE_URL=https://api.prismq.nomoos.cz/api
+VITE_API_KEY=your-production-api-key
 ```
 
 **Step 2: Build Package**
@@ -232,7 +255,7 @@ cd Frontend/TaskManager
 | `deploy.php` | Main deployment script | Web browser or CLI |
 | `deploy-deploy.php` | Update deployment script | Ensures latest version |
 
-**Location**: `Backend/TaskManager/`
+**Location**: `Backend/TaskManager/src/`
 
 ### Frontend Scripts
 
@@ -387,6 +410,7 @@ https://your-domain.com/
 ### Updating Backend
 
 ```bash
+# Upload latest deploy-deploy.php from Backend/TaskManager/src/
 # Download latest deploy.php
 php deploy-deploy.php
 
@@ -394,6 +418,8 @@ php deploy-deploy.php
 php deploy.php
 # Choose "Skip database setup" if DB is already configured
 ```
+
+**Note**: All deployment scripts are located in `Backend/TaskManager/src/` in the repository.
 
 ### Updating Frontend
 
