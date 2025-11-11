@@ -206,27 +206,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { useTaskStore } from '../stores/tasks'
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { useWorkerStore } from '../stores/worker'
-import { useToast } from '../composables/useToast'
+import { useTaskDetail } from '../composables/useTaskDetail'
+import { useTaskActions } from '../composables/useTaskActions'
 import ConfirmDialog from '../components/base/ConfirmDialog.vue'
 import LoadingState from '../components/base/LoadingState.vue'
 import ErrorDisplay from '../components/base/ErrorDisplay.vue'
 import StatusBadge from '../components/base/StatusBadge.vue'
 import { formatDate as formatDateUtil } from '../utils/dateFormatting'
-import type { Task } from '../types'
 
 const route = useRoute()
-const router = useRouter()
-const taskStore = useTaskStore()
 const workerStore = useWorkerStore()
-const toast = useToast()
 
-const task = ref<Task | null>(null)
-const actionLoading = ref(false)
-const completingSuccess = ref(false)
 const showFailConfirmation = ref(false)
 
 // Initialize worker if not already initialized
@@ -234,75 +227,20 @@ if (!workerStore.isInitialized) {
   workerStore.initializeWorker()
 }
 
-const loading = computed(() => taskStore.loading)
-const error = computed(() => taskStore.error)
-
-async function loadTask() {
-  const taskId = Number(route.params.id)
-  if (isNaN(taskId)) {
-    taskStore.error = 'Invalid task ID'
-    return
-  }
-
-  try {
-    const fetchedTask = await taskStore.fetchTask(taskId)
-    if (fetchedTask) {
-      task.value = fetchedTask
-    }
-  } catch (e) {
-    console.error('Failed to load task:', e)
-  }
-}
+// Use composables for task detail and actions
+const taskId = Number(route.params.id)
+const { task, loading, error, loadTask } = useTaskDetail(taskId)
+const { actionLoading, completingSuccess, claim, completeSuccess, completeFailed } = useTaskActions(task)
 
 async function handleClaim() {
-  if (!task.value || !workerStore.workerId) return
-  
-  actionLoading.value = true
-  try {
-    const claimedTask = await taskStore.claimTask(workerStore.workerId, task.value.type_id)
-    if (claimedTask) {
-      task.value = claimedTask
-      toast.success('Task claimed successfully!')
-    }
-  } catch (e) {
-    console.error('Failed to claim task:', e)
-    toast.error('Failed to claim task. Please try again.')
-  } finally {
-    actionLoading.value = false
-  }
+  await claim()
 }
 
 async function handleComplete(success: boolean) {
-  if (!task.value || !workerStore.workerId) return
-  
-  actionLoading.value = true
-  completingSuccess.value = success
-  
-  try {
-    const result = success ? { completed: true, timestamp: new Date().toISOString() } : undefined
-    const errorMessage = success ? undefined : 'Task marked as failed by user'
-    
-    const completedTask = await taskStore.completeTask(
-      task.value.id,
-      workerStore.workerId,
-      success,
-      result,
-      errorMessage
-    )
-    
-    if (completedTask) {
-      task.value = completedTask
-      toast.success(success ? 'Task completed successfully!' : 'Task marked as failed')
-      // Navigate back to task list after a short delay
-      setTimeout(() => {
-        router.push('/')
-      }, 1500)
-    }
-  } catch (e) {
-    console.error('Failed to complete task:', e)
-    toast.error('Failed to complete task. Please try again.')
-  } finally {
-    actionLoading.value = false
+  if (success) {
+    await completeSuccess()
+  } else {
+    await completeFailed()
   }
 }
 
