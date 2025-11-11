@@ -356,6 +356,7 @@ class TaskManagerDeployer
         $files = [
             'api/.htaccess' => API_PATH . '/.htaccess',
             'api/index.php' => API_PATH . '/index.php',
+            'api/SecurityMiddleware.php' => API_PATH . '/SecurityMiddleware.php',
             'api/ApiResponse.php' => API_PATH . '/ApiResponse.php',
             'api/EndpointRouter.php' => API_PATH . '/EndpointRouter.php',
             'api/ActionExecutor.php' => API_PATH . '/ActionExecutor.php',
@@ -363,6 +364,10 @@ class TaskManagerDeployer
             'api/TaskController.php' => API_PATH . '/TaskController.php',
             'api/TaskTypeController.php' => API_PATH . '/TaskTypeController.php',
             'api/JsonSchemaValidator.php' => API_PATH . '/JsonSchemaValidator.php',
+            'api/QueryProfiler.php' => API_PATH . '/QueryProfiler.php',
+            'api/PerformanceMonitor.php' => API_PATH . '/PerformanceMonitor.php',
+            'api/OpenApiConfig.php' => API_PATH . '/OpenApiConfig.php',
+            'api/OpenApiDocumentation.php' => API_PATH . '/OpenApiDocumentation.php',
             'database/Database.php' => DATABASE_PATH . '/Database.php',
             'database/schema.sql' => DATABASE_PATH . '/schema.sql',
             'database/seed_endpoints.sql' => DATABASE_PATH . '/seed_endpoints.sql',
