@@ -1,5 +1,10 @@
 # PrismQ Web Client - Architecture Documentation
 
+> **⚠️ Note**: This document describes a legacy system architecture. The current PrismQ.Client project is built around the **TaskManager module**.  
+> **For current architecture documentation, see:**
+> - [Backend/TaskManager Architecture](../../../Backend/TaskManager/_meta/docs/architecture/DATA_DRIVEN_ARCHITECTURE.md) - Current backend module architecture
+> - [Frontend/TaskManager Documentation](../../../Frontend/TaskManager/README.md) - Current frontend module documentation
+
 ## Overview
 
 The PrismQ Web Client is a localhost-based web application that provides a unified interface for discovering, configuring, and running PrismQ data collection modules. It follows a modern three-tier architecture with clear separation of concerns between the presentation layer (Vue 3 Frontend), business logic layer (FastAPI Backend), and execution layer (PrismQ Modules).

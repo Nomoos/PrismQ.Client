@@ -1,5 +1,9 @@
 # PrismQ Client - On-Demand Architecture
 
+> **✅ Current**: This architectural principle applies to the current **TaskManager module**.  
+> The TaskManager backend operates on-demand via HTTP requests with no background processes.  
+> See: [Backend/TaskManager README](../../../Backend/TaskManager/README.md) for implementation details.
+
 ## Overview
 
 The PrismQ Client follows an **on-demand architecture** where all background operations are initiated by explicit requests from the UI to the API. This design ensures clear separation of concerns and predictable behavior.

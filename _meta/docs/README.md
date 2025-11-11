@@ -1,5 +1,10 @@
 # PrismQ Client Documentation
 
+> **📌 TaskManager Module Documentation**:  
+> The current system is built around the **TaskManager module** with Backend and Frontend components.  
+> - **[Backend/TaskManager Docs](../../Backend/TaskManager/README.md)** - Backend module (PHP REST API)
+> - **[Frontend/TaskManager Docs](../../Frontend/TaskManager/README.md)** - Frontend module (Vue 3 UI)
+
 ## 📖 Documentation Categories
 
 ### 🚀 [Getting Started](getting-started/README.md)
