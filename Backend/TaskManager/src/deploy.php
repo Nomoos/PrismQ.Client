@@ -41,7 +41,7 @@ if (file_exists($configFile)) {
 define('GITHUB_REPO_OWNER', 'Nomoos');
 define('GITHUB_REPO_NAME', 'PrismQ.Client');
 define('GITHUB_BRANCH', 'main');
-define('GITHUB_PATH', 'Backend/TaskManager');
+define('GITHUB_PATH', 'Backend/TaskManager/src');
 
 // Installation paths
 define('INSTALL_PATH', __DIR__);
