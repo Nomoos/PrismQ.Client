@@ -1778,7 +1778,7 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "https://api.prismq.nomoos.cz/public/api",
+      "value": "https://api.prismq.nomoos.cz/api",
       "type": "string",
       "description": "Base URL for TaskManager API (Production)"
     },
@@ -1794,7 +1794,7 @@
     "name": "TaskManager API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "description": {
-      "content": "TaskManager API - Lightweight PHP Task Queue with Data-Driven REST API\n\n**Production URL**: https://api.prismq.nomoos.cz/public/api\n**Documentation**: https://api.prismq.nomoos.cz/public/swagger-ui/\n\n**Features**:\n- Task type registration with JSON schema validation\n- Task creation, claiming, and completion workflow\n- Worker coordination with timeout handling\n- Health check and system status\n- Database-driven API endpoints\n\n**Authentication**:\nMost endpoints require an API key passed in the X-API-Key header.\n\n**Version**: 1.0.0\n**Contact**: PrismQ - https://github.com/Nomoos/PrismQ.Client",
+      "content": "TaskManager API - Lightweight PHP Task Queue with Data-Driven REST API\n\n**Production URL**: https://api.prismq.nomoos.cz/api\n**Documentation**: https://api.prismq.nomoos.cz/public/swagger-ui/\n\n**Features**:\n- Task type registration with JSON schema validation\n- Task creation, claiming, and completion workflow\n- Worker coordination with timeout handling\n- Health check and system status\n- Database-driven API endpoints\n\n**Authentication**:\nMost endpoints require an API key passed in the X-API-Key header.\n\n**Version**: 1.0.0\n**Contact**: PrismQ - https://github.com/Nomoos/PrismQ.Client",
       "type": "text/plain"
     },
     "version": "1.0.0"

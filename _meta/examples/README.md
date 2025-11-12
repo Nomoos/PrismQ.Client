@@ -9,7 +9,7 @@ This directory contains Postman collections for testing and interacting with Pri
 
 Complete Postman collection for the TaskManager API endpoints.
 
-**Production URL**: https://api.prismq.nomoos.cz/public/api  
+**Production URL**: https://api.prismq.nomoos.cz/api  
 **Documentation**: https://api.prismq.nomoos.cz/public/swagger-ui/
 
 #### Features
@@ -39,13 +39,13 @@ Most endpoints require an API key passed in the `X-API-Key` header. Configure th
 #### Usage
 1. Import `TaskManager_API.postman_collection.json` into Postman
 2. Set the `apiKey` variable in the collection variables
-3. The `baseUrl` is pre-configured to point to production: `https://api.prismq.nomoos.cz/public/api`
+3. The `baseUrl` is pre-configured to point to production: `https://api.prismq.nomoos.cz/api`
 4. Start making requests!
 
 #### Local Development
 To use this collection with a local development server:
 1. In Postman, open the collection variables
-2. Change `baseUrl` from `https://api.prismq.nomoos.cz/public/api` to `http://localhost:8000/api`
+2. Change `baseUrl` from `https://api.prismq.nomoos.cz/api` to `http://localhost:8000/api`
 3. Start your local PHP server (see Backend/TaskManager/README.md)
 
 ---
