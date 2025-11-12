@@ -1,0 +1,1802 @@
+{
+  "item": [
+    {
+      "name": "health",
+      "description": "",
+      "item": [
+        {
+          "id": "27511afb-889a-41c5-8b3b-120a8ca7ac55",
+          "name": "Health check endpoint",
+          "request": {
+            "name": "Health check endpoint",
+            "description": {
+              "content": "Check if the API and database are operational. This endpoint does not require authentication.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "health"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {},
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "62924676-03ae-43a8-ba12-3de2c3a95c41",
+              "name": "System is healthy",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "health"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"<string>\",\n  \"timestamp\": \"<integer>\",\n  \"database\": \"<string>\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "task-types",
+      "description": "",
+      "item": [
+        {
+          "name": "register",
+          "description": "",
+          "item": [
+            {
+              "id": "ab078e6d-b22a-4a14-9762-149b2aab87b1",
+              "name": "Register or update a task type",
+              "request": {
+                "name": "Register or update a task type",
+                "description": {
+                  "content": "Register a new task type or update an existing one with a new schema version.",
+                  "type": "text/plain"
+                },
+                "url": {
+                  "path": [
+                    "task-types",
+                    "register"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"version\": \"<string>\",\n  \"param_schema\": {}\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                },
+                "auth": null
+              },
+              "response": [
+                {
+                  "id": "594918ce-2ac5-4b45-a90c-321409585f75",
+                  "name": "Task type registered successfully",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "task-types",
+                        "register"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": {
+                          "content": "Added as a part of security scheme: apikey",
+                          "type": "text/plain"
+                        },
+                        "key": "X-API-Key",
+                        "value": "<API Key>"
+                      }
+                    ],
+                    "method": "POST",
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"name\": \"<string>\",\n  \"version\": \"<string>\",\n  \"param_schema\": {}\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "body": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"version\": \"<string>\",\n  \"created\": \"<boolean>\",\n  \"updated\": \"<boolean>\"\n}",
+                  "cookie": [],
+                  "_postman_previewlanguage": "json"
+                },
+                {
+                  "id": "69d6e6db-bb49-4a53-8893-b6af235e1546",
+                  "name": "Invalid request or validation error",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "task-types",
+                        "register"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": {
+                          "content": "Added as a part of security scheme: apikey",
+                          "type": "text/plain"
+                        },
+                        "key": "X-API-Key",
+                        "value": "<API Key>"
+                      }
+                    ],
+                    "method": "POST",
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"name\": \"<string>\",\n  \"version\": \"<string>\",\n  \"param_schema\": {}\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    }
+                  },
+                  "status": "Bad Request",
+                  "code": 400,
+                  "header": [],
+                  "cookie": [],
+                  "_postman_previewlanguage": "text"
+                },
+                {
+                  "id": "b163f240-8308-4dfa-87d9-02a36661fab4",
+                  "name": "Unauthorized - Invalid API key",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "task-types",
+                        "register"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": {
+                          "content": "Added as a part of security scheme: apikey",
+                          "type": "text/plain"
+                        },
+                        "key": "X-API-Key",
+                        "value": "<API Key>"
+                      }
+                    ],
+                    "method": "POST",
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"name\": \"<string>\",\n  \"version\": \"<string>\",\n  \"param_schema\": {}\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    }
+                  },
+                  "status": "Unauthorized",
+                  "code": 401,
+                  "header": [],
+                  "cookie": [],
+                  "_postman_previewlanguage": "text"
+                }
+              ],
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
+            }
+          ]
+        },
+        {
+          "name": "{name}",
+          "description": "",
+          "item": [
+            {
+              "id": "6becad05-e268-4298-94fb-b6c14e01a538",
+              "name": "Get a specific task type by name",
+              "request": {
+                "name": "Get a specific task type by name",
+                "description": {},
+                "url": {
+                  "path": [
+                    "task-types",
+                    ":name"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "name",
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) Task type name",
+                        "type": "text/plain"
+                      }
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {},
+                "auth": null
+              },
+              "response": [
+                {
+                  "id": "a66f0c6b-21e6-4c90-93c3-fbea2703dc9e",
+                  "name": "Task type details",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "task-types",
+                        ":name"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": {
+                          "content": "Added as a part of security scheme: apikey",
+                          "type": "text/plain"
+                        },
+                        "key": "X-API-Key",
+                        "value": "<API Key>"
+                      }
+                    ],
+                    "method": "GET",
+                    "body": {}
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "body": "{\n  \"id\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"version\": \"<string>\",\n  \"param_schema\": {},\n  \"is_active\": \"<boolean>\"\n}",
+                  "cookie": [],
+                  "_postman_previewlanguage": "json"
+                },
+                {
+                  "id": "83e70a32-a45f-4491-afc7-89fe08e6a39f",
+                  "name": "Unauthorized - Invalid API key",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "task-types",
+                        ":name"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "header": [
+                      {
+                        "description": {
+                          "content": "Added as a part of security scheme: apikey",
+                          "type": "text/plain"
+                        },
+                        "key": "X-API-Key",
+                        "value": "<API Key>"
+                      }
+                    ],
+                    "method": "GET",
+                    "body": {}
+                  },
+                  "status": "Unauthorized",
+                  "code": 401,
+                  "header": [],
+                  "cookie": [],
+                  "_postman_previewlanguage": "text"
+                },
+                {
+                  "id": "a49d8c06-181d-4d62-9ddc-9f7a3e12a797",
+                  "name": "Task type not found",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "task-types",
+                        ":name"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "header": [
+                      {
+                        "description": {
+                          "content": "Added as a part of security scheme: apikey",
+                          "type": "text/plain"
+                        },
+                        "key": "X-API-Key",
+                        "value": "<API Key>"
+                      }
+                    ],
+                    "method": "GET",
+                    "body": {}
+                  },
+                  "status": "Not Found",
+                  "code": 404,
+                  "header": [],
+                  "cookie": [],
+                  "_postman_previewlanguage": "text"
+                }
+              ],
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "6c3e3049-85a9-43e4-8d7a-82d2038da370",
+          "name": "List all task types",
+          "request": {
+            "name": "List all task types",
+            "description": {},
+            "url": {
+              "path": [
+                "task-types"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "Filter to only active task types",
+                    "type": "text/plain"
+                  },
+                  "key": "active_only",
+                  "value": "false"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {},
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c5ba7743-7c8c-4709-b270-d3adec5f626d",
+              "name": "List of task types",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "task-types"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Filter to only active task types",
+                        "type": "text/plain"
+                      },
+                      "key": "active_only",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"version\": \"<string>\",\n    \"is_active\": \"<boolean>\"\n  },\n  {\n    \"id\": \"<integer>\",\n    \"name\": \"<string>\",\n    \"version\": \"<string>\",\n    \"is_active\": \"<boolean>\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f5009018-bb8b-4a73-8c15-95526ea99f23",
+              "name": "Unauthorized - Invalid API key",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "task-types"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Filter to only active task types",
+                        "type": "text/plain"
+                      },
+                      "key": "active_only",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [],
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "tasks",
+      "description": "",
+      "item": [
+        {
+          "id": "45719e46-54de-4b65-a1dc-84985c43a48e",
+          "name": "Create a new task",
+          "request": {
+            "name": "Create a new task",
+            "description": {},
+            "url": {
+              "path": [
+                "tasks"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"<string>\",\n  \"params\": {}\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            },
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "768e9a74-3c4a-4a8f-bd2b-1afa7b017042",
+              "name": "Task created or existing task returned (deduplication)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tasks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"params\": {}\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"<integer>\",\n  \"type\": \"<string>\",\n  \"status\": \"<string>\",\n  \"dedupe_key\": \"<string>\",\n  \"duplicate\": \"<boolean>\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "caa9bef9-58cd-42c5-84a9-df6e7cffa3c0",
+              "name": "Invalid request or parameter validation failed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tasks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"params\": {}\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [],
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "4569bb76-8f29-4b73-bcdc-6782acb5368d",
+              "name": "Unauthorized - Invalid API key",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tasks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"params\": {}\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [],
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3ecb98d4-b0cd-4abd-9a5d-d2443abc0862",
+              "name": "Task type not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tasks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"type\": \"<string>\",\n  \"params\": {}\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [],
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d470defb-a857-400b-857b-ebb29e858648",
+          "name": "List tasks with optional filters",
+          "request": {
+            "name": "List tasks with optional filters",
+            "description": {},
+            "url": {
+              "path": [
+                "tasks"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "Filter by status (This can only be one of pending,claimed,completed,failed)",
+                    "type": "text/plain"
+                  },
+                  "key": "status",
+                  "value": "pending"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "Filter by type (supports SQL LIKE patterns)",
+                    "type": "text/plain"
+                  },
+                  "key": "type",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "Maximum number of results",
+                    "type": "text/plain"
+                  },
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "Result offset for pagination",
+                    "type": "text/plain"
+                  },
+                  "key": "offset",
+                  "value": "0"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "body": {},
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a80be7a7-e267-41e4-9379-88aa14339627",
+              "name": "List of tasks",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tasks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Filter by status (This can only be one of pending,claimed,completed,failed)",
+                        "type": "text/plain"
+                      },
+                      "key": "status",
+                      "value": "pending"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Filter by type (supports SQL LIKE patterns)",
+                        "type": "text/plain"
+                      },
+                      "key": "type",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Maximum number of results",
+                        "type": "text/plain"
+                      },
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Result offset for pagination",
+                        "type": "text/plain"
+                      },
+                      "key": "offset",
+                      "value": "0"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": \"<integer>\",\n    \"type\": \"<string>\",\n    \"status\": \"<string>\",\n    \"created_at\": \"<dateTime>\"\n  },\n  {\n    \"id\": \"<integer>\",\n    \"type\": \"<string>\",\n    \"status\": \"<string>\",\n    \"created_at\": \"<dateTime>\"\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f52bb652-7de4-4c91-84c0-4458dcd5021c",
+              "name": "Unauthorized - Invalid API key",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "tasks"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Filter by status (This can only be one of pending,claimed,completed,failed)",
+                        "type": "text/plain"
+                      },
+                      "key": "status",
+                      "value": "pending"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Filter by type (supports SQL LIKE patterns)",
+                        "type": "text/plain"
+                      },
+                      "key": "type",
+                      "value": "<string>"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Maximum number of results",
+                        "type": "text/plain"
+                      },
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Result offset for pagination",
+                        "type": "text/plain"
+                      },
+                      "key": "offset",
+                      "value": "0"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [],
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "name": "claim",
+          "description": "",
+          "item": [
+            {
+              "id": "fe7fb5b2-d41a-41a0-9c23-2963920fd05c",
+              "name": "Claim a pending task for processing",
+              "request": {
+                "name": "Claim a pending task for processing",
+                "description": {
+                  "content": "Workers use this endpoint to claim a task from the queue. Returns the oldest pending task matching the optional type pattern.",
+                  "type": "text/plain"
+                },
+                "url": {
+                  "path": [
+                    "tasks",
+                    "claim"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"worker_id\": \"<string>\",\n  \"task_type_id\": \"<integer>\",\n  \"type_pattern\": \"<string>\",\n  \"sort_by\": \"created_at\",\n  \"sort_order\": \"ASC\"\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                },
+                "auth": null
+              },
+              "response": [
+                {
+                  "id": "88d663fa-2147-431e-9a54-1e80f87f6c17",
+                  "name": "Task claimed successfully",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "tasks",
+                        "claim"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": {
+                          "content": "Added as a part of security scheme: apikey",
+                          "type": "text/plain"
+                        },
+                        "key": "X-API-Key",
+                        "value": "<API Key>"
+                      }
+                    ],
+                    "method": "POST",
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"worker_id\": \"<string>\",\n  \"task_type_id\": \"<integer>\",\n  \"type_pattern\": \"<string>\",\n  \"sort_by\": \"created_at\",\n  \"sort_order\": \"ASC\"\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "body": "{\n  \"id\": \"<integer>\",\n  \"type\": \"<string>\",\n  \"params\": {},\n  \"attempts\": \"<integer>\",\n  \"priority\": \"<integer>\"\n}",
+                  "cookie": [],
+                  "_postman_previewlanguage": "json"
+                },
+                {
+                  "id": "4a0d3f88-238f-4919-b0e8-a19fa0c9dfe2",
+                  "name": "Invalid request - Invalid sort_by or sort_order",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "tasks",
+                        "claim"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": {
+                          "content": "Added as a part of security scheme: apikey",
+                          "type": "text/plain"
+                        },
+                        "key": "X-API-Key",
+                        "value": "<API Key>"
+                      }
+                    ],
+                    "method": "POST",
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"worker_id\": \"<string>\",\n  \"task_type_id\": \"<integer>\",\n  \"type_pattern\": \"<string>\",\n  \"sort_by\": \"created_at\",\n  \"sort_order\": \"ASC\"\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    }
+                  },
+                  "status": "Bad Request",
+                  "code": 400,
+                  "header": [],
+                  "cookie": [],
+                  "_postman_previewlanguage": "text"
+                },
+                {
+                  "id": "097b15ac-e4b2-4a76-82dc-99dc59421527",
+                  "name": "Unauthorized - Invalid API key",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "tasks",
+                        "claim"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": {
+                          "content": "Added as a part of security scheme: apikey",
+                          "type": "text/plain"
+                        },
+                        "key": "X-API-Key",
+                        "value": "<API Key>"
+                      }
+                    ],
+                    "method": "POST",
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"worker_id\": \"<string>\",\n  \"task_type_id\": \"<integer>\",\n  \"type_pattern\": \"<string>\",\n  \"sort_by\": \"created_at\",\n  \"sort_order\": \"ASC\"\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    }
+                  },
+                  "status": "Unauthorized",
+                  "code": 401,
+                  "header": [],
+                  "cookie": [],
+                  "_postman_previewlanguage": "text"
+                },
+                {
+                  "id": "5b95034d-e915-4375-8d62-cc55093cd443",
+                  "name": "No tasks available",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "tasks",
+                        "claim"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": {
+                          "content": "Added as a part of security scheme: apikey",
+                          "type": "text/plain"
+                        },
+                        "key": "X-API-Key",
+                        "value": "<API Key>"
+                      }
+                    ],
+                    "method": "POST",
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"worker_id\": \"<string>\",\n  \"task_type_id\": \"<integer>\",\n  \"type_pattern\": \"<string>\",\n  \"sort_by\": \"created_at\",\n  \"sort_order\": \"ASC\"\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    }
+                  },
+                  "status": "Not Found",
+                  "code": 404,
+                  "header": [],
+                  "cookie": [],
+                  "_postman_previewlanguage": "text"
+                }
+              ],
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
+            }
+          ]
+        },
+        {
+          "name": "{id}",
+          "description": "",
+          "item": [
+            {
+              "id": "538d395e-6b84-44a8-baac-902df241b066",
+              "name": "Get task status and details",
+              "request": {
+                "name": "Get task status and details",
+                "description": {},
+                "url": {
+                  "path": [
+                    "tasks",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "type": "any",
+                      "value": "<integer>",
+                      "key": "id",
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) Task ID",
+                        "type": "text/plain"
+                      }
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {},
+                "auth": null
+              },
+              "response": [
+                {
+                  "id": "ef46b5d7-2d07-4899-ac5f-7232cbc78fc8",
+                  "name": "Task details",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "tasks",
+                        ":id"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": {
+                          "content": "Added as a part of security scheme: apikey",
+                          "type": "text/plain"
+                        },
+                        "key": "X-API-Key",
+                        "value": "<API Key>"
+                      }
+                    ],
+                    "method": "GET",
+                    "body": {}
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "body": "{\n  \"id\": \"<integer>\",\n  \"type\": \"<string>\",\n  \"status\": \"completed\",\n  \"params\": {},\n  \"result\": {},\n  \"error_message\": \"<string>\",\n  \"attempts\": \"<integer>\",\n  \"created_at\": \"<dateTime>\",\n  \"completed_at\": \"<dateTime>\"\n}",
+                  "cookie": [],
+                  "_postman_previewlanguage": "json"
+                },
+                {
+                  "id": "d05285ad-49ba-4b24-9c14-db02e6ffef42",
+                  "name": "Unauthorized - Invalid API key",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "tasks",
+                        ":id"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "header": [
+                      {
+                        "description": {
+                          "content": "Added as a part of security scheme: apikey",
+                          "type": "text/plain"
+                        },
+                        "key": "X-API-Key",
+                        "value": "<API Key>"
+                      }
+                    ],
+                    "method": "GET",
+                    "body": {}
+                  },
+                  "status": "Unauthorized",
+                  "code": 401,
+                  "header": [],
+                  "cookie": [],
+                  "_postman_previewlanguage": "text"
+                },
+                {
+                  "id": "58dac45a-4136-499f-a301-516485e262a3",
+                  "name": "Task not found",
+                  "originalRequest": {
+                    "url": {
+                      "path": [
+                        "tasks",
+                        ":id"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": []
+                    },
+                    "header": [
+                      {
+                        "description": {
+                          "content": "Added as a part of security scheme: apikey",
+                          "type": "text/plain"
+                        },
+                        "key": "X-API-Key",
+                        "value": "<API Key>"
+                      }
+                    ],
+                    "method": "GET",
+                    "body": {}
+                  },
+                  "status": "Not Found",
+                  "code": 404,
+                  "header": [],
+                  "cookie": [],
+                  "_postman_previewlanguage": "text"
+                }
+              ],
+              "event": [],
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              }
+            },
+            {
+              "name": "complete",
+              "description": "",
+              "item": [
+                {
+                  "id": "ea5f31a5-0b21-4aad-a842-c358985fed0a",
+                  "name": "Mark a task as completed or failed",
+                  "request": {
+                    "name": "Mark a task as completed or failed",
+                    "description": {
+                      "content": "Workers use this endpoint to report task completion or failure.",
+                      "type": "text/plain"
+                    },
+                    "url": {
+                      "path": [
+                        "tasks",
+                        ":id",
+                        "complete"
+                      ],
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "query": [],
+                      "variable": [
+                        {
+                          "type": "any",
+                          "value": "<integer>",
+                          "key": "id",
+                          "disabled": false,
+                          "description": {
+                            "content": "(Required) Task ID",
+                            "type": "text/plain"
+                          }
+                        }
+                      ]
+                    },
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "method": "POST",
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"worker_id\": \"<string>\",\n  \"success\": \"<boolean>\",\n  \"result\": {},\n  \"error\": \"<string>\"\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "auth": null
+                  },
+                  "response": [
+                    {
+                      "id": "47e87490-68e8-4882-992d-3dd3e27bbad1",
+                      "name": "Task completed successfully",
+                      "originalRequest": {
+                        "url": {
+                          "path": [
+                            "tasks",
+                            ":id",
+                            "complete"
+                          ],
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "query": [],
+                          "variable": []
+                        },
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": {
+                              "content": "Added as a part of security scheme: apikey",
+                              "type": "text/plain"
+                            },
+                            "key": "X-API-Key",
+                            "value": "<API Key>"
+                          }
+                        ],
+                        "method": "POST",
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"worker_id\": \"<string>\",\n  \"success\": \"<boolean>\",\n  \"result\": {},\n  \"error\": \"<string>\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        }
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "body": "{\n  \"success\": \"<boolean>\",\n  \"message\": \"<string>\"\n}",
+                      "cookie": [],
+                      "_postman_previewlanguage": "json"
+                    },
+                    {
+                      "id": "f6c1aed0-0fb1-4c52-934c-052ffa90b4f0",
+                      "name": "Invalid request",
+                      "originalRequest": {
+                        "url": {
+                          "path": [
+                            "tasks",
+                            ":id",
+                            "complete"
+                          ],
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "query": [],
+                          "variable": []
+                        },
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": {
+                              "content": "Added as a part of security scheme: apikey",
+                              "type": "text/plain"
+                            },
+                            "key": "X-API-Key",
+                            "value": "<API Key>"
+                          }
+                        ],
+                        "method": "POST",
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"worker_id\": \"<string>\",\n  \"success\": \"<boolean>\",\n  \"result\": {},\n  \"error\": \"<string>\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        }
+                      },
+                      "status": "Bad Request",
+                      "code": 400,
+                      "header": [],
+                      "cookie": [],
+                      "_postman_previewlanguage": "text"
+                    },
+                    {
+                      "id": "533501e0-e15b-41dd-a3b1-57b9425e1a43",
+                      "name": "Unauthorized - Invalid API key",
+                      "originalRequest": {
+                        "url": {
+                          "path": [
+                            "tasks",
+                            ":id",
+                            "complete"
+                          ],
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "query": [],
+                          "variable": []
+                        },
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": {
+                              "content": "Added as a part of security scheme: apikey",
+                              "type": "text/plain"
+                            },
+                            "key": "X-API-Key",
+                            "value": "<API Key>"
+                          }
+                        ],
+                        "method": "POST",
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"worker_id\": \"<string>\",\n  \"success\": \"<boolean>\",\n  \"result\": {},\n  \"error\": \"<string>\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        }
+                      },
+                      "status": "Unauthorized",
+                      "code": 401,
+                      "header": [],
+                      "cookie": [],
+                      "_postman_previewlanguage": "text"
+                    },
+                    {
+                      "id": "b5ac9c10-8941-4ff6-95d4-948512d33aa9",
+                      "name": "Task not found",
+                      "originalRequest": {
+                        "url": {
+                          "path": [
+                            "tasks",
+                            ":id",
+                            "complete"
+                          ],
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "query": [],
+                          "variable": []
+                        },
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": {
+                              "content": "Added as a part of security scheme: apikey",
+                              "type": "text/plain"
+                            },
+                            "key": "X-API-Key",
+                            "value": "<API Key>"
+                          }
+                        ],
+                        "method": "POST",
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"worker_id\": \"<string>\",\n  \"success\": \"<boolean>\",\n  \"result\": {},\n  \"error\": \"<string>\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        }
+                      },
+                      "status": "Not Found",
+                      "code": 404,
+                      "header": [],
+                      "cookie": [],
+                      "_postman_previewlanguage": "text"
+                    }
+                  ],
+                  "event": [],
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "type": "any",
+        "value": "X-API-Key",
+        "key": "key"
+      },
+      {
+        "type": "any",
+        "value": "{{apiKey}}",
+        "key": "value"
+      },
+      {
+        "type": "any",
+        "value": "header",
+        "key": "in"
+      }
+    ]
+  },
+  "event": [],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.prismq.nomoos.cz/api",
+      "type": "string",
+      "description": "Base URL for TaskManager API (Production)"
+    },
+    {
+      "key": "apiKey",
+      "value": "",
+      "type": "string",
+      "description": "API Key for authentication (X-API-Key header)"
+    }
+  ],
+  "info": {
+    "_postman_id": "c373eb15-c1fa-490d-bd2a-119694ff4c67",
+    "name": "TaskManager API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "TaskManager API - Lightweight PHP Task Queue with Data-Driven REST API\n\n**Production URL**: https://api.prismq.nomoos.cz/api\n**Documentation**: https://api.prismq.nomoos.cz/public/swagger-ui/\n\n**Features**:\n- Task type registration with JSON schema validation\n- Task creation, claiming, and completion workflow\n- Worker coordination with timeout handling\n- Health check and system status\n- Database-driven API endpoints\n\n**Authentication**:\nMost endpoints require an API key passed in the X-API-Key header.\n\n**Version**: 1.0.0\n**Contact**: PrismQ - https://github.com/Nomoos/PrismQ.Client",
+      "type": "text/plain"
+    },
+    "version": "1.0.0"
+  }
+}
