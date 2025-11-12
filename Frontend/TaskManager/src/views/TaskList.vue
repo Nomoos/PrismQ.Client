@@ -35,7 +35,7 @@
       <ErrorDisplay 
         v-else-if="error" 
         :message="error"
-        @retry="taskStore.clearError"
+        @retry="handleRetry"
       />
 
       <!-- Task List -->
@@ -145,7 +145,7 @@ const router = useRouter()
 const taskStore = useTaskStore()
 
 // Enable real-time polling (fetches tasks every 5 seconds)
-useTaskPolling(5000, true)
+const { isPolling, startPolling } = useTaskPolling(5000, true)
 
 const currentFilter = ref('all')
 const loading = computed(() => taskStore.loading)
@@ -167,6 +167,14 @@ function getTaskCount(status: string): number {
 
 function goToTask(id: number) {
   router.push(`/tasks/${id}`)
+}
+
+function handleRetry() {
+  taskStore.clearError()
+  // Restart polling if it was stopped due to errors
+  if (!isPolling.value) {
+    startPolling()
+  }
 }
 
 // Keyboard navigation for filter tabs
