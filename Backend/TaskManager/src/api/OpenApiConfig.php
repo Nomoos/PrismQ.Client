@@ -9,7 +9,7 @@
 use OpenApi\Attributes as OA;
 
 #[OA\OpenApi(
-    openapi: "3.1.0"
+    openapi: "3.1.1"
 )]
 #[OA\Info(
     version: "1.0.0",
