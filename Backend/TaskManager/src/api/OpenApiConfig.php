@@ -4,6 +4,14 @@
  * 
  * This file contains the base OpenAPI specification attributes.
  * All endpoint-specific attributes are in their respective handler files.
+ * 
+ * Current version: OpenAPI 3.1.1 (fully supported by swagger-php 5.7.0)
+ * 
+ * TODO: Migrate to OpenAPI 3.2.0 when swagger-php adds support
+ *       - OpenAPI 3.2.0 was released in September 2025
+ *       - swagger-php 5.7.0 currently supports up to 3.1.1
+ *       - Monitor: https://github.com/zircote/swagger-php for 3.2.0 support
+ *       - Expected timeline: Q1-Q2 2026
  */
 
 use OpenApi\Attributes as OA;

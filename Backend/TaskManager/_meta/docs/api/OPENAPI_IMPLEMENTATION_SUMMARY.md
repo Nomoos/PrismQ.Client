@@ -2,17 +2,23 @@
 
 ## Overview
 
-Successfully implemented self-documenting REST API using OpenAPI 3.0 specification with interactive Swagger UI, maintaining zero framework dependency with plain PHP 8+.
+Successfully implemented self-documenting REST API using OpenAPI 3.1.1 specification with interactive Swagger UI, maintaining zero framework dependency with plain PHP 8+.
+
+**Current OpenAPI Version**: 3.1.1 (as of November 2025)
+- Fully supported by swagger-php 5.7.0
+- Mature tool ecosystem
+- Production-ready and well-tested
 
 ## Implementation Details
 
 ### What Was Built
 
-1. **OpenAPI 3.0 Specification** (`public/openapi.json`)
+1. **OpenAPI 3.1.1 Specification** (`public/openapi.json`)
    - Complete documentation for all 8 TaskManager endpoints
    - API key authentication documented
    - Request/response schemas with examples
    - 568 lines of structured JSON
+   - Upgraded from 3.0.0 to 3.1.1 (November 2025)
 
 2. **Swagger UI Integration** (`public/swagger-ui/`)
    - Interactive documentation at `/api/docs/`
@@ -28,7 +34,8 @@ Successfully implemented self-documenting REST API using OpenAPI 3.0 specificati
    - Proper content-type headers
 
 4. **Dependency Management**
-   - Added `composer.json` with `zircote/swagger-php ^4.7`
+   - Added `composer.json` with `zircote/swagger-php ^5.0`
+   - Upgraded from swagger-php 4.11.1 to 5.7.0 (November 2025)
    - Composer autoloader configuration
    - Updated `.gitignore` to exclude `vendor/`
 
@@ -71,7 +78,7 @@ All 8 TaskManager API endpoints:
 ### Why Swagger UI v5.10.0?
 
 - **Modern UI**: Clean, responsive interface
-- **Full OpenAPI 3.0 support**: All features supported
+- **Full OpenAPI 3.1 support**: All features supported
 - **API key authorization**: Built-in auth UI
 - **Active maintenance**: Latest stable release
 - **Zero configuration**: Works out of the box
@@ -128,7 +135,7 @@ All 8 TaskManager API endpoints:
 ```bash
 $ ./validate_openapi.sh
 ✓ OpenAPI spec is valid
-✓ OpenAPI version: 3.0.0
+✓ OpenAPI version: 3.1.1
 ✓ Number of endpoints: 8
 ✓ All validations passed!
 ```
@@ -273,10 +280,69 @@ php generate_openapi.php
 3. **No Code Generation**: Doesn't generate client libraries (can add later)
 4. **Basic Validation**: Script validates structure, not semantic correctness
 
+## OpenAPI Version Roadmap
+
+### Current: OpenAPI 3.1.1 (November 2025)
+
+**Status**: ✅ Production Ready
+
+**Why 3.1.1:**
+- Fully supported by swagger-php 5.7.0 (no warnings)
+- Latest patch version in the 3.1.x series supported by swagger-php
+- Mature tool ecosystem with excellent support
+- Can regenerate from PHP annotations when needed
+- JSON Schema 2020-12 compatibility
+
+**Upgrade Path from 3.0.0:**
+- November 2025: Upgraded from OpenAPI 3.0.0 to 3.1.1
+- Upgraded swagger-php from 4.11.1 to 5.7.0
+- All 8 endpoints validated and tested
+
+### Future: OpenAPI 3.2.0 Migration
+
+**Target Date**: Q1-Q2 2026 (when ecosystem support matures)
+
+**OpenAPI 3.2.0 Status:**
+- Released: September 2025
+- Age: ~2 months (as of November 2025)
+- swagger-php support: Not yet available (5.7.0 supports up to 3.1.1)
+
+**Migration Blockers:**
+1. ❌ swagger-php doesn't support 3.2.0 generation yet
+2. ⚠️ Limited tool ecosystem support (too new)
+3. ⚠️ No immediate benefits for current use case
+
+**Migration Prerequisites:**
+- [ ] swagger-php adds OpenAPI 3.2.0 support
+- [ ] Swagger UI confirms 3.2.0 compatibility
+- [ ] Tool ecosystem matures (validators, generators, etc.)
+- [ ] Identify 3.2.0-specific features needed for TaskManager
+
+**Migration Steps (when ready):**
+1. Monitor [swagger-php releases](https://github.com/zircote/swagger-php) for 3.2.0 support
+2. Update `composer.json` to require version with 3.2.0 support
+3. Update `OpenApiConfig.php` openapi version to "3.2.0"
+4. Update `public/openapi.json` version field to "3.2.0"
+5. Regenerate spec: `php generate_openapi.php`
+6. Validate: `./validate_openapi.sh`
+7. Test all endpoints in Swagger UI
+8. Review changelog for 3.2.0-specific features to leverage
+
+**Expected Timeline:**
+- **Q1 2026**: swagger-php may add 3.2.0 support
+- **Q2 2026**: Ecosystem tools catch up
+- **Q3 2026**: Safe for production migration
+
+**Notes:**
+- OpenAPI 3.2.0 is backward compatible with 3.1.x
+- No urgent need to upgrade until benefits are clear
+- Current 3.1.1 implementation is production-ready and well-supported
+
 ## Future Enhancements
 
 - [ ] Automated spec generation from PHP annotations
 - [ ] Client library generation (OpenAPI Generator)
+- [ ] Migrate to OpenAPI 3.2.0 (when swagger-php adds support)
 - [ ] Webhook documentation
 - [ ] GraphQL endpoint documentation
 - [ ] Automated testing from spec
@@ -284,7 +350,8 @@ php generate_openapi.php
 
 ## Resources
 
-- [OpenAPI 3.0 Spec](https://swagger.io/specification/)
+- [OpenAPI 3.1 Spec](https://swagger.io/specification/)
+- [OpenAPI 3.2 Spec](https://spec.openapis.org/oas/v3.2.0.html) (Future migration target)
 - [Swagger UI Docs](https://swagger.io/docs/open-source-tools/swagger-ui/)
 - [TaskManager API Reference](../docs/API_REFERENCE.md)
 - [zircote/swagger-php](https://github.com/zircote/swagger-php)
@@ -292,11 +359,13 @@ php generate_openapi.php
 ## Conclusion
 
 ✅ **Implementation Complete**
-- OpenAPI 3.0 spec created
+- OpenAPI 3.1.1 spec implemented (upgraded from 3.0.0)
+- swagger-php upgraded to 5.7.0 for modern tooling
 - Swagger UI integrated
 - No conflicts with main
 - Ready for production
 - Zero breaking changes
+- Migration path to OpenAPI 3.2.0 documented
 
 The TaskManager API now has professional, interactive documentation accessible at `/api/docs/` while maintaining the project's zero-framework philosophy and data-driven architecture.
 
@@ -304,5 +373,6 @@ The TaskManager API now has professional, interactive documentation accessible a
 
 **Implemented by**: Copilot AI Agent  
 **Date**: 2025-11-07  
-**PR**: copilot/prepare-swagger-documentation  
-**Status**: Ready for Review
+**Updated**: 2025-11-13 (OpenAPI 3.1.1 upgrade, 3.2.0 migration notes added)  
+**PR**: copilot/prepare-swagger-documentation, copilot/update-openapi-version-3-2  
+**Status**: Production Ready
